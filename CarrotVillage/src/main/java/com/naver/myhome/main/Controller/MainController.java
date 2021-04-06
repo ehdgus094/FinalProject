@@ -73,7 +73,7 @@ public class MainController {
 	
 	@RequestMapping(value="naverLogin")
 	public String naverLoginProcess() {
-		return "main/naverLogin";
+		return "main/naver_login";
 	}
 	
 	@ResponseBody

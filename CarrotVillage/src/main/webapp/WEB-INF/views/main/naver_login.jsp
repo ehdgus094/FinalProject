@@ -28,7 +28,7 @@
 			var profile_image = naver_id_login.getProfileData('profile_image');
 			
 			$.ajax({
-				type : "get",
+				type : "post",
 				url : "${pageContext.request.contextPath}/main/naverLoginProcess",
 				data : {"email" : email,
 						"name" : name,
