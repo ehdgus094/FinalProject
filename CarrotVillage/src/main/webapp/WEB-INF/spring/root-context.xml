@@ -10,6 +10,7 @@
 		<property name="username" value="carrot"/>
 		<property name="password" value="1234"/>
 	</bean>
+	
 	<bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
 		<property ref="dataSource" name="dataSource"/>
 		<property name="configLocation" value="classpath:util/SqlMapConfig.xml"/>
