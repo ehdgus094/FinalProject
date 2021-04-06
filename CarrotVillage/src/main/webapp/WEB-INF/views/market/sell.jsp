@@ -46,11 +46,13 @@ label {width:50px}
 
 #image_area {display:flex}
 
-.card {width:200px}
+.card {width:200px; border:0; height:200px}
 
-.card-img-top {width:200px; height:200px}
+.card-img-top {height:200px}
 
-.cancel {width:30px; position:relative; top:-13px; left:145px; opacity:0}
+.card-img-overlay {padding:0; text-align:right}
+
+.cancel {width:30px; opacity:0; margin:7px}
 
 .cancel:hover {cursor:pointer}
 
@@ -59,6 +61,7 @@ label {width:50px}
 $(document).ready(function() {
 	var img_count = 0;
 	var file_input_count = 0;
+	var delete_num = '';
 	
 	//이미지 미리보기
 	function show_img(e) {
@@ -66,15 +69,14 @@ $(document).ready(function() {
 		var filesArr = Array.prototype.slice.call(files);
 
 		if(filesArr.length + img_count <= 10) {
-			index = 0;
 			filesArr.forEach(function(f) {
 				if(f.type.match('image.*')) {
-					let num = index;
+					let num = file_input_count;
 					var reader = new FileReader();
 					reader.onload = function(e) {
 						output = 
 							  '<div class=card>'
-							+	'<img class="card-img-top" src=' + e.target.result + ' alt=' + file_input_count+'-'+ num + '>'
+							+	'<img class="card-img-top" src=' + e.target.result + ' alt=' + num + '>'
 							+	'<div class="card-img-overlay">'
 							+		'<img class=cancel src="${pageContext.request.contextPath}/resources/image/kdh_cancel.png"'
 							+	'</div>'
@@ -83,11 +85,10 @@ $(document).ready(function() {
 					}
 					reader.readAsDataURL(f);
 					img_count++;
-					index++;
+					file_input_count++;
 					$('#img_count').html(img_count + ' / 10');
 				}
 			});
-			console.log($('.uploadfile')[1]);
 		} else {
 			alert('이미지 업로드 최대 개수는 10개 입니다.');
 		}
@@ -105,14 +106,16 @@ $(document).ready(function() {
  	$('#image_area').on('click', '.cancel', function() {
 		var index = $(this).parent().prev().attr('alt').split('-');
 		$(this).parent().parent().remove();
+		img_count--;
+		$('#img_count').html(img_count + ' / 10');
+		delete_num += $(this).parent().prev().attr('alt') + ';';
 	});
 	
 	$('#add_img').click(function(event) {
 		event.preventDefault();
 		if(img_count < 10) {
 			if($('.uploadfile').last().val() != '') {
-				$('#image_area').before('<input type=file class=uploadfile name=uploadfile multiple>');				
-				file_input_count++;
+				$('#image_area').before('<input type=file class=uploadfile name=uploadfile multiple>');
 			}
 			$('.uploadfile').last().trigger('click');			
 		} else {
@@ -124,6 +127,9 @@ $(document).ready(function() {
 		event.preventDefault();
 		if($('.uploadfile').last().val() == '') {
 			$('.uploadfile').last().remove();
+		}
+		if(delete_num != '') {
+			$('#delete_num').val(delete_num.substring(0, delete_num.length-1));
 		}
 		this.submit();
 	}); 
@@ -155,6 +161,7 @@ $(document).ready(function() {
 				<button>변경</button><br>
 				<label for=content>내용</label>
 				<textarea id=content name=content></textarea><br>
+				<input type=hidden id=delete_num name=delete_num>
 				<button id=add_img>이미지 추가</button><span id=img_count>0 / 10</span>
 				<div id=image_area></div>
 				<div>
