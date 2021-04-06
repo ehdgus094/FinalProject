@@ -1,0 +1,91 @@
+
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+#wrap {
+	height: 100%;
+	width: 100%;
+	display: grid;
+	grid-template-rows: 175px auto 150px;
+}
+
+#content_wrap {
+	width: 1200px;
+	margin: 0 auto;
+}
+
+/*------------- 여기까지 고정 css 속성 -------------*/
+#int_wrap {
+	text-align: center;
+	padding: 20px;
+	font-size: 3em;
+}
+
+#martlist_wrap {
+	text-align: center;
+	font-size: 2em;
+}
+
+#mart_list {
+	height: 100px;
+	width: 1200px;
+	margin: 0 auto;
+}
+
+#mart_list>ul li {
+	list-style-type: none;
+	float: left;
+	margin: 30px;
+	font-size: 1.5em;
+}
+
+.mart_ul {
+	float: left;
+	text-align: center;
+	width: 1200px;
+	display: flex;
+	justify-content: center;
+}
+
+#int_message {
+	text-align: center;
+}
+
+.local_mart {
+	display: flex;
+	border-bottom: 1px
+}
+
+#pmart {
+	font-size: 2.5em;
+	padding: 50px 100px 50px 400px
+}
+
+#delinfo {
+	border: 1px gray solid;
+	padding: 50px;
+	margin-left: 100px;
+	boarder-bottom: 1px gray;
+}
+
+.mar_contet {
+	display: flex;
+	padding: 0
+}
+
+.mar_content ul {
+	list-style-type: none;
+	display: flex;
+	text-align: center;
+	padding: 0
+}
+
+img {
+	display: block;
+}
+
+.mar_content li {
+	padding: 12px 10px 12px 25px;
+}

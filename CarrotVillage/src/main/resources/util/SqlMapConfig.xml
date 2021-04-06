@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<configuration>
+   <typeAliases>
+      <typeAlias alias="usedItem"    type="com.naver.myhome.market.domain.UsedItem" />
+      <typeAlias alias="member" 	 type="com.naver.myhome.main.domain.Member"/>
+   </typeAliases>
+   
+   <mappers>
+      <mapper resource="sql/usedItem.xml"/>
+      <mapper resource="sql/member.xml"/>
+   </mappers>
+   
+</configuration>
