@@ -21,5 +21,5 @@ public class MemberDAO {
     public Member memberInfo(Map<String, String> map) {
 		return sqlSession.selectOne("member.selectone", map);
 	}
- 
+    
 }
