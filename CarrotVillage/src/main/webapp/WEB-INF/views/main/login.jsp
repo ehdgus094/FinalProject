@@ -196,6 +196,20 @@ if (result == 'joinSuccess') {
 	window.opener.location.reload();
 	window.close();
 }
+
+
+$(function() {
+	$("#login_chk").change(function() {
+		if ($(this).prop("checked")) {
+			$(this).val("1");
+			console.log($(this).val());
+		} else {
+			$(this).val("0")
+			console.log($(this).val());
+		}
+	});
+});
+
 </script>
 </head>
 <body>
@@ -217,11 +231,11 @@ if (result == 'joinSuccess') {
 					</div>
 				</div>
 				<div><!-- 2 -->
-					<input type="checkbox" id="login_chk" name="login_chk">
+					<input type="checkbox" id="login_chk" name="login_chk" value="">
 					<label for="login_chk"><span></span>로그인 유지하기  </label>
 				</div>
 				<div><!-- 3 -->
-					<button id="login_btn">로그인</button>
+					<button id="login_btn" type="submit">로그인</button>
 				</div>
 				<div><!-- 4 -->
 					<a id="join_terms" href="${pageContext.request.contextPath}/main/joinTerms">회원가입</a> <a href="">아이디/비밀번호 찾기</a>
@@ -256,7 +270,6 @@ if (result == 'joinSuccess') {
 			</div>
 
 		</div>
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 	</form>
 </body>
 </html>

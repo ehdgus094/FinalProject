@@ -32,13 +32,6 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-		<!-- 스프링 시큐리티 tag 라이브러리 -->
-		<dependency>
-		  	<groupId>org.springframework.security</groupId>
-		  	<artifactId>spring-security-taglibs</artifactId>
-		  	<version>${org.springframework-version}</version>
-		</dependency>
-   
    
    		<!-- 메일 전송 -->
 		<dependency>

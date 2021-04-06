@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -44,8 +43,9 @@ public class MainController {
 	
 	@RequestMapping(value="mainPage")
 	public String main() {
-		return "main/main";
+		return "main/main_page";
 	}
+	
 	
 	@RequestMapping(value="login")
 	public String login() {
@@ -53,29 +53,19 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="/loginProcess")
-	public String loginProcess(String email, String password,
+	public String loginProcess(String email, String password, String login_chk,
 							   @RequestParam(value="remember", defaultValue="", required=false) String remember,
 							   HttpServletResponse response,
 							   HttpSession session,
 							   RedirectAttributes rattr) {
 		
 		int result = memberService.passwordChk(email, password);
+		logger.info("login_chk = " + login_chk);
 		logger.info("결과 : " + result);
-		logger.info("remember : " + remember);
 		
 		if (result == 1) {
-			session.setAttribute("user_info", memberService.memberInfo("email", email));
-			/*Cookie saveCookie = new Cookie("saveid", id);
-			if(!remember.equals("")) {
-				saveCookie.setPath("/myhome");
-				saveCookie.setMaxAge(60*60);
-				logger.info("쿠키저장 : 60*60");
-			} else {
-				logger.info("쿠키저장 : 0");
-				saveCookie.setPath("/myhome");
-				saveCookie.setMaxAge(0);
-			}
-			response.addCookie(saveCookie);*/
+			Member member = memberService.memberInfo("email", email);
+			session.setAttribute("user_info", member);
 		} 
 		rattr.addFlashAttribute("result", result);
 		return "redirect:login";
@@ -83,7 +73,7 @@ public class MainController {
 	
 	@RequestMapping(value="naverLogin")
 	public String naverLoginProcess() {
-		return "main/naverLogin";
+		return "main/naver_login";
 	}
 	
 	@ResponseBody
@@ -119,12 +109,14 @@ public class MainController {
 	
 	@RequestMapping(value="joinProcess")
 	public String joinProcess(Member member, Model model, HttpServletRequest request) {
+		
 		String encPassword = passwordEncoder.encode(member.getPassword());
 		logger.info(encPassword);
 		member.setPassword(encPassword);
 		
 		int result = memberService.join(member);
 		if (result == 1) {
+			model.addAttribute("message", "joinSuccess");
 			return "redirect:login";
 		} else {
 			model.addAttribute("url", request.getRequestURL());
@@ -135,7 +127,7 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value="logout")
-	public void logout(HttpSession session) throws IOException {
+	public void logout(HttpSession session) {
 		session.invalidate();
 	}
 	

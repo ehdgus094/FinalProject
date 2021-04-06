@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <script>
 	$(document).ready(function() {
 		
@@ -105,16 +106,15 @@
 				
 					<li style="margin-right:10px;"><a href="#">고객센터</a></li>
 					
-					<c:if test="${empty user_info && empty naver_name}">				
-						<li><a id="login_btn">로그인</a></li>
-					</c:if>
-					<c:if test="${!empty user_info}">				
-						<li><a id="user_btn">${user_info.name} 님</a></li>
-					</c:if>
-					<c:if test="${!empty naver_name}">				
-						<li><a id="user_btn">${naver_name} 님</a></li>
-					</c:if>
-
+						<c:if test="${empty user_info && empty naver_name}">				
+							<li><a id="login_btn">로그인</a></li>
+						</c:if>
+						<c:if test="${!empty naver_name}">			
+							<li><a id="user_btn">${naver_name} 님</a></li>
+						</c:if>
+						<c:if test="${!empty user_info}">			
+							<li><a id="user_btn">${user_info.name} 님</a></li>
+						</c:if>
 				</ul>
 				
 				<div id="user_info_tab">
@@ -126,10 +126,10 @@
     					<div id="user_title">
     					
     						<c:if test="${!empty user_info}">				
-								<b>${user_info.name}</b>님&nbsp;&nbsp;&nbsp;
+								<b>${user_info.name}</b>&nbsp;님&nbsp;&nbsp;&nbsp;&nbsp;
 							</c:if>
 							<c:if test="${!empty naver_name}">				
-								<b>${naver_name}</b>님&nbsp;&nbsp;&nbsp;
+								<b>${naver_name}</b>&nbsp;님&nbsp;&nbsp;&nbsp;&nbsp;
 							</c:if>
 							
     						<a onclick="logout()" style="cursor:pointer;">로그아웃</a>

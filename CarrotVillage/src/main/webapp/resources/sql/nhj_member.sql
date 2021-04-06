@@ -6,8 +6,7 @@ create table member (
 	email			varchar2(50) 	not null,
 	regi_date		date			default sysdate,
 	profile_img		varchar2(200)	default 'default.png',
-	profile_img_ori	varchar2(200)	default 'default.png',
-	auth 			varchar2(50) 	default 'role_member' not null
+	profile_img_ori	varchar2(200)	default 'default.png'
 );
 
 drop sequence member_seq;

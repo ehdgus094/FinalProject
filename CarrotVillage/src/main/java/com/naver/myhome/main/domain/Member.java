@@ -11,14 +11,7 @@ public class Member {
 	private String profile_img;
 	private String profile_img_ori;
 	private MultipartFile uploadfile;
-	private String auth;
 	
-	public String getAuth() {
-		return auth;
-	}
-	public void setAuth(String auth) {
-		this.auth = auth;
-	}
 	public int getNum() {
 		return num;
 	}
