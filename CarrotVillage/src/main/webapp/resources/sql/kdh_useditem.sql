@@ -8,11 +8,13 @@ create table useditem (
 	price number,
 	location varchar2(90),
 	sold varchar2(1) default 'n' check(sold in ('y', 'n')),
-	image varchar2(100)
+	imagefolder varchar2(100),
+	thumbnail varchar2(30)
 )
 /*
  * id 외래키로 바꾸기
  */
+drop sequence useditem_seq
 create sequence useditem_seq
 select * from useditem
 

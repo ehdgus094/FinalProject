@@ -1,5 +1,7 @@
 package com.naver.myhome.market.dao;
 
+import java.util.List;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,5 +15,9 @@ public class UsedItemDAO {
 	
 	public int insert(UsedItem usedItem) {
 		return sqlSession.insert("UsedItem.insert", usedItem);
+	}
+	
+	public List<UsedItem> select() {
+		return sqlSession.selectList("UsedItem.select");
 	}
 }

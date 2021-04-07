@@ -2,7 +2,7 @@ package com.naver.myhome.market.domain;
 
 public class UsedItem {
 	private int num, price;
-	private String id, subject, content, register_date, location, sold, image;
+	private String id, subject, content, register_date, location, sold, imagefolder, thumbnail;
 
 	public int getNum() {
 		return num;
@@ -52,10 +52,17 @@ public class UsedItem {
 	public void setSold(String sold) {
 		this.sold = sold;
 	}
-	public String getImage() {
-		return image;
+	public String getImagefolder() {
+		return imagefolder;
 	}
-	public void setImage(String image) {
-		this.image = image;
+	public void setImagefolder(String imagefolder) {
+		this.imagefolder = imagefolder;
 	}
+	public String getThumbnail() {
+		return thumbnail;
+	}
+	public void setThumbnail(String thumbnail) {
+		this.thumbnail = thumbnail;
+	}
+	
 }
