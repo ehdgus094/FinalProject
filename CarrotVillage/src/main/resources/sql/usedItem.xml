@@ -6,6 +6,10 @@
 	<insert id="insert" parameterType="usedItem">
 		insert into useditem values(
 		useditem_seq.nextval, #{id}, #{subject}, #{content}, 
-		sysdate, #{price}, #{location}, 'n', #{image})
+		sysdate, #{price}, #{location}, 'n', #{imagefolder}, #{thumbnail})
 	</insert>
+	
+	<select id="select" resultType="usedItem">
+		select * from useditem
+	</select>
 </mapper>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -89,6 +90,7 @@ html, body {
 	width:100%;
 	height:273px;
 	border-radius:20px;
+	box-shadow:0 0 10px silver
 }
 
 #content_body>div>* {margin-bottom:5px}
@@ -133,60 +135,24 @@ $(document).ready(function() {
 			<div id=sell><button>판매하기</button></div>
 		</div>
 		<div id=content_body>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
-			<div class=article>
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_sample.jpg">
-				<div>제목</div>
-				<div>가격</div>
-				<div>위치</div>
-			</div>
+			<c:if test="${empty itemlist[0]}">
+				<p>게시글이 없습니다.</p>
+			</c:if>
+			<c:if test="${!empty itemlist[0]}">
+				<c:forEach var="item" items="${itemlist}">
+					<div class=article>
+						<c:if test="${empty item.imagefolder}">
+							<img src="${pageContext.request.contextPath}/resources/image/kdh_default_image.png">
+						</c:if>
+						<c:if test="${!empty item.imagefolder}">
+							<img src="${pageContext.request.contextPath}/resources/upload/market_image/${item.imagefolder}/${item.thumbnail}">
+						</c:if>
+						<div>${item.subject}</div>
+						<div>${item.price}</div>
+						<div>${item.location}</div>
+					</div>
+				</c:forEach>
+			</c:if>
 		</div>
 	</div>
 

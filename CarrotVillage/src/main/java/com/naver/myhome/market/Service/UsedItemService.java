@@ -1,5 +1,7 @@
 package com.naver.myhome.market.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +15,9 @@ public class UsedItemService {
 	
 	public int insert(UsedItem usedItem) {
 		return dao.insert(usedItem);
+	}
+	
+	public List<UsedItem> select() {
+		return dao.select();
 	}
 }
