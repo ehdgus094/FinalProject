@@ -39,20 +39,23 @@ public class MarketController {
 	private UsedItemService usedItemService;
 	
 	@GetMapping(value = "/list")
-	public String list() {
-		return "market/list";
+	public ModelAndView list(String search, ModelAndView mv) {
+		mv.addObject("search", search);
+		mv.setViewName("market/list");
+		return mv;
 	}
 	
 	@ResponseBody
 	@GetMapping(value = "/loadList")
-	public List<UsedItem> loadList(String page) {
+	public List<UsedItem> loadList(String page, String search) {
 		int num = Integer.parseInt(page);
 		int start = (num-1)*16+1;
 		int end = num*16;
-		Map<String, Integer> range = new HashMap<String, Integer>();
-		range.put("start", start);
-		range.put("end", end);
-		return usedItemService.select(range);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("start", start);
+		map.put("end", end);
+		map.put("search", search);
+		return usedItemService.select(map);
 	}
 	
 	@GetMapping("/sell")
@@ -128,5 +131,10 @@ public class MarketController {
 		}
 		usedItemService.insert(usedItem);
 		return "redirect:list";
+	}
+	
+	@GetMapping("/detail")
+	public String detail() {
+		return "market/detail";
 	}
 }

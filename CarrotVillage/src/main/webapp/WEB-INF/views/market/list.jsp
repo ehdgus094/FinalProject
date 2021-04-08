@@ -11,6 +11,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet"> <!--CDN 링크 -->
 <style>
 
 html, body {
@@ -79,21 +80,33 @@ html, body {
 
 #content_wrap button:focus, #search input:focus {outline:0}
 
-#content_body>div {
+.article {
 	opacity:0;
 	margin-bottom:10%;
 	position:relative;
 	top:20px
 }
+.article:hover {cursor:pointer}
 
-#content_body img {
+.article>img {
 	width:100%;
 	height:273px;
 	border-radius:20px;
 	box-shadow:0 0 10px silver
 }
 
-#content_body>div>* {margin-bottom:5px}
+.article>* {margin-bottom:5px}
+
+.article>div:nth-child(2)>b {
+	font-size:20px
+}
+
+.article>div {
+	width:273px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+}
 </style>
 <script>
 $(document).ready(function() {
@@ -112,7 +125,7 @@ $(document).ready(function() {
 	
 	function load_articles() {
 		$.ajax({
-			url		: "${pageContext.request.contextPath}/market/loadList?page="+page,
+			url		: "${pageContext.request.contextPath}/market/loadList?page="+page+"&search="+search,
 			type	: "get",
 			success	: function(data) {
 				if(page == 1 && data.length == 0) {
@@ -129,15 +142,20 @@ $(document).ready(function() {
 					}
 					output = '';
 					$(data).each(function(index, item) {
+						var price = item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 						output += '<div class=article>';
 						if(item.imagefolder) {
 							output += '<img src="${pageContext.request.contextPath}/resources/upload/market_image/'+item.imagefolder+'/'+item.thumbnail+'">';
 						} else {
 							output += '<img src="${pageContext.request.contextPath}/resources/image/kdh_default_image.png">';
 						}
-						output += '		<div>'+item.subject+'</div>'
-								+ '		<div>'+item.price+'</div>'
-								+ '		<div>'+item.location+'</div>'
+						if(item.sold == 'y') {
+							output += '		<div><span class="badge badge-success">판매완료</span><b>'+item.subject+'</b></div>'
+						} else {
+							output += '		<div><b>'+item.subject+'</b></div>'
+						}
+						output += '		<div><i class="fas fa-won-sign"></i> '+price+'원</div>'
+								+ '		<div><i class="fas fa-map-marked-alt" aria-hidden="true" ></i> '+item.location+'</div>'
 								+ '</div>'
 					});
 					$('#content_body').append(output);
@@ -150,10 +168,11 @@ $(document).ready(function() {
 			}
 		})
 	}
-	
+//함수 영역 끝===============================================================================	
 	
 	var page = 1;
 	var moreData = true;
+	var search = '${search}';
 	
 	load_articles();
 	
@@ -177,6 +196,28 @@ $(document).ready(function() {
 	        	moreData = true;
 	        }
 		}
+	});
+	
+	//검색 버튼 클릭 시
+	$('#search>button').click(function() {
+		var search = $(this).prev().val();
+		if(search == '') {
+			alert('검색어를 입력해 주세요.');
+			$(this).prev().focus();
+		} else {
+			location.href="${pageContext.request.contextPath}/market/list?search=" + search;
+		}
+	});
+	
+	//검색창 엔터 클릭 시 이벤트
+	$('#search>input').keydown(function(key) {
+		if(key.keyCode == 13) {
+			$(this).next().trigger('click');
+		}
+	});
+	
+	$('#content_body').on('click', '.article', function() {
+		location.href="${pageContext.request.contextPath}/market/detail";
 	});
 });
 </script>
