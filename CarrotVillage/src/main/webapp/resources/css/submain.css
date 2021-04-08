@@ -89,3 +89,7 @@ img {
 .mar_content li {
 	padding: 12px 10px 12px 25px;
 }
+.range{
+    text-align: right;
+    margin-right:25px;
+}
