@@ -18,7 +18,7 @@ public class UsedItemService {
 		return dao.insert(usedItem);
 	}
 	
-	public List<UsedItem> select(Map<String,Integer> range) {
-		return dao.select(range);
+	public List<UsedItem> select(Map<String, Object> map) {
+		return dao.select(map);
 	}
 }
