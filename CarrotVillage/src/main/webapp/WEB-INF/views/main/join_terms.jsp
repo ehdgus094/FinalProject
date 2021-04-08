@@ -107,6 +107,9 @@ button {
 button:focus {
 	outline:none;
 }
+button:hover {
+	box-shadow: 0px 1px 4px 1px silver;
+}
 #terms_wrap > div:nth-child(5) {
 	margin-top: 30px;
 }

@@ -18,7 +18,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,16 +55,19 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value="keepLogin")
-	public void keepLogin(@RequestParam(value = "email") String email,
-										  HttpSession session,
-										  HttpServletResponse response) {
-		Member member = memberService.memberInfo("email", email, "normal");
-		session.setAttribute("user_info", member);
-		Cookie cookie = new Cookie("saveLogin", email);
-		cookie.setPath("/myhome");
-		cookie.setMaxAge(60*60*24*7);
-		
-		response.addCookie(cookie);
+	public void keepLogin(HttpSession session,
+						  HttpServletResponse response,
+						  @CookieValue(value="saveLogin", required=false) Cookie readCookie) {
+		logger.info("keepLogin readCookie value : " + readCookie.getValue());
+		Member member = null;
+		if (readCookie != null) {
+			String email = readCookie.getValue();
+			member = memberService.memberInfo("email", email, "normal");
+			session.setAttribute("user_info", member);
+			readCookie.setPath("/myhome");
+			readCookie.setMaxAge(60*60*24*7);
+			response.addCookie(readCookie);
+		}
 	}
 	
 	@RequestMapping(value="/loginProcess")
@@ -75,6 +77,7 @@ public class MainController {
 							   RedirectAttributes rattr) {
 		
 		logger.info("login_chk = " + login_chk);
+		logger.info("loginProcess login_type : " + member.getLogin_type());
 		int result = 0;
 		Member lmember = new Member();
 
@@ -93,18 +96,14 @@ public class MainController {
 		if (result == 1) {
 			lmember = memberService.memberInfo("email", member.getEmail(), member.getLogin_type());
 			session.setAttribute("user_info", lmember);
-			Cookie cookie = new Cookie("saveLogin", lmember.getEmail());
-			if (member.getLogin_type() == "normal") {
-				if (login_chk == "1") {
-					cookie.setPath("/myhome");
-					cookie.setMaxAge(60*60*24*7);
-				} else {
-					cookie.setPath("/myhome");
-					cookie.setMaxAge(0);
-				}
+			
+			if (member.getLogin_type().equals("normal") && "1".equals(login_chk)) {
+				Cookie cookie = new Cookie("saveLogin", lmember.getEmail());
+				cookie.setPath("/myhome");
+				cookie.setMaxAge(60*60*24*7);
+				response.addCookie(cookie);
 			}
 			
-			response.addCookie(cookie);
 		}
 		
 		rattr.addFlashAttribute("result", result);
@@ -156,6 +155,14 @@ public class MainController {
 		return "main/join";
 	}
 	
+	@RequestMapping(value="joinMore")
+	public String joinMore(Member member, HttpServletRequest request) {
+		request.setAttribute("id", member.getId());
+		request.setAttribute("password", member.getPassword());
+		request.setAttribute("email", member.getEmail());
+		return "main/join_more";
+	}
+	
 	@ResponseBody
 	@RequestMapping(value="joinCheck") 
 	public Map<String, String> joinCheck(@RequestParam(value = "field", required = false) String field,
@@ -168,6 +175,17 @@ public class MainController {
 	@RequestMapping(value="joinProcess")
 	public String joinProcess(Member member, HttpServletRequest request, RedirectAttributes rattr) {
 		
+		logger.info("id = " + member.getId());
+		logger.info("password = " + member.getPassword());
+		logger.info("email = " + member.getEmail());
+		logger.info("name = " + member.getName());
+		logger.info("address = " + member.getAddress());
+		logger.info("phone_num = " + member.getPhone_num());
+		logger.info("birth = " + member.getBirth());
+		logger.info("gender = " + member.getGender());
+		logger.info("file = " + member.getProfile_img());
+		return "redirect:login";
+		/*
 		String encPassword = passwordEncoder.encode(member.getPassword());
 		logger.info(encPassword);
 		member.setPassword(encPassword);
@@ -180,23 +198,28 @@ public class MainController {
 		} else {
 			return "redirect:login";
 		}
+		*/
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="logout")
 	public void logout(HttpSession session,
 					   HttpServletResponse response,
-					   HttpServletRequest request,
 					   @CookieValue(value="saveLogin", required=false) Cookie readCookie) {
-		Member member = (Member) session.getAttribute("user_info");
+		Member member = null;
+		if (session.getAttribute("user_info") != null) {
+			member = (Member) session.getAttribute("user_info");
+			logger.info("logout member email : " + member.getEmail());
+		}
 		
-		if (member.getLogin_type() == "normal") {
+		if (member.getLogin_type().equals("normal")) {
 			if (readCookie != null) {
+				readCookie.setPath("/myhome");
 				readCookie.setMaxAge(0);
+				response.addCookie(readCookie);
 			}
 		}
 		
-		response.addCookie(readCookie);
 		session.invalidate();
 	}
 	

@@ -210,10 +210,13 @@ input[type="checkbox"]:checked+label span {
 #kakao-login-btn {
 	display:none;
 }
+button:hover {
+	box-shadow: 0px 1px 4px 1px silver;
+}
 </style>
 <script>
 $(function() {
-	
+
 	if ($("#email").val().length < 1) {
 		$("#email").focus();
 	}
@@ -296,7 +299,7 @@ $(function() {
 					
 				</div>
 				<div><!-- 2 -->
-					<input type="checkbox" id="login_chk" name="login_chk" value="">
+					<input type="checkbox" id="login_chk" name="login_chk" value="0">
 					<label for="login_chk"><span></span>로그인 유지하기  </label>
 				</div>
 				<div><!-- 3 -->

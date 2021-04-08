@@ -49,7 +49,7 @@ div {
 	height:90%;
 }
 
-.join_item_wrap > div:nth-child(1):not(:nth-child(3)) {
+.join_item_wrap > div:nth-child(1):not(:nth-child(4)) {
 	border-bottom: silver 2px solid;
     margin: 5px 0;
     padding: 0 10px;
@@ -57,7 +57,7 @@ div {
 
 .join {
 	border:none;
-	width:80%;
+	width:95%;
 	height:42px;
 }
 #join_content input::placeholder {
@@ -80,22 +80,26 @@ div {
 	flex-direction:row;
 	justify-content: space-between;
 	border:none;
+	height:60px;
 }
 #email_auth_btn {
 	margin-top: 11px;
     width: 150px;
     height: 35px;
-    background: white;
+    background: #f3f3f3;
     border: 1px solid silver;
     border-radius: 20px;
     font-size: 13px;
     font-weight: 600;
 
 }
-
+#email_auth_btn:hover {
+	background:#dedede;
+	box-shadow: 0px 1px 4px 1px silver;
+}
 #email_auth > div:nth-child(2) {
 	margin-top: 11px;
-    width: 180px;
+    width: 170px;
     height: 35px;
     border: 1px solid silver;
     border-radius: 20px;
@@ -126,6 +130,9 @@ div {
 button:focus {
 	outline:none;
 }
+button:hover {
+	box-shadow: 0px 1px 4px 1px silver;
+}
 .x {
 	display:block;width:16px;height:16px;
 	border-radius:10px;margin:14px 0;cursor:pointer;
@@ -133,30 +140,24 @@ button:focus {
 	background-size:16px 16px;
 	visibility:hidden;
 }
-#name_count {
+#id_count, #name_count {
 	height: 15px;font-size: 13px;color: silver;margin:10px 0 20px 20px;
 }
 </style>
 <script>
 
 $(function() {
-	var checkName = false;
-	var checkEmail = false;
+	var checkId = false;
 	var checkPassword = false;
 	var checkPasswordChk = false;
+	var checkEmail = false;
 	var checkEmailAuth = false;
 	
 	$('form').on("submit", function() {
 		
-		
-		if(!checkName) {
-			alert("이름을 형식에 맞게 입력해 주세요.");
-			$("#name").focus();
-			return false;
-		}
-		if(!checkEmail) {
-			alert("이메일을 형식에 맞게 입력해 주세요.");
-			$("#email").focus();
+		if(!checkId) {
+			alert("아이디를 형식에 맞게 입력해 주세요.");
+			$("#id").focus();
 			return false;
 		}
 		if(!checkPassword) {
@@ -168,47 +169,49 @@ $(function() {
 			$("#password_chk").focus();
 			return false;
 		}
-		
-		if (!checkEmailAuth) {
-			alert("이메일 인증을 완료해 주세요.");
+		if(!checkEmail) {
+			alert("이메일을 형식에 맞게 입력해 주세요.");
+			$("#email").focus();
 			return false;
 		}
-		
-		alert("회원가입이 완료되었습니다.");
+		/*if (!checkEmailAuth) {
+			alert("이메일 인증을 완료해 주세요.");
+			return false;
+		}*/
 		
 	});
 	
-	//이름
-	$("#name").on('keyup', function() {
-		$("#name_msg").empty();
-		var pattern = /^[0-9가-힣a-zA-Z]+$/;
-		var name = $("#name").val();
+	//아이디
+	$("#id").on('keyup', function() {
+		$("#id_msg").empty();
+		var pattern = /^[0-9a-zA-Z]+$/;
+		var id = $("#id").val();
 	
-		if(!pattern.test(name)) {
-			$("#name_msg").css('color', '#e00000').html("특수문자는 사용할 수 없습니다.");
-			$("#name_msg").prev().css('border-color', 'red');
-			checkName = false;
+		if(!pattern.test(id)) {
+			$("#id_msg").css('color', '#e00000').html("특수문자, 한글은 사용할 수 없습니다.");
+			$("#id_msg").prev().css('border-color', 'red');
+			checkId = false;
 		} else {
 			
-			if (name.length < 2) {
-				$("#name_msg").css('color', '#e00000').html("2자 이상 입력하세요.");
-				$("#name_msg").prev().css('border-color', 'red');
-				checkName = false;
+			if (id.length < 4) {
+				$("#id_msg").css('color', '#e00000').html("4자 이상 입력하세요.");
+				$("#id_msg").prev().css('border-color', 'red');
+				checkId = false;
 			} else {
 				
 				$.ajax({
 					type : "get",
 					url : "${pageContext.request.contextPath}/main/joinCheck",
-					data : { "field" : "name", "value" : name },
+					data : { "field" : "id", "value" : id },
 					success : function(rdata) {
 						if(rdata.result == '-1') {
-							$("#name_msg").prev().css('border-color', 'silver');
-							$("#name_msg").empty();
-							checkName = true;
+							$("#id_msg").prev().css('border-color', 'silver');
+							$("#id_msg").empty();
+							checkId = true;
 						} else {
-							$("#name_msg").prev().css('border-color', 'red');
-							$("#name_msg").css('color', 'red').html("사용중인 아이디 입니다.");
-							checkName = false;
+							$("#id_msg").prev().css('border-color', 'red');
+							$("#id_msg").css('color', 'red').html("사용중인 아이디입니다.");
+							checkId = false;
 						}
 					}
 				});
@@ -216,41 +219,112 @@ $(function() {
 			}
 			
 		}
-		if (!name) {
-			$("#name_msg").prev().css('border-color', 'silver');
-			$("#name_msg").empty();
-			$("name_count").empty();
-			checkName = false;
-			$("#name_count").css("visibility", "hidden");
-			$("#namex").css("visibility", "hidden");
+		if (!id) {
+			$("#id_msg").prev().css('border-color', 'silver');
+			$("#id_msg").empty();
+			$("#id_count").empty();
+			checkId = false;
+			$("#id_count").css("visibility", "hidden");
+			$("#idx").css("visibility", "hidden");
 		} else {
-			$("#name_count").css("visibility", "visible");
-			$("#namex").css("visibility", "visible");
-			if (name.length >= 15) {
-				$("#name_count").css("color", "red");
+			$("#id_count").css("visibility", "visible");
+			$("#idx").css("visibility", "visible");
+			if (id.length >= 20) {
+				$("#id_count").css("color", "red");
 			} else {
-				$("#name_count").css("color", "silver");
+				$("#id_count").css("color", "silver");
 			}
 		}
 		
-		var length = name.length;
-		if (length > 15) {
-			length = 15;
-			$(this).val(name.substring(0, length));
+		var length = id.length;
+		if (length > 20) {
+			length = 20;
+			$(this).val(id.substring(0, length));
 		}
-		$("#name_count").text(length + "/15");
+		$("#id_count").text(length + "/20");
 
 		
 		
 	});
 	
-	$("#namex").click(function() {
-		$("#name").val("");
-		$("#name_msg").empty();
-		$("#name_msg").prev().css('border-color', 'silver');
-		$("#name_count").css("visibility", "hidden");
+	$("#idx").click(function() {
+		$("#id").val("");
+		$("#id_msg").empty();
+		$("#id_msg").prev().css('border-color', 'silver');
+		$("#id_count").css("visibility", "hidden");
 		$(this).css("visibility", "hidden");
+		checkId = false;
 	});
+	
+	//비밀번호
+	var password = $("#password").val();
+	
+	$("#password").on('keyup', function() {
+		$("#password_msg").empty();
+		var pattern = /^[a-zA-Z0-9!@#$%^&*()?_~]{8,20}$/;
+		password = $("#password").val();
+		if(!pattern.test(password)) {
+			$("#password_msg").css('color', '#e00000').html("비밀번호는 숫자,영문,특수문자(!@#$%^&*()?_~)조합으로 8~20자리를 사용해야 합니다.");
+			$("#password_msg").prev().css('border-color', 'red');
+			checkPassword = false;
+		} else {
+			$("#password_msg").prev().css('border-color', 'silver');
+			$("#password_msg").empty();
+			checkPassword = true;
+		}
+		if (!password) {
+			$("#password_msg").prev().css('border-color', 'silver');
+			$("#password_msg").empty();
+			checkPassword = false;
+			$("#passwordx").css("visibility", "hidden");
+		} else {
+			$("#passwordx").css("visibility", "visible");
+		}
+
+	});
+	
+	//비밀번호 확인 x버튼
+	var passChkx = function passChkx() {
+		$("#password_chk").val("");
+		$("#password_chk_msg").empty();
+		$("#password_chk_msg").prev().css('border-color', 'silver');
+		$("#password_chkx").css("visibility", "hidden");
+		checkPasswordChk = false;
+	}
+	
+	$("#passwordx").click(function() {
+		$("#password").val("");
+		$("#password_msg").empty();
+		$("#password_msg").prev().css('border-color', 'silver');
+		$(this).css("visibility", "hidden");
+		checkPassword = false;
+		passChkx();  //비밀번호에 있는 x를 누르면 비밀번호확인의 내용도 같이 지워집니다.
+	});
+	
+	//비밀번호 확인
+	$("#password_chk").on('keyup', function () {
+		$("#password_chk_msg").empty();
+		var passwordChk = $("#password_chk").val();
+		if (password != passwordChk) {
+			$("#password_chk_msg").css('color', '#e00000').html("비밀번호가 다릅니다.");
+			$("#password_chk_msg").prev().css('border-color', 'red');
+			checkPasswordChk = false;
+		} else {
+			$("#password_chk_msg").prev().css('border-color', 'silver');
+			$("#password_chk_msg").empty();
+			checkPasswordChk = true;
+		}
+		if (!passwordChk) {
+			$("#password_chk_msg").prev().css('border-color', 'silver');
+			$("#password_chk_msg").empty();
+			checkPasswordChk = false;
+			$("#password_chkx").css("visibility", "hidden");
+		} else {
+			$("#password_chkx").css("visibility", "visible");
+		}
+	});
+	
+	$("#password_chkx").click(passChkx);
 	
 	//이메일
 	var email = $("#email").val();
@@ -303,75 +377,9 @@ $(function() {
 		$("#email_msg").empty();
 		$("#email_msg").prev().css('border-color', 'silver');
 		$(this).css("visibility", "hidden");
+		checkEmail = false;
 	});
 	
-	//비밀번호
-	var password = $("#password").val();
-	
-	$("#password").on('keyup', function() {
-		$("#password_msg").empty();
-		var pattern = /^[a-zA-Z0-9!@#$%^&*()?_~]{8,20}$/;
-		password = $("#password").val();
-		if(!pattern.test(password)) {
-			$("#password_msg").css('color', '#e00000').html("비밀번호는 숫자,영문,특수문자(!@#$%^&*()?_~)조합으로 8~20자리를 사용해야 합니다.");
-			$("#password_msg").prev().css('border-color', 'red');
-			checkPassword = false;
-		} else {
-			$("#password_msg").prev().css('border-color', 'silver');
-			$("#password_msg").empty();
-			checkPassword = true;
-		}
-		if (!password) {
-			$("#password_msg").prev().css('border-color', 'silver');
-			$("#password_msg").empty();
-			checkPassword = false;
-			$("#passwordx").css("visibility", "hidden");
-		} else {
-			$("#passwordx").css("visibility", "visible");
-		}
-
-	});
-	
-	//비밀번호 확인 x버튼
-	var passChkx = function passChkx() {
-		$("#password_chk").val("");
-		$("#password_chk_msg").empty();
-		$("#password_chk_msg").prev().css('border-color', 'silver');
-		$("#password_chkx").css("visibility", "hidden");
-	}
-	
-	$("#passwordx").click(function() {
-		$("#password").val("");
-		$("#password_msg").empty();
-		$("#password_msg").prev().css('border-color', 'silver');
-		$(this).css("visibility", "hidden");
-		passChkx();  //비밀번호에 있는 x를 누르면 비밀번호확인의 내용도 같이 지워집니다.
-	});
-	
-	//비밀번호 확인
-	$("#password_chk").on('keyup', function () {
-		$("#password_chk_msg").empty();
-		var passwordChk = $("#password_chk").val();
-		if (password != passwordChk) {
-			$("#password_chk_msg").css('color', '#e00000').html("비밀번호가 다릅니다.");
-			$("#password_chk_msg").prev().css('border-color', 'red');
-			checkPasswordChk = false;
-		} else {
-			$("#password_chk_msg").prev().css('border-color', 'silver');
-			$("#password_chk_msg").empty();
-			checkPasswordChk = true;
-		}
-		if (!passwordChk) {
-			$("#password_chk_msg").prev().css('border-color', 'silver');
-			$("#password_chk_msg").empty();
-			checkPasswordChk = false;
-			$("#password_chkx").css("visibility", "hidden");
-		} else {
-			$("#password_chkx").css("visibility", "visible");
-		}
-	});
-	
-	$("#password_chkx").click(passChkx);
 	
 	//이메일 인증
 	var authKey = "";
@@ -458,7 +466,7 @@ $(function() {
 </script>
 </head>
 <body>
-	<form action="joinProcess" method="post">
+	<form action="joinMore" method="post">
 		<div id="join_wrap">
 
 			<div id="join_header">
@@ -472,19 +480,39 @@ $(function() {
 				
 					<div class="join_item_wrap">
 						<div style="flex-direction:row;">
-							<input type="text" placeholder="이름" name="name" id="name" class="join">
+							<input type="text" placeholder="아이디" name="id" id="id" class="join">
 							<div style="flex-direction:row;">
-								<span id="namex" class="x"></span>
-								<span id="name_count"></span>
+								<span id="idx" class="x"></span>
+								<span id="id_count"></span>
 							</div>
 						</div>
-						<div class="join_msg" id="name_msg"></div>
+						<div class="join_msg" id="id_msg"></div>
+					</div>
+				
+					<div class="join_item_wrap">
+						<div style="flex-direction:row;">
+							<input type="password" placeholder="비밀번호" name="password" id="password" class="join">
+							<div style="margin-left:10px;">
+								<span id="passwordx" class="x"></span>
+							</div>
+						</div>
+						<div class="join_msg" id="password_msg"></div>
 					</div>
 					
 					<div class="join_item_wrap">
 						<div style="flex-direction:row;">
+							<input type="password" placeholder="비밀번호 확인" name="password_chk" id="password_chk" class="join">
+							<div style="margin-left:10px;">
+								<span id="password_chkx" class="x"></span>
+							</div>
+						</div>
+					</div>
+					<div class="join_msg" id="password_chk_msg"></div>
+					
+					<div class="join_item_wrap">
+						<div style="flex-direction:row;">
 							<input type="text" placeholder="이메일" name="email" id="email" class="join">
-							<div style="margin-left:70px;">
+							<div style="margin-left:10px;">
 								<span id="emailx" class="x"></span>
 							</div>
 						</div>
@@ -502,30 +530,11 @@ $(function() {
 						<div class="join_msg" id="email_auth_msg"></div>
 					</div>
 					
-					<div class="join_item_wrap">
-						<div style="flex-direction:row;">
-							<input type="password" placeholder="비밀번호" name="password" id="password" class="join">
-							<div style="margin-left:70px;">
-								<span id="passwordx" class="x"></span>
-							</div>
-						</div>
-						<div class="join_msg" id="password_msg"></div>
-					</div>
-					
-					<div class="join_item_wrap">
-						<div style="flex-direction:row;">
-							<input type="password" placeholder="확인" name="password_chk" id="password_chk" class="join">
-							<div style="margin-left:70px;">
-								<span id="password_chkx" class="x"></span>
-							</div>
-						</div>
-					</div>
-					<div class="join_msg" id="password_chk_msg"></div>
 					
 				</div>
 				
 				<div>
-					<button type="submit" id="join_btn">가입하기</button>
+					<button type="submit" id="join_btn">다음으로</button>
 				</div>
 
 			</div>

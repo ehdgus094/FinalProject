@@ -26,7 +26,7 @@
 		$.ajax({
 			url : "${pageContext.request.contextPath}/main/logout",
 			success : function(rdata) {
-				alert("로그아웃 되었습니다." + $("#cookie").val());
+				alert("로그아웃 되었습니다.");
 				window.location.reload()
 			}
 		});
@@ -38,19 +38,18 @@
 	$(document).ready(function() {
 
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
-		/*
+		
 		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
 			$.ajax({
 				type : "post",
 				url : "${pageContext.request.contextPath}/main/keepLogin",
-				data : { "email" : $("#cookie").val() },
 				success : function() {
 					sessionStorage.setItem("keepLoginState", "1");
 					window.location.reload();
 				}
 			});
 		}
-		*/
+		
 		var msg_state = sessionStorage.getItem('msg_state');
 		console.log(msg_state);
 		
@@ -140,7 +139,9 @@
 			<div class="right">
 				<ul>
 				
-					<li style="margin-right:10px;"><a href="${pageContext.request.contextPath}/main/serviceCenter" id="sc_btn">고객센터</a></li>
+					<li style="margin-right:10px;">
+						<a href="${pageContext.request.contextPath}/main/serviceCenter" id="sc_btn">고객센터</a>
+					</li>
 					
 						<c:if test="${empty user_info}">				
 							<li><a id="login_btn">로그인</a></li>
@@ -151,11 +152,14 @@
 				</ul>
 				
 				<div id="user_info_tab">
+				
 					<div style=" width: 35%;height: 100%;">
-						<div id="user_profile_img"></div>
+						<div id="user_profile_img">
+							<img src="${pageContext.request.contextPath}/resources/image/nhj_profile.png">
+						</div>
 					</div>
+					
     				<div style="width: 65%;height: 100%;">
-    				
     					<div id="user_title">
     					
     						<c:if test="${!empty user_info}">				
@@ -164,8 +168,8 @@
 							
     						<a onclick="logout()" style="cursor:pointer;">로그아웃</a>
     					</div>
-    					
     				</div>
+				
 				</div><!-- #user_info_tab end -->
 				
 			</div>
@@ -195,7 +199,7 @@
 
 			<div id="nav_lst">
 				<ul>
-					<li><a href="${pageContext.request.contextPath}/market/list">FLEE MARKET</a></li>
+					<li><a href="${pageContext.request.contextPath}/market/list">FLEA MARKET</a></li>
 					<li><a href="${pageContext.request.contextPath}/meetup/list">MEETUP</a></li>
 					<li><a href="${pageContext.request.contextPath}/sub/submarket">CARROT MART</a></li>
 					<li><a href="#">navi4</a></li>
