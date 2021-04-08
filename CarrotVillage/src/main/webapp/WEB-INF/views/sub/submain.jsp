@@ -20,6 +20,10 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </head>
+<script>
+
+
+</script>
 <body>
 	<div id="wrap">
 
@@ -28,6 +32,7 @@
 		<div id="content_wrap">
 
 			<div id="int_wrap">Carrot Mart</div>
+			<div><button class="btn btn-info"onclick="document.location.href='subwrite'">Write</button></div>
 			<hr>
 			<div id="mart_list">
 				<ul class="mart_ul">
@@ -67,6 +72,11 @@
 			</div>
 			<hr>
 			<div class="mar_content">
+				<div class="range">
+					<label for="row"> <a href="#">최신순</a> <a href="#">평점순</a> <a
+						href="#">인기순</a>
+					</label>
+				</div>
 				<ul>
 					<li><a href="/myhome/sub/detail" id="thumbnail"><img
 							src="<%=request.getContextPath()%>\resources\image\pjh_sum.JPG">
