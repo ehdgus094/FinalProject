@@ -46,7 +46,8 @@ button {
 #login_content input[type='text']:focus, #login_content input[type='password']:focus {
 	outline:none;
 }
-#login_content > div:nth-child(1) > div {
+#login_content > div:nth-child(1) > div:nth-child(1),
+#login_content > div:nth-child(1) > div:nth-child(3) {
 	border-bottom: silver 2px solid;
     margin: 5px 0;
     padding: 0 10px;
@@ -122,10 +123,22 @@ button {
 #naver_id_login img:nth-child(2) {
 	display:none;
 }
-#naver_id_login {
+#naver_id_login{
 	height: 42px;
 	width:100%;
 	margin-bottom:5px;
+}
+#kakao_id_login {
+	margin-top:5px;
+	height: 40px;
+	border: solid 1px #a0a0a0;
+	display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+    cursor:pointer;
+}
+#kakao_id_login:hover {
+	background:#f3f3f3;
 }
 
 #naver_id_login_anchor {
@@ -140,13 +153,15 @@ button {
 #naver_id_login_anchor:hover {
 	cursor:pointer;
 	text-decoration:none;
+	background:#f3f3f3;
 }
-#naver_id_login_anchor p {
+#naver_id_login_anchor p,
+#kakao_id_login p {
 	font-size:18px;
 	margin: 5px 45px;
 	color:#505050;
 }
-#naver_logo {
+#naver_logo, #kakao_logo {
 	display:block;
 	width:30px;
 	height:30px;
@@ -183,22 +198,45 @@ input[type="checkbox"]:checked+label span {
 	border: none;
 	background-size:18px 18px;
 }
+#email_msg, #password_msg {
+	font-size:12px;
+}
+#kakao-login-btn {
+	display:none;
+}
 </style>
 <script>
-var result = "${result}";
-if (result == 'joinSuccess') {
-	alert('회원가입을 축하합니다.');
-} else if (result == '0') {
-	alert('비밀번호가 일치하지 않습니다.');
-} else if (result == '-1') {
-	alert('아이디가 존재하지 않습니다.');
-} else if (result == '1') {
-	window.opener.location.reload();
-	window.close();
-}
-
-
 $(function() {
+	
+	if ($("#email").val().length < 1) {
+		$("#email").focus();
+	}
+	
+	var result = "${result}";
+	console.log(result);
+	if (result == 'joinSuccess') {
+		alert('회원가입을 축하합니다.');
+	} else if (result == '0') {
+		$("#password_msg").css("color", "red").html("비밀번호가 일치하지 않습니다.");
+		$("#password_msg").prev().css("border-color", "red");
+		$("#password").select();
+	} else if (result == '-1') {
+		$("#email_msg").css("color", "red").html("이메일이 존재하지 않습니다.");
+		$("#email_msg").prev().css("border-color", "red");
+		$("#email").select();
+	} else if (result == '1') {
+		window.opener.location.reload();
+		window.close();
+	}
+	
+	$("form").submit(function() {
+		if ($("#email").val().length < 1) {
+			return false;
+		} else if ($("#password").val().length < 1) {
+			return false;
+		}
+	});
+	
 	$("#login_chk").change(function() {
 		if ($(this).prop("checked")) {
 			$(this).val("1");
@@ -208,6 +246,20 @@ $(function() {
 			console.log($(this).val());
 		}
 	});
+	
+	$("#email").on("keyup", function() {
+		$("#email_div").css("border-color", "silver");
+		$("#email_msg").empty();
+	});
+	$("#password").on("keyup", function() {
+		$("#password_div").css("border-color", "silver");
+		$("#password_msg").empty();
+	});
+	
+	if (window.event.keyCode == 13) {
+		$("form").submit();
+	}
+	
 });
 
 </script>
@@ -223,12 +275,19 @@ $(function() {
 
 			<div id="login_content">
 				<div><!-- 1 -->
-					<div>
-						<input type="text" placeholder="이메일" name="email" required>
+				
+					<div id="email_div">
+						<input type="text" placeholder="이메일" name="email" 
+							   id="email" value="${email}" required>
 					</div>
-					<div>
-						<input type="password" placeholder="비밀번호" name="password" required>
+					<div id="email_msg"></div>
+					
+					<div id="password_div">
+						<input type="password" placeholder="비밀번호" name="password" 
+							   id="password" value="${password}" required>
 					</div>
+					<div id="password_msg"></div>
+					
 				</div>
 				<div><!-- 2 -->
 					<input type="checkbox" id="login_chk" name="login_chk" value="">
@@ -238,18 +297,19 @@ $(function() {
 					<button id="login_btn" type="submit">로그인</button>
 				</div>
 				<div><!-- 4 -->
-					<a id="join_terms" href="${pageContext.request.contextPath}/main/joinTerms">회원가입</a> <a href="">아이디/비밀번호 찾기</a>
+					<a id="join_terms" href="${pageContext.request.contextPath}/main/joinTerms">회원가입</a>
+					<a href="">아이디/비밀번호 찾기</a>
 				</div>
 			</div>
 
 			<div id="login_other">
 			
-				<div id="naver_id_login">
-					
-				</div>
+				<div id="naver_id_login"></div>
+				
 				<script type="text/javascript">
-					var naver_id_login = new naver_id_login("ac6ZedX0lErobHrFaU_k", "http://localhost:8088/myhome/main/naverLogin");	// Client ID, CallBack URL 삽입
-																															// 단 'localhost'가 포함된 CallBack URL
+					var naver_id_login = new naver_id_login("ac6ZedX0lErobHrFaU_k",
+															"http://localhost:8088/myhome/main/naverLogin");  // Client ID, CallBack URL 삽입
+																											  // 단 'localhost'가 포함된 CallBack URL
 					var state = naver_id_login.getUniqState();
 
 					naver_id_login.setButton("green", 3, 40);
@@ -259,17 +319,56 @@ $(function() {
 					naver_id_login.init_naver_id_login();
 					
 					$(function() {
-						$("#naver_id_login_anchor").html("<img src='${pageContext.request.contextPath}/resources/image/nhj_naver_logo.PNG' id='naver_logo'>"
-														+"<p>네이버 아이디로 로그인</p>");
+						$("#naver_id_login_anchor").html("<img src='${pageContext.request.contextPath}"
+													   + "/resources/image/nhj_naver_logo.PNG' id='naver_logo'>"
+													   + "<p>네이버 아이디로 로그인</p>");
 					});
 				</script>
 				
 				
-				<button><img src="${pageContext.request.contextPath}/resources/image/nhj_kakao_logo.png" width="30px" width="30px">카카오 아이디로 로그인</button>
+				<div id="kakao_id_login"></div>
+				
+				<script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+				<script>
+					Kakao.init('22ed35d588d5fe869fcf7c44448a0aaa');
+					Kakao.isInitialized();
+					
+					console.log("Kakao.isInitialized()", Kakao.isInitialized());
+					
+					Kakao.Auth.createLoginButton({
+						container : '#kakao_id_login',
+						success : function(authObj) {
+							Kakao.API.request({
+								url : '/v2/user/me',
+								success : function(res) {
+									sessionStorage.setItem("email", res.kakao_account.email);
+									sessionStorage.setItem("name", res.kakao_account.profile.nickname);
+									sessionStorage.setItem("profile_image", res.kakao_account.profile.profile_image);
+									location.href = "kakaoLogin";
+								},
+								fail : function(error) {
+									alert(JSON.stringify(error))
+								},
+							})
+						},
+						fail : function(err) {
+							console.log(JSON.stringify(err));	
+						}
+					});
+					
+					$(function() {
+						$("#kakao_id_login").html("<img src='${pageContext.request.contextPath}"
+													   + "/resources/image/nhj_kakao_logo.png' id='kakao_logo'>"
+													   + "<p>카카오 아이디로 로그인</p>");
+					});
+				</script>
+				
 				
 			</div>
 
 		</div>
+		<input type="hidden" name="login_type" value="normal">
 	</form>
+	
 </body>
 </html>

@@ -80,7 +80,6 @@ div {
 	flex-direction:row;
 	justify-content: space-between;
 	border:none;
-	height:65px;
 }
 #email_auth_btn {
 	margin-top: 11px;
@@ -117,6 +116,9 @@ div {
 #email_auth_timer div {
 	margin-top:6px;
 }
+#email_auth_msg {
+	margin-left:20px;
+}
 
 .join_msg {
 	font-size:12px;
@@ -142,13 +144,10 @@ $(function() {
 	var checkEmail = false;
 	var checkPassword = false;
 	var checkPasswordChk = false;
+	var checkEmailAuth = false;
 	
 	$('form').on("submit", function() {
 		
-		if ($("#email_auth_key_input").val() != authKey) {
-			alert("이메일 인증번호가 일치하지 않습니다.");
-			return false;
-		}
 		
 		if(!checkName) {
 			alert("이름을 형식에 맞게 입력해 주세요.");
@@ -167,6 +166,11 @@ $(function() {
 		}
 		if(!checkPasswordChk) {
 			$("#password_chk").focus();
+			return false;
+		}
+		
+		if (!checkEmailAuth) {
+			alert("이메일 인증을 완료해 주세요.");
 			return false;
 		}
 		
@@ -341,7 +345,7 @@ $(function() {
 		$("#password_msg").empty();
 		$("#password_msg").prev().css('border-color', 'silver');
 		$(this).css("visibility", "hidden");
-		passChkx();
+		passChkx();  //비밀번호에 있는 x를 누르면 비밀번호확인의 내용도 같이 지워집니다.
 	});
 	
 	//비밀번호 확인
@@ -381,6 +385,7 @@ $(function() {
 			$("#email").focus();
 			return false;
 		} else {
+			$("#email_auth_msg").empty();
 			alert("이메일이 전송 되었습니다 인증번호를 확인해 주세요.");
 			
 			$.ajax({
@@ -406,6 +411,10 @@ $(function() {
 				var color = time > 60 ? "black" : "red";
 				$("#email_auth_timer div").css("color", color);
 				
+				if (checkEmailAuth) {
+					clearInterval(x);
+				}
+				
 				if (time < 0) {
 					clearInterval(x);
 					$("#email_auth_timer div").text("0:00");
@@ -424,7 +433,22 @@ $(function() {
 			
 		}
 		
+		
+		$("#email_auth_key_input").keyup(function(){
+			if ($(this).val() == authKey && $(this).val().length > 0) {
+				$("#email_auth_msg").css('color', 'green').html("이메일 인증번호가 일치합니다.");
+				checkEmailAuth = true;
+			} else if ($(this).val() != authKey && $(this).val().length >= 6) {
+				$("#email_auth_msg").css('color', '#e00000').html("이메일 인증번호가 일치하지 않습니다.");
+				checkEmailAuth = false;
+			} else if ($(this).val().length < 6) {
+				$("#email_auth_msg").empty();
+				checkEmailAuth = false;
+			}
+		});
+		
 	});
+	
 	
 	function twoDigits(n) {
 		return (n < 10 ? '0' : '') + n;
@@ -475,6 +499,7 @@ $(function() {
 								<div id="email_auth_timer"><div></div></div>
 							</div>
 						</div>
+						<div class="join_msg" id="email_auth_msg"></div>
 					</div>
 					
 					<div class="join_item_wrap">
@@ -494,8 +519,8 @@ $(function() {
 								<span id="password_chkx" class="x"></span>
 							</div>
 						</div>
-						<div class="join_msg" id="password_chk_msg"></div>
 					</div>
+					<div class="join_msg" id="password_chk_msg"></div>
 					
 				</div>
 				

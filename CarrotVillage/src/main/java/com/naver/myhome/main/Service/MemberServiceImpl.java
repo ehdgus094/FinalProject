@@ -19,20 +19,30 @@ public class MemberServiceImpl implements MemberService {
 	private PasswordEncoder passwordEncoder;
     
 	@Override
-	public int join(Member m) {
-		return dao.insert(m);
+	public int insert(Member member) {
+		return dao.insert(member);
 	}
 	
 	@Override
-	public int joinChk(String field, String value) {
-		Member member = memberInfo(field, value);
+	public int insertSocial(Member member) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("email", member.getEmail());
+		map.put("name", member.getName());
+		map.put("profile_img", member.getProfile_img());
+		map.put("login_type", member.getLogin_type());
+		return dao.insertSocial(map);
+	}
+	
+	@Override
+	public int memberChk(String field, String value, String login_type) {
+		Member member = memberInfo(field, value, login_type);
 		return (member == null) ? -1 : 1;
 	}
 
 	@Override
 	public int passwordChk(String email, String password) {
 		
-		Member member = memberInfo("email", email);
+		Member member = memberInfo("email", email, "normal");
 		int result = -1;
 		if (member != null) {
 			if (passwordEncoder.matches(password, member.getPassword())) {
@@ -46,10 +56,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Member memberInfo(String field, String value) {
+	public Member memberInfo(String field, String value, String login_type) {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("field", field);
 		map.put("value", value);
+		map.put("login_type", login_type);
 		return dao.memberInfo(map);
 	}
 

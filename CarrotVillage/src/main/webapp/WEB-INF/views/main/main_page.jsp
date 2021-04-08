@@ -12,14 +12,47 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
-html, body {
-	margin:0;
-}
+	html,body {
+		margin:0;
+		height:100%;
+		width : 100%;
+		background: #f6fcf1; 
+	}
+	.container {
+		width: 100%;
+		height:100%;
+		background: #f6fcf1; 
+		display: grid;
+	}
 
-#cnt_wrap {
-	position:absolute;
-	width:100%;
-}
+	.card img-fluid {
+	   margin: auto;
+	   background: #f6fcf1;
+	   border: none;
+	}
+	.card-img-top{
+	    min-width: 70%;
+        min-height: 100%;
+		height : auto;
+		margin: auto;
+	    background: #f6fcf1;
+	    opacity: 0.2;
+	}
+
+	.card {
+		border : none;
+	}
+	
+    @media only screen and (max-width: 1000px) {
+		.card-img-overlay {
+			margin-left : -180px; 
+			vertical-align : center;
+	  }
+    @media only screen and (max-width: 840px) {
+    	.card-img-overlay {
+			margin-left : -200px; 
+			vertical-align : center;
+	  }
 </style>
 <script>
 	$(document).ready(function() {
@@ -122,10 +155,20 @@ html, body {
 	<div id="cnt_wrap">
 	
 		<div class="content">
-			<div class="cnt01" style="background-color:skyblue;height:100%;background:url(https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdAQdT9%2FbtqA6pSGU0J%2FyQXubF3i4kkiStb0zfM580%2Fimg.jpg) no-repeat"></div>
+		
+			<div class="cnt01">
+				<div class="container">
+  					<div class="card img-fluid" >
+    					<img class="card-img-top"
+       						 src="${pageContext.request.contextPath}/resources/image/nhr_landingcarrot.jpg"  alt="" >
+   					</div>
+				</div>
+			</div>
+			
     		<div class="cnt02" style="background-color:silver;height:100%;"></div>
     		<div class="cnt03" style="background-color:yellow;height:100%;"></div>
     		<div class="cnt04" style="background-color:green;height:100%;"></div>
+    		
 		</div>
 		
 		<jsp:include page = "/WEB-INF/views/main/footer.jsp" />

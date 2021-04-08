@@ -5,14 +5,20 @@
 <mapper namespace="member">
 
 	<insert id="insert" parameterType="member">
-		insert into member (num, name, password, email)
-		values (member_seq.nextval, #{name}, #{password}, #{email})
+		insert into member (num, name, password, email, login_type)
+		values (member_seq.nextval, #{name}, #{password}, #{email}, #{login_type})
 	</insert>
 	
-	<select id="selectone" parameterType="java.util.Map" resultType="member">
+	<insert id="insertSocial" parameterType="java.util.Map">
+		insert into member (num, name, email, profile_img, login_type)
+		values (member_seq.nextval, #{name}, #{email}, #{profile_img}, #{login_type})
+	</insert>
+	
+	<select id="memberInfo" parameterType="java.util.Map" resultType="member">
 		select * 
 		from member 
 		where ${field} = #{value}
+		and login_type = #{login_type}
 	</select>
 	
 </mapper>

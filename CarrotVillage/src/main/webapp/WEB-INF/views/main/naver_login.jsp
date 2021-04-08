@@ -29,14 +29,15 @@
 			
 			$.ajax({
 				type : "post",
-				url : "${pageContext.request.contextPath}/main/naverLoginProcess",
+				url : "${pageContext.request.contextPath}/main/socialLoginProcess",
 				data : {"email" : email,
 						"name" : name,
-						"profile_image" : profile_image
+						"profile_image" : profile_image,
+						"login_type" : "naver"
 					   },
-				success : function() {
-					window.opener.location.reload();
-					window.close();
+				success : function(rdata) {
+					$("#email").val(rdata.email);
+					$("form").submit();
 				}
 			});
 		}
@@ -44,6 +45,9 @@
 </script>
 </head>
 <body>
-
+	<form action="loginProcess" method="post">
+		<input type="hidden" name="email" id="email">
+		<input type="hidden" name="login_type" id="login_type" value="naver">
+	</form>
 </body>
 </html>

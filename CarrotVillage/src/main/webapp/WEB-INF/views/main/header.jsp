@@ -1,8 +1,39 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<head>
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/image/favicon.ico" type="image/x-icon">
+<link rel="icon" href="${pageContext.request.contextPath}/resources/image/favicon.ico" type="image/x-icon">
+</head>
 <script>
+
+	var loginFn = function(e) {
+		e.preventDefault();
+		var nWidth = 490;
+		var nHeight = 630;			  
+
+		var xPos = (document.body.clientWidth / 2) - (nWidth / 2); 
+		xPos += window.screenLeft;	 //듀얼 모니터
+		var yPos = (screen.availHeight / 2) - (nHeight / 2);
+
+		window.open("${pageContext.request.contextPath}/main/login",
+					"login/join_pop",
+					"width=" + nWidth + ", height=" + nHeight + ", left=" + xPos
+				  + ", top=" + yPos + ", toolbars=no, resizable=yes, scrollbars=no");
+	}
+
+	function logout() {
+		$.ajax({
+			url : "${pageContext.request.contextPath}/main/logout",
+			success : function(rdata) {
+				alert("로그아웃 되었습니다.");
+				window.location.reload()
+			}
+		});
+	}
+	
+	var userInfo = "${user_info}";
+
 	$(document).ready(function() {
 		
 		var msg_state = sessionStorage.getItem('msg_state');
@@ -41,18 +72,8 @@
 
 			$("#nav_all").toggleClass("show");
 		});
-
-		$("#login_btn").click(function(e) {
-			e.preventDefault();
-			var nWidth = 490;
-			var nHeight = 630;			  
-
-			var xPos = (document.body.clientWidth / 2) - (nWidth / 2); 
-			xPos += window.screenLeft;	 //듀얼 모니터
-			var yPos = (screen.availHeight / 2) - (nHeight / 2);
-
-			window.open("${pageContext.request.contextPath}/main/login","login/join_pop","width="+nWidth+",height="+nHeight+", left="+xPos+", top="+yPos+", toolbars=no, resizable=yes, scrollbars=no");
-		});
+		
+		$("#login_btn").click(loginFn);
 		
 		$("#msg_btn").click(function() {
 			$('#msg_wrap').toggleClass('show');
@@ -69,17 +90,15 @@
 			$("#user_info_tab").toggleClass("show")
 		});
 		
+		$("#sc_btn").click(function(e) {
+			if (!userInfo) {
+				e.preventDefault();
+				loginFn(e);
+			} 
+		});
+		
 	});
 	
-	function logout() {
-		$.ajax({
-			url : "${pageContext.request.contextPath}/main/logout",
-			success : function(rdata) {
-				alert("로그아웃 되었습니다.");
-				window.location.reload()
-			}
-		});
-	}
 </script>
 
 <a id="top_btn"> 
@@ -104,13 +123,10 @@
 			<div class="right">
 				<ul>
 				
-					<li style="margin-right:10px;"><a href="#">고객센터</a></li>
+					<li style="margin-right:10px;"><a href="serviceCenter" id="sc_btn">고객센터</a></li>
 					
-						<c:if test="${empty user_info && empty naver_name}">				
+						<c:if test="${empty user_info}">				
 							<li><a id="login_btn">로그인</a></li>
-						</c:if>
-						<c:if test="${!empty naver_name}">			
-							<li><a id="user_btn">${naver_name} 님</a></li>
 						</c:if>
 						<c:if test="${!empty user_info}">			
 							<li><a id="user_btn">${user_info.name} 님</a></li>
@@ -127,9 +143,6 @@
     					
     						<c:if test="${!empty user_info}">				
 								<b>${user_info.name}</b>&nbsp;님&nbsp;&nbsp;&nbsp;&nbsp;
-							</c:if>
-							<c:if test="${!empty naver_name}">				
-								<b>${naver_name}</b>&nbsp;님&nbsp;&nbsp;&nbsp;&nbsp;
 							</c:if>
 							
     						<a onclick="logout()" style="cursor:pointer;">로그아웃</a>
@@ -166,7 +179,7 @@
 			<div id="nav_lst">
 				<ul>
 					<li><a href="${pageContext.request.contextPath}/market/list">중고마켓</a></li>
-					<li><a href="#">navi2</a></li>
+					<li><a href="${pageContext.request.contextPath}/meetup/list">우리동네 소모임</a></li>
 					<li><a href="${pageContext.request.contextPath}/sub/submarket">Carrot Mart</a></li>
 					<li><a href="#">navi4</a></li>
 				</ul>

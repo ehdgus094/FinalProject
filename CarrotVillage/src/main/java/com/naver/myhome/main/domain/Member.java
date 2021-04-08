@@ -10,6 +10,8 @@ public class Member {
 	private String regi_date;
 	private String profile_img;
 	private String profile_img_ori;
+	private String login_type;
+	
 	private MultipartFile uploadfile;
 	
 	public int getNum() {
@@ -59,5 +61,11 @@ public class Member {
 	}
 	public void setUploadfile(MultipartFile uploadfile) {
 		this.uploadfile = uploadfile;
+	}
+	public String getLogin_type() {
+		return login_type;
+	}
+	public void setLogin_type(String login_type) {
+		this.login_type = login_type;
 	}
 }

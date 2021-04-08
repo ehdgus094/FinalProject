@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -53,39 +54,81 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="/loginProcess")
-	public String loginProcess(String email, String password, String login_chk,
-							   @RequestParam(value="remember", defaultValue="", required=false) String remember,
+	public String loginProcess(Member member, String login_chk,
 							   HttpServletResponse response,
 							   HttpSession session,
 							   RedirectAttributes rattr) {
 		
-		int result = memberService.passwordChk(email, password);
 		logger.info("login_chk = " + login_chk);
-		logger.info("결과 : " + result);
+		int result = 0;
+		Member lmember = new Member();
+
+		switch (member.getLogin_type()) {
+		case "normal":
+			result = memberService.passwordChk(member.getEmail(), member.getPassword());
+			break;
+		case "naver":
+			result = memberService.memberChk("email", member.getEmail(), "naver");
+			break;
+		case "kakao":
+			result = memberService.memberChk("email", member.getEmail(), "kakao");
+			break;
+		}
 		
 		if (result == 1) {
-			Member member = memberService.memberInfo("email", email);
-			session.setAttribute("user_info", member);
-		} 
+			lmember = memberService.memberInfo("email", member.getEmail(), member.getLogin_type());
+			session.setAttribute("user_info", lmember);
+			Cookie cookie = new Cookie("saveLogin", lmember.getEmail());
+			if (member.getLogin_type() == "normal") {
+				if (login_chk == "1") {
+					cookie.setPath("/myhome");
+					cookie.setMaxAge(60*5);
+				} else {
+					cookie.setPath("/myhome");
+					cookie.setMaxAge(0);
+				}
+			}
+			
+			response.addCookie(cookie);
+		}
+		
 		rattr.addFlashAttribute("result", result);
+		rattr.addFlashAttribute("email", member.getEmail());
+		rattr.addFlashAttribute("password", member.getPassword());
 		return "redirect:login";
 	}
 	
 	@RequestMapping(value="naverLogin")
-	public String naverLoginProcess() {
+	public String naverLogin() {
 		return "main/naver_login";
 	}
 	
+	@RequestMapping(value="kakaoLogin")
+	public String kakaoLogin() {
+		return "main/kakao_login";
+	}
+	
 	@ResponseBody
-	@RequestMapping(value="naverLoginProcess")
-	public void NaverLoginProcess(HttpSession session,
-								  @RequestParam(value = "email") String email,
-								  @RequestParam(value = "name") String name,
-								  @RequestParam(value = "profile_image") String profile_image) {
-		logger.info("email = " + email + ", name = " + name + ", profile_image = " + profile_image);
-		session.setAttribute("naver_email", email);
-		session.setAttribute("naver_name", name);
-		session.setAttribute("naver_profile_image", profile_image);
+	@RequestMapping(value="socialLoginProcess")
+	public Map<String, Object> naverLoginProcess( @RequestParam(value = "email") String email,
+								  				  @RequestParam(value = "name") String name,
+								  				  @RequestParam(value = "profile_image", required=false) String profile_image,
+								  				  @RequestParam(value = "login_type") String login_type) {
+		System.out.println(login_type);
+		Member member = new Member();
+		int result = memberService.memberChk("email", email, login_type);
+		if (result == -1) {
+			if (profile_image == null)
+				profile_image = "default.png";
+			member.setEmail(email);member.setLogin_type(login_type);
+			member.setName(name);member.setProfile_img(profile_image);
+			memberService.insertSocial(member);
+		}
+		
+		member = memberService.memberInfo("email", email, login_type);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("email", member.getEmail());
+		return map;
 	}
 	
 	@RequestMapping(value="joinTerms")
@@ -103,25 +146,24 @@ public class MainController {
 	public Map<String, String> joinCheck(@RequestParam(value = "field", required = false) String field,
 									   @RequestParam(value = "value", required = false) String value) {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("result", memberService.joinChk(field, value)+"");
+		map.put("result", memberService.memberChk(field, value, "normal")+"");
 		return map;
 	}
 	
 	@RequestMapping(value="joinProcess")
-	public String joinProcess(Member member, Model model, HttpServletRequest request) {
+	public String joinProcess(Member member, HttpServletRequest request, RedirectAttributes rattr) {
 		
 		String encPassword = passwordEncoder.encode(member.getPassword());
 		logger.info(encPassword);
 		member.setPassword(encPassword);
+		member.setLogin_type("normal");
 		
-		int result = memberService.join(member);
+		int result = memberService.insert(member);
 		if (result == 1) {
-			model.addAttribute("message", "joinSuccess");
+			rattr.addAttribute("result", "joinSuccess");
 			return "redirect:login";
 		} else {
-			model.addAttribute("url", request.getRequestURL());
-			model.addAttribute("message", "회원 가입 실패");
-			return "error/error";
+			return "redirect:login";
 		}
 	}
 	
@@ -189,6 +231,11 @@ public class MainController {
         
         return map;  
     }
+	
+	@RequestMapping(value="/serviceCenter")
+	public String serviceCenter() {
+		return "main/service_center";
+	}
 	
 	/*@ResponseBody
 	@RequestMapping(value = "emailAuth")
