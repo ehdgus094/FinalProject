@@ -104,16 +104,80 @@ $(document).ready(function() {
 					{
 						opacity : 1,
 						top : 0
-					}, 200, 'linear', function() {
+					}, 150, 'linear', function() {
 				show_gradually(index+1);
 			});
 		}
 	}
-	show_gradually(1);
+	
+	function load_articles() {
+		$.ajax({
+			url		: "${pageContext.request.contextPath}/market/loadList?page="+page,
+			type	: "get",
+			success	: function(data) {
+				if(page == 1 && data.length == 0) {
+					$('#content_body').html('<p>게시글이 없습니다.</p>');
+					moreData = false;
+					return;
+				}
+				if(data.length == 0) {
+					moreData = false;
+				} else {
+					var last_article = 0;
+					if($('.article').length > 0) {
+						last_article = $('.article').length;
+					}
+					output = '';
+					$(data).each(function(index, item) {
+						output += '<div class=article>';
+						if(item.imagefolder) {
+							output += '<img src="${pageContext.request.contextPath}/resources/upload/market_image/'+item.imagefolder+'/'+item.thumbnail+'">';
+						} else {
+							output += '<img src="${pageContext.request.contextPath}/resources/image/kdh_default_image.png">';
+						}
+						output += '		<div>'+item.subject+'</div>'
+								+ '		<div>'+item.price+'</div>'
+								+ '		<div>'+item.location+'</div>'
+								+ '</div>'
+					});
+					$('#content_body').append(output);
+					show_gradually(last_article + 1);
+					page++;
+				}
+			},
+			error	: function() {
+				//에러 처리
+			}
+		})
+	}
+	
+	
+	var page = 1;
+	var moreData = true;
+	
+	load_articles();
 	
 	$('#sell>button').click(function() {
 		location.href="${pageContext.request.contextPath}/market/sell";
 	})
+	
+	//스크롤 내리면 데이터 ajax 로드
+	$(window).scroll(function() {
+		if(page>1 && moreData) {
+			var scrolltop = $(document).scrollTop();
+	        var height = $(document).height();
+	        var height_win = $(window).height();
+	        var footer = $('#foot_wrap').height();
+	        
+	        var eventHeight = height - height_win - footer;
+	        
+	        if(height_win < height && scrolltop > eventHeight) {
+	        	moreData = false;
+	        	load_articles();
+	        	moreData = true;
+	        }
+		}
+	});
 });
 </script>
 </head>
@@ -135,24 +199,6 @@ $(document).ready(function() {
 			<div id=sell><button>판매하기</button></div>
 		</div>
 		<div id=content_body>
-			<c:if test="${empty itemlist[0]}">
-				<p>게시글이 없습니다.</p>
-			</c:if>
-			<c:if test="${!empty itemlist[0]}">
-				<c:forEach var="item" items="${itemlist}">
-					<div class=article>
-						<c:if test="${empty item.imagefolder}">
-							<img src="${pageContext.request.contextPath}/resources/image/kdh_default_image.png">
-						</c:if>
-						<c:if test="${!empty item.imagefolder}">
-							<img src="${pageContext.request.contextPath}/resources/upload/market_image/${item.imagefolder}/${item.thumbnail}">
-						</c:if>
-						<div>${item.subject}</div>
-						<div>${item.price}</div>
-						<div>${item.location}</div>
-					</div>
-				</c:forEach>
-			</c:if>
 		</div>
 	</div>
 

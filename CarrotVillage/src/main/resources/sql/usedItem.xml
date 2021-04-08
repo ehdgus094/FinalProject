@@ -9,7 +9,11 @@
 		sysdate, #{price}, #{location}, 'n', #{imagefolder}, #{thumbnail})
 	</insert>
 	
-	<select id="select" resultType="usedItem">
-		select * from useditem
+	<select id="select" resultType="usedItem" parameterType="java.util.Map">
+		select * from
+				(select rownum rnum, a.* from
+					(select * from useditem) a
+				)
+		where rnum &gt;= #{start} and rnum &lt;= #{end}
 	</select>
 </mapper>

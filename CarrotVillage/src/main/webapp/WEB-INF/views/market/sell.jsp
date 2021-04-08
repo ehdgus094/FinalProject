@@ -272,7 +272,7 @@ $(document).ready(function() {
 				<b>판매글 등록</b><hr>
 				<form method=post action=sellProcess enctype="multipart/form-data">
 					<label for=subject>제목</label><br>
-					<input type=text id=subject name=subject><br>
+					<input type=text id=subject name=subject required><br>
 					
 					<label for=id>작성자</label><br>
 					<input type=text id=id name=id value="${member.name}" readonly><br>
@@ -287,7 +287,7 @@ $(document).ready(function() {
 					</span>
 					
 					<label for=content>내용</label><br>
-					<textarea id=content name=content></textarea><br>
+					<textarea id=content name=content required></textarea><br>
 					
 					<input type=hidden id=delete_num name=delete_num>
 					
