@@ -39,7 +39,7 @@
 
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
 		alert(sessionStorage.getItem("keepLoginState"));
-		
+		/*
 		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
 			$.ajax({
 				type : "post",
@@ -51,7 +51,7 @@
 				}
 			});
 		}
-		
+		*/
 		var msg_state = sessionStorage.getItem('msg_state');
 		console.log(msg_state);
 		
