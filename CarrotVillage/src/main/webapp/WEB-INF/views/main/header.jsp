@@ -26,16 +26,32 @@
 		$.ajax({
 			url : "${pageContext.request.contextPath}/main/logout",
 			success : function(rdata) {
-				alert("로그아웃 되었습니다.");
+				alert("로그아웃 되었습니다." + $("#cookie").val());
 				window.location.reload()
 			}
 		});
+		sessionStorage.clear();
 	}
 	
 	var userInfo = "${user_info}";
-
-	$(document).ready(function() {
 		
+	$(document).ready(function() {
+
+		var keepLoginState = sessionStorage.getItem("keepLoginState");
+		alert(sessionStorage.getItem("keepLoginState"));
+		/*
+		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
+			$.ajax({
+				type : "post",
+				url : "${pageContext.request.contextPath}/main/keepLogin",
+				data : { "email" : $("#cookie").val() },
+				success : function() {
+					sessionStorage.setItem("keepLoginState", "1");
+					window.location.reload();
+				}
+			});
+		}
+		*/
 		var msg_state = sessionStorage.getItem('msg_state');
 		console.log(msg_state);
 		
@@ -101,6 +117,8 @@
 	
 </script>
 
+<input type="hidden" id="cookie" value="${cookie.saveLogin.value}">
+
 <a id="top_btn"> 
 	<img src="${pageContext.request.contextPath}/resources/image/nhj_arrowup.png">
 </a>
@@ -123,7 +141,7 @@
 			<div class="right">
 				<ul>
 				
-					<li style="margin-right:10px;"><a href="serviceCenter" id="sc_btn">고객센터</a></li>
+					<li style="margin-right:10px;"><a href="${pageContext.request.contextPath}/main/serviceCenter" id="sc_btn">고객센터</a></li>
 					
 						<c:if test="${empty user_info}">				
 							<li><a id="login_btn">로그인</a></li>
