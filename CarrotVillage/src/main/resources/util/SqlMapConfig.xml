@@ -7,7 +7,7 @@
    <typeAliases>
       <typeAlias alias="usedItem"	type="com.naver.myhome.market.domain.UsedItem" />
       <typeAlias alias="member"		type="com.naver.myhome.main.domain.Member"/>
-      <typeAlias alias="sub"		type="com.naver.myhome.sub.domain.MartList"/>
+      <typeAlias alias="martList"		type="com.naver.myhome.sub.domain.MartList"/>
    </typeAliases>
    
    <mappers>

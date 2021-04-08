@@ -7,7 +7,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/header.css"
 	rel="stylesheet" type="text/css">
 <link
-	href="${pageContext.request.contextPath}/resources/css/submain.css"
+	href="${pageContext.request.contextPath}/resources/css/pjh_submain.css"
 	rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -18,12 +18,12 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script src="${pageContext.request.contextPath}/resources/js/pjh_submain.js"></script>
 </head>
-<script>
 
 
-</script>
+
+
 <body>
 	<div id="wrap">
 
@@ -32,7 +32,9 @@
 		<div id="content_wrap">
 
 			<div id="int_wrap">Carrot Mart</div>
-			<div><button class="btn btn-info"onclick="document.location.href='subwrite'">Write</button></div>
+			<div><button class="btn btn-info"onclick="document.location.href='subwrite'">Write</button>
+			<button class="btn btn-warning" id="addmartb"onclick="document.location.href='addmart'">Mart+</button></div>
+		
 			<hr>
 			<div id="mart_list">
 				<ul class="mart_ul">

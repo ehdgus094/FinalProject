@@ -1,0 +1,92 @@
+body {
+	font-family: "Nanum Gothic", sans-serif;
+}
+
+html, body {
+	margin: 0;
+	height: 100%;
+}
+
+#wrap {
+	height: 100%;
+	width: 100%;
+	display: grid;
+	grid-template-rows: 175px auto 150px;
+}
+
+#content_wrap {
+	width: 1200px;
+	margin: 0 auto;
+}
+#int_wrap {
+	text-align: center;
+	padding: 20px;
+	font-size: 3em;
+}
+
+.write_subj {
+	font-size: 2em;
+	text-align: center;
+	width: 1200px;
+	padding: 25px 0px 25px 0px;
+}
+
+.form-one {
+	text-align:center;
+}
+
+p>label:nth-child(3) {
+	margin-left: 20px;
+}
+
+#board_subject {
+	width: 1000px;
+}
+
+.section_view {
+	display: flex;
+}
+
+.section_view  img {
+	margin: 30px;
+}
+
+#section_view>div {
+	margin: 15px 0px 0px 125px;
+	font-size: 1.3em;
+}
+
+input#mart_del {
+	margin: 0px 5px 0px 15px
+}
+
+.mart_item {
+	text-align: center;
+}
+
+#item_price {
+	margin-left: 20px;
+}
+
+.section_info {
+	text-align: center;
+}
+
+.section_info > table > caption {
+	caption-side: top;
+	text-align: center;
+	font-size: 1.4em;
+}
+#mart_subject{
+	width:1000px
+}
+#content_suj{
+	margin:50px;
+	text-align:center;
+
+}
+#board_content{
+	resize:none;
+	height:400px;
+	margin-bottom:50px
+}
