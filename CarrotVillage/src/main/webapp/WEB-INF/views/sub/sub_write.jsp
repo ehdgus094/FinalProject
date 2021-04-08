@@ -8,9 +8,11 @@
 <title>당 근 빌 리 지</title>
 <link href="${pageContext.request.contextPath}/resources/css/header.css"
 	rel="stylesheet" type="text/css">
+
 <link
-	href="${pageContext.request.contextPath}/resources/css/submain.css"
+	href="${pageContext.request.contextPath}/resources/css/pjh_sub_write.css"
 	rel="stylesheet" type="text/css">
+		
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -20,62 +22,10 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script src="${pageContext.request.contextPath}/resources/js/pjh_subwrite.js"></script>
 </head>
 <style>
-.write_subj {
-	font-size: 2em;
-	text-align: center;
-	width: 1200px;
-	padding: 25px 0px 25px 0px;
-}
 
-.form-group {
-	
-}
-
-p>label:nth-child(3) {
-	margin-left: 20px;
-}
-
-#board_subject {
-	width: 1000px;
-}
-
-.section_view {
-	display: flex;
-}
-
-.section_view  img {
-	margin: 30px;
-}
-
-#section_view>div {
-	margin: 15px 0px 0px 125px;
-	font-size: 1.3em;
-}
-
-input#mart_del {
-	margin: 0px 5px 0px 15px
-}
-
-.mart_item {
-	text-align: center;
-}
-
-#item_price {
-	margin-left: 20px;
-}
-
-.section_info {
-	text-align: center;
-}
-
-caption {
-	caption-side: top;
-	text-align: center;
-	font-size: 1.4em;
-}
 </style>
 <body>
 	<div id="wrap">
@@ -91,22 +41,22 @@ caption {
 					enctype="multipart/form-data" name=board-form>
 					<div class="write_subj">판매 글 작성</div>
 					<hr>
-					<div class="form-group">
+					<div class="form-one">
 						<p>
 							<label for="mart_main"> Main-Category :&nbsp; </label> <select
-								name="main_category">
+								name="main_category" id="main_categoty" onchange="catechange()">
 								<option>----</option>
 								<option>우리동네장보기</option>
 								<option>구독서비스</option>
-							</select> <label for="board_title"> Sub-Category :&nbsp; </label> <select
-								name="sub_category">
+							</select> <label for="mart_sub"> Sub-Category :&nbsp; </label> <select
+								name="sub_category" id="sub_category">
 								<option>----</option>
 								<option>메인카테고리설정을해주세요</option>
 							</select>
 						</p>
-						<label for="board_subject">&nbsp; 제 &nbsp;&nbsp;목&nbsp;
-							:&emsp; </label><input type="text" name="board_subject"
-							placeholder="제목을 입력하세요" id="board_subject" maxlength="30"
+						<label for="mart_subject">&nbsp; 제 &nbsp;&nbsp;목&nbsp;
+							:&emsp; </label><input type="text" name="mart_subject"
+							placeholder="제목을 입력하세요" id="mart_subject" maxlength="30"
 							class="form-input">
 
 					</div>
@@ -290,7 +240,7 @@ caption {
 							</table>
 						</div>
 						<hr>
-						<h2>Content</h2>
+						<h2 id="content_suj">Content</h2>
 						<div class="form-group">
 							<textarea class="form-control" id="board_content"
 								name="board_content"></textarea>
