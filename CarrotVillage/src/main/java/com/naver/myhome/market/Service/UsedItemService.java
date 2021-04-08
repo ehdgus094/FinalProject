@@ -1,6 +1,7 @@
 package com.naver.myhome.market.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class UsedItemService {
 		return dao.insert(usedItem);
 	}
 	
-	public List<UsedItem> select() {
-		return dao.select();
+	public List<UsedItem> select(Map<String,Integer> range) {
+		return dao.select(range);
 	}
 }

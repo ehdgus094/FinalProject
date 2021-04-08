@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,11 +39,20 @@ public class MarketController {
 	private UsedItemService usedItemService;
 	
 	@GetMapping(value = "/list")
-	public ModelAndView list(HttpSession session, ModelAndView mv) {
-		List<UsedItem> itemlist = usedItemService.select();
-		mv.addObject("itemlist", itemlist);
-		mv.setViewName("market/list");
-		return mv;
+	public String list() {
+		return "market/list";
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/loadList")
+	public List<UsedItem> loadList(String page) {
+		int num = Integer.parseInt(page);
+		int start = (num-1)*16+1;
+		int end = num*16;
+		Map<String, Integer> range = new HashMap<String, Integer>();
+		range.put("start", start);
+		range.put("end", end);
+		return usedItemService.select(range);
 	}
 	
 	@GetMapping("/sell")
