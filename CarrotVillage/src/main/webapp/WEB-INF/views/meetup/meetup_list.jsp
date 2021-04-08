@@ -31,69 +31,75 @@ html, body {
 }
 
 /*------------- 여기까지 고정 css 속성 -------------*/
-#content-top {
-	display: flex;
+.all-content-top {
 }
 #title {
 	text-align: center;
 	font-weight: bold;
-	margin-top:30px;
-}
-.fa-search {
-	color : gray;
+	margin-top:4%;
 }
 #search {
 	display: flex;
 	justify-content: flex-end;
 }
+#searchicon {
+	color : gray;
+	font-size : 1.4em;
+}
 #searching {
 	margin-left : 10px;
-	border: 1px solid lightgray;
+	border : none;
+	border-bottom: 2px solid lightgray;
 }
-#content_center {
-	/* display : grid;
-	grid-template-columns: repeat(4, 25%); */
-	margin-top : 60px;
+input:focus {outline:none;
 }
-#famous  {
-	display : flex;
-	justify-content: space-between;
-	margin: 40px 0 50px 0;
+.fa-fire-alt, .fa-heart {
+	font-size: 1.1em;
+	margin-top: 5%;
 }
-#interested {
-	display : flex;
-	justify-content: space-between;
-	margin: 30px 0 50px 0;
+.all-content-center_list {
+	margin-top: -2%;
 }
-.con_s {
+#famous, #interested  {
+	display : grid;
+	grid-template-columns:repeat(4, 1fr);
+	margin: 4% 0 5% 0;
+}
+ 
+.con-s {
+	margin : 10%;
 
 }
-.con_m {
-	
+.con-m {
+	width: 82%;
+	margin : 10%;
 }
 .fa-eye {
-	margin : 4px 5px 0 150px;
+	margin : 1.5% 0 0 60%;
 	color : #676565;
 }
-.head_content_s {
+.head-content-s {
 	display : flex;
 	justify-content: space-between;
 	color : green;
 }
-.head_content_m {
+.head-content-m {
 	display : flex;
 	justify-content: space-between;
 	color : orange;
 }
+.body_content_m{
+	padding : 2%;
+}
 .watch {
 	color : black;
+	margin-right: 3%;
 }
 .group_sub {
-	margin : 30px 0;
+	margin : 8% 0;
 	font-weight: bold;
 	font-size: 1.2em;
 }
-
 </style>
 </head>
 <body>
@@ -104,44 +110,58 @@ html, body {
 		
 		<div id="content_wrap"> 
 			
-		  <div id="content_top">
+		  <div class="all-content-top">
 			  <div id="title">
 				<h3>우리동네 소모임</h3>
 			  </div>
 			  <div id="search">
-				 <i class="fas fa-search fa-2x " aria-hidden="true" ></i> 
+				 <div id="searchicon"><i class="fas fa-search" aria-hidden="true" ></i></div>
 				 <input type="text" id="searching" >
 			  </div>
 		  </div>
 		  
-		  <div id="content_center">
+		  <div class="all-content-center_list">
 		  
 		   <i class="fas fa-fire-alt" aria-hidden="true" >&nbsp;&nbsp;
 		   		현재 회원님들이 가장 관심을 많이 보이는 그룹이에요! </i>
 		  	 <div id="famous">
-		  	 	<div class="con_s">
-			  	 	<div class="head_content_s">무료
+		  	 	<div class="con-s">
+			  	 	<div class="head-content-s">무료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg">
 		  	 	</div>
-		  	 	<div class="con_s">
-			  	 	<div class="head_content_s">무료
+		  	 	<div class="con-s">
+			  	 	<div class="head-content-s">무료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg">
 		  	 	</div>
-		  	 	<div class="con_s">
-			  	 	<div class="head_content_s">무료
+		  	 	<div class="con-s">
+			  	 	<div class="head-content-s">무료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg">
 		  	 	</div>
-		  	 	<div class="con_s">
-			  	 	<div class="head_content_s">무료
+		  	 	<div class="con-s">
+			  	 	<div class="head-content-s">무료
+			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
+			  	 		 <div class="watch">350</div>
+			  	 	</div>
+			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg">
+		  	 	</div>
+		  	 	<div class="con-s">
+			  	 	<div class="head-content-s">무료
+			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
+			  	 		 <div class="watch">350</div>
+			  	 	</div>
+			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg">
+		  	 	</div>
+		  	 	<div class="con-s">
+			  	 	<div class="head-content-s">무료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
@@ -153,13 +173,13 @@ html, body {
 	  	 	 <i class="fas fa-heart" aria-hidden="true" >&nbsp;&nbsp;&nbsp;&nbsp;내가 관심을 보인 그룹이에요!</i>
 		  	 	 	
 		  	 <div id="interested">
-		  	   <div class="con_m">
-			  	 	<div class="head_content_m">유료
+		  	   <div class="con-m">
+			  	 	<div class="head-content-m">유료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-			  	 	  <div class="group_sub">플라워 원데이 클래스</div>
+			  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
 			  	 	  <div class="group_time">
 			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
 			  	 	  		4월 3일 토 10:00 am
@@ -168,14 +188,14 @@ html, body {
 			  	 	  		<i class="fas fa-map-marked-alt" aria-hidden="true" ></i>
 			  	 	  		서울시 강남구 역삼동
 			  	 	  </div>
-		  	 	</div>
-		  	 	 <div class="con_m">
-			  	 	<div class="head_content_m">유료
+		  	 	 </div>
+		  	 	  <div class="con-m">
+			  	 	<div class="head-content-m">유료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-			  	 	  <div class="group_sub">플라워 원데이 클래스 </div>
+			  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
 			  	 	  <div class="group_time">
 			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
 			  	 	  		4월 3일 토 10:00 am
@@ -184,14 +204,14 @@ html, body {
 			  	 	  		<i class="fas fa-map-marked-alt" aria-hidden="true" ></i>
 			  	 	  		서울시 강남구 역삼동
 			  	 	  </div>
-		  	 	</div>
-		  	 	 <div class="con_m">
-			  	 	<div class="head_content_m">유료
+		  	 	 </div>
+		  	 	  <div class="con-m">
+			  	 	<div class="head-content-m">유료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-			  	 	  <div class="group_sub">플라워 원데이 클래스 </div>
+			  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
 			  	 	  <div class="group_time">
 			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
 			  	 	  		4월 3일 토 10:00 am
@@ -200,14 +220,14 @@ html, body {
 			  	 	  		<i class="fas fa-map-marked-alt" aria-hidden="true" ></i>
 			  	 	  		서울시 강남구 역삼동
 			  	 	  </div>
-		  	 	</div>
-		  	 	<div class="con_m">
-			  	 	<div class="head_content_m">유료
+		  	 	 </div>
+		  	 	  <div class="con-m">
+			  	 	<div class="head-content-m">유료
 			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 			  	 		 <div class="watch">350</div>
 			  	 	</div>
 			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-			  	 	  <div class="group_sub">플라워 원데이 클래스 </div>
+			  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
 			  	 	  <div class="group_time">
 			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
 			  	 	  		4월 3일 토 10:00 am
@@ -216,8 +236,40 @@ html, body {
 			  	 	  		<i class="fas fa-map-marked-alt" aria-hidden="true" ></i>
 			  	 	  		서울시 강남구 역삼동
 			  	 	  </div>
-		  	 	</div>
-		  	 	
+		  	 	 </div>
+		  	 	 <div class="con-m">
+			  	 	<div class="head-content-m">유료
+			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
+			  	 		 <div class="watch">350</div>
+			  	 	</div>
+			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
+			  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
+			  	 	  <div class="group_time">
+			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
+			  	 	  		4월 3일 토 10:00 am
+			  	 	  </div>
+			  	 	  <div class="group_loc">
+			  	 	  		<i class="fas fa-map-marked-alt" aria-hidden="true" ></i>
+			  	 	  		서울시 강남구 역삼동
+			  	 	  </div>
+		  	 	 </div>
+		  	 	 <div class="con-m">
+			  	 	<div class="head-content-m">유료
+			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
+			  	 		 <div class="watch">350</div>
+			  	 	</div>
+			  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
+			  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
+			  	 	  <div class="group_time">
+			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
+			  	 	  		4월 3일 토 10:00 am
+			  	 	  </div>
+			  	 	  <div class="group_loc">
+			  	 	  		<i class="fas fa-map-marked-alt" aria-hidden="true" ></i>
+			  	 	  		서울시 강남구 역삼동
+			  	 	  </div>
+		  	 	 </div>
+		  	 	 
 		  	 </div>	
 		  </div>
 			

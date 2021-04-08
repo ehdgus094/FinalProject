@@ -39,7 +39,6 @@
 	color : orange;
     text-decoration: none;
     }
-    
 	.card-text {
 		display : grid;
 		font-size : 1em;
