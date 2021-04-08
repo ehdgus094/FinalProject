@@ -38,7 +38,6 @@
 	$(document).ready(function() {
 
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
-		alert(sessionStorage.getItem("keepLoginState"));
 		/*
 		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
 			$.ajax({
@@ -196,9 +195,9 @@
 
 			<div id="nav_lst">
 				<ul>
-					<li><a href="${pageContext.request.contextPath}/market/list">중고마켓</a></li>
-					<li><a href="${pageContext.request.contextPath}/meetup/list">우리동네 소모임</a></li>
-					<li><a href="${pageContext.request.contextPath}/sub/submarket">Carrot Mart</a></li>
+					<li><a href="${pageContext.request.contextPath}/market/list">FLEE MARKET</a></li>
+					<li><a href="${pageContext.request.contextPath}/meetup/list">MEETUP</a></li>
+					<li><a href="${pageContext.request.contextPath}/sub/submarket">CARROT MART</a></li>
 					<li><a href="#">navi4</a></li>
 				</ul>
 			</div>
