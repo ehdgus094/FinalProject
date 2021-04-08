@@ -16,3 +16,8 @@ create sequence member_seq;
 select * from member;
 
 delete from member;
+
+주소
+전화번호
+subscribe
+subscribe name

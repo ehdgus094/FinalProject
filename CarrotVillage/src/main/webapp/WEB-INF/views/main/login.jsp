@@ -161,11 +161,17 @@ button {
 	margin: 5px 45px;
 	color:#505050;
 }
-#naver_logo, #kakao_logo {
+#naver_logo {
 	display:block;
 	width:30px;
 	height:30px;
 	margin:5px;
+}
+#kakao_logo {
+	display:block;
+	width:30px;
+	height:25px;
+	margin:7px 5px;
 }
 input[type="checkbox"] {
 	display: none;

@@ -19,6 +19,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,6 +54,20 @@ public class MainController {
 		return "main/login";
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="keepLogin")
+	public void keepLogin(@RequestParam(value = "email") String email,
+										  HttpSession session,
+										  HttpServletResponse response) {
+		Member member = memberService.memberInfo("email", email, "normal");
+		session.setAttribute("user_info", member);
+		Cookie cookie = new Cookie("saveLogin", email);
+		cookie.setPath("/myhome");
+		cookie.setMaxAge(60*60*24*7);
+		
+		response.addCookie(cookie);
+	}
+	
 	@RequestMapping(value="/loginProcess")
 	public String loginProcess(Member member, String login_chk,
 							   HttpServletResponse response,
@@ -82,7 +97,7 @@ public class MainController {
 			if (member.getLogin_type() == "normal") {
 				if (login_chk == "1") {
 					cookie.setPath("/myhome");
-					cookie.setMaxAge(60*5);
+					cookie.setMaxAge(60*60*24*7);
 				} else {
 					cookie.setPath("/myhome");
 					cookie.setMaxAge(0);
@@ -169,7 +184,19 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value="logout")
-	public void logout(HttpSession session) {
+	public void logout(HttpSession session,
+					   HttpServletResponse response,
+					   HttpServletRequest request,
+					   @CookieValue(value="saveLogin", required=false) Cookie readCookie) {
+		Member member = (Member) session.getAttribute("user_info");
+		
+		if (member.getLogin_type() == "normal") {
+			if (readCookie != null) {
+				readCookie.setMaxAge(0);
+			}
+		}
+		
+		response.addCookie(readCookie);
 		session.invalidate();
 	}
 	
