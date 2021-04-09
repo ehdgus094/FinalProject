@@ -37,7 +37,7 @@ html, body {
 	<jsp:include page = "/WEB-INF/views/main/header.jsp" />
 
 	<div id="content_wrap">
-	
+	테스트
 	</div>
 
 	<jsp:include page = "/WEB-INF/views/main/footer.jsp" />

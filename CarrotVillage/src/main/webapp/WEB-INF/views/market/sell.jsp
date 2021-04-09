@@ -41,9 +41,16 @@ html, body {
 
 #grid_area>label {display:flex; align-items:flex-end}
 
+#grid_area>span:nth-child(4) {
+	background:#f6f6f6;
+	border-radius:15px;
+	margin-right:30px
+}
+#grid_area>span:nth-child(4)>input {width:85%}
+
 #grid_area>input {margin-right:30px}
-#grid_area>input:hover {background:#eaeaea}
-#grid_area>input:focus {outline:0}
+#grid_area input:hover {background:#eaeaea}
+#grid_area input:focus {outline:0}
 
 #content_body>b {font-size:30px}
 
@@ -281,7 +288,10 @@ $(document).ready(function() {
 						<label for=price>가격</label>
 						<label for=location>위치</label>
 						<span></span>
-						<input type=text id=price name=price required>
+						<span>
+							<input type=text id=price name=price required>
+							원
+						</span>
 						<input type=text id=location name=location value=위치 readonly>
 						<button>변경</button>	
 					</span>

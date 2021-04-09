@@ -12,7 +12,10 @@
 	<select id="select" resultType="usedItem" parameterType="java.util.Map">
 		select * from
 				(select rownum rnum, a.* from
-					(select * from useditem) a
+					(select * from useditem
+					 where subject like '%' || #{search} || '%'
+					 or content like '%' || #{search} || '%'
+					 order by sold asc) a
 				)
 		where rnum &gt;= #{start} and rnum &lt;= #{end}
 	</select>

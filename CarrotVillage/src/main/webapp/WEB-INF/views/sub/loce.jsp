@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script src="<%=request.getContextPath()%>/resources/js/loce.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/pjh_loce.js"></script>
 <head>
 <meta charset="utf-8">
 <title>현재 위치</title>

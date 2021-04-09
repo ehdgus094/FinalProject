@@ -7,7 +7,7 @@
 <link href="${pageContext.request.contextPath}/resources/css/header.css"
 	rel="stylesheet" type="text/css">
 <link
-	href="${pageContext.request.contextPath}/resources/css/submain.css"
+	href="${pageContext.request.contextPath}/resources/css/pjh_submain.css"
 	rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"

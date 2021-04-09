@@ -18,7 +18,7 @@ public class UsedItemDAO {
 		return sqlSession.insert("UsedItem.insert", usedItem);
 	}
 	
-	public List<UsedItem> select(Map<String, Integer> range) {
-		return sqlSession.selectList("UsedItem.select", range);
+	public List<UsedItem> select(Map<String, Object> map) {
+		return sqlSession.selectList("UsedItem.select", map);
 	}
 }
