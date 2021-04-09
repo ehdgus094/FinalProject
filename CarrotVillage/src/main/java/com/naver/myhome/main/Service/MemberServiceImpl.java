@@ -24,25 +24,15 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public int insertSocial(Member member) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("email", member.getEmail());
-		map.put("name", member.getName());
-		map.put("profile_img", member.getProfile_img());
-		map.put("login_type", member.getLogin_type());
-		return dao.insertSocial(map);
-	}
-	
-	@Override
 	public int memberChk(String field, String value, String login_type) {
 		Member member = memberInfo(field, value, login_type);
 		return (member == null) ? -1 : 1;
 	}
 
 	@Override
-	public int passwordChk(String email, String password) {
+	public int passwordChk(String id, String password) {
 		
-		Member member = memberInfo("email", email, "normal");
+		Member member = memberInfo(id);
 		int result = -1;
 		if (member != null) {
 			if (passwordEncoder.matches(password, member.getPassword())) {
@@ -62,6 +52,11 @@ public class MemberServiceImpl implements MemberService {
 		map.put("value", value);
 		map.put("login_type", login_type);
 		return dao.memberInfo(map);
+	}
+	
+	@Override
+	public Member memberInfo(String id) {
+		return dao.memberInfo(id);
 	}
 
 }

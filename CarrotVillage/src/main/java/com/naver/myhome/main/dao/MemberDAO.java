@@ -18,12 +18,12 @@ public class MemberDAO {
     	return sqlSession.insert("member.insert", member);
     }
     
-    public int insertSocial(Map<String, String> map) {
-    	return sqlSession.insert("member.insertSocial", map);
-    }
-    
     public Member memberInfo(Map<String, String> map) {
 		return sqlSession.selectOne("member.memberInfo", map);
 	}
+    
+    public Member memberInfo(String id) {
+    	return sqlSession.selectOne("member.memberInfoId", id);
+    }
     
 }

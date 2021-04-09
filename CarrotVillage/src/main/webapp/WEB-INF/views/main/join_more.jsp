@@ -253,8 +253,8 @@ function execDaumPostcode() {
 
 $(function() {
 	var checkName = false;
-	var checkPhone = false;
-	var checkBirth = false;
+	var checkPhone = true;
+	var checkBirth = true;
 	
 	$('form').on("submit", function() {
 		
@@ -273,6 +273,12 @@ $(function() {
 			$("#birth").focus();
 			return false;
 		}
+		
+		if(confirm("필수정보가 아닌 정보는 가입 후에도 등록하실 수 있습니다. 가입하시겠습니까?")) {
+			return true;
+		} else {
+			return false;
+		}
 			
 	});
 	
@@ -283,13 +289,13 @@ $(function() {
 		var name = $("#name").val();
 	
 		if(!pattern.test(name)) {
-			$("#name_msg").css('color', '#e00000').html("특수문자는 사용할 수 없습니다.");
+			$("#name_msg").css('color', 'red').html("특수문자는 사용할 수 없습니다.");
 			$("#name_msg").prev().css('border-color', 'red');
 			checkName = false;
 		} else {
 			
 			if (name.length < 2) {
-				$("#name_msg").css('color', '#e00000').html("2자 이상 입력하세요.");
+				$("#name_msg").css('color', 'red').html("2자 이상 입력하세요.");
 				$("#name_msg").prev().css('border-color', 'red');
 				checkName = false;
 			} else {
@@ -358,11 +364,11 @@ $(function() {
 	//전화번호
 	$("#phone_num").on('keyup', function() {
 		$("#phone_msg").empty();
-		var pattern = /^[0-9]+$/;
+		var pattern = /^[0-9]*$/;
 		var phone = $("#phone_num").val();
 	
 		if(!pattern.test(phone)) {
-			$("#phone_msg").css('color', '#e00000').html("숫자만 입력하세요.");
+			$("#phone_msg").css('color', 'red').html("숫자만 입력하세요.");
 			$("#phone_msg").prev().css('border-color', 'red');
 			checkPhone = false;
 		} else {
@@ -388,11 +394,11 @@ $(function() {
 	//생년월일
 	$("#birth").on('keyup', function() {
 		$("#birth_msg").empty();
-		var pattern = /^[0-9]+$/;
+		var pattern = /^[0-9]*$/;
 		var birth = $("#birth").val();
 	
 		if(!pattern.test(birth)) {
-			$("#birth_msg").css('color', '#e00000').html("숫자만 입력하세요.");
+			$("#birth_msg").css('color', 'red').html("숫자만 입력하세요.");
 			$("#birth_wrap").css('border-color', 'red');
 			checkBirth = false;
 		} else {
@@ -529,7 +535,7 @@ function imgAreaError(){
 							</label>
 						</div>
 						<div style="flex-direction:row;">
-							<input type="file" name="profile_img" id="profile_img" 
+							<input type="file" name="uploadfile" id="profile_img" 
 								   accept="image/*" style="display:none;">
 							<input type="button" id="upload_btn" style="margin-left:40px;" value="사진등록">
 							<input type="button" id="remove_btn" value="삭제">
@@ -544,8 +550,9 @@ function imgAreaError(){
 
 			</div>
 
-
+	
 		</div>
+		<input type="hidden" name="login_type" value="normal">
 	</form>
 </body>
 </html>

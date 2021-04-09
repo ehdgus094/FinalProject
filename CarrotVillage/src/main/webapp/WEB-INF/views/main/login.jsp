@@ -204,7 +204,7 @@ input[type="checkbox"]:checked+label span {
 	border: none;
 	background-size:18px 18px;
 }
-#email_msg, #password_msg {
+#id_msg, #password_msg {
 	font-size:12px;
 }
 #kakao-login-btn {
@@ -217,8 +217,8 @@ button:hover {
 <script>
 $(function() {
 
-	if ($("#email").val().length < 1) {
-		$("#email").focus();
+	if ($("#id").val().length < 1) {
+		$("#id").focus();
 	}
 	
 	var result = "${result}";
@@ -230,16 +230,16 @@ $(function() {
 		$("#password_msg").prev().css("border-color", "red");
 		$("#password").select();
 	} else if (result == '-1') {
-		$("#email_msg").css("color", "red").html("이메일이 존재하지 않습니다.");
-		$("#email_msg").prev().css("border-color", "red");
-		$("#email").select();
+		$("#id_msg").css("color", "red").html("아이디가 존재하지 않습니다.");
+		$("#id_msg").prev().css("border-color", "red");
+		$("#id").select();
 	} else if (result == '1') {
 		window.opener.location.reload();
 		window.close();
 	}
 	
 	$("form").submit(function() {
-		if ($("#email").val().length < 1) {
+		if ($("#id").val().length < 1) {
 			return false;
 		} else if ($("#password").val().length < 1) {
 			return false;
@@ -256,9 +256,9 @@ $(function() {
 		}
 	});
 	
-	$("#email").on("keyup", function() {
-		$("#email_div").css("border-color", "silver");
-		$("#email_msg").empty();
+	$("#id").on("keyup", function() {
+		$("#id_div").css("border-color", "silver");
+		$("#id_msg").empty();
 	});
 	$("#password").on("keyup", function() {
 		$("#password_div").css("border-color", "silver");
@@ -285,11 +285,11 @@ $(function() {
 			<div id="login_content">
 				<div><!-- 1 -->
 				
-					<div id="email_div">
-						<input type="text" placeholder="이메일" name="email" 
-							   id="email" value="${email}" required>
+					<div id="id_div">
+						<input type="text" placeholder="아이디" name="id" 
+							   id="id" value="${email}" required>
 					</div>
-					<div id="email_msg"></div>
+					<div id="id_msg"></div>
 					
 					<div id="password_div">
 						<input type="password" placeholder="비밀번호" name="password" 
@@ -350,6 +350,7 @@ $(function() {
 							Kakao.API.request({
 								url : '/v2/user/me',
 								success : function(res) {
+									sessionStorage.setItem("id", res.id);
 									sessionStorage.setItem("email", res.kakao_account.email);
 									sessionStorage.setItem("name", res.kakao_account.profile.nickname);
 									sessionStorage.setItem("profile_image", res.kakao_account.profile.profile_image);

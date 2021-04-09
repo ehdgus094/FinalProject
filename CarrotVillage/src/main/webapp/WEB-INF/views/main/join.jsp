@@ -188,13 +188,13 @@ $(function() {
 		var id = $("#id").val();
 	
 		if(!pattern.test(id)) {
-			$("#id_msg").css('color', '#e00000').html("특수문자, 한글은 사용할 수 없습니다.");
+			$("#id_msg").css('color', 'red').html("특수문자, 한글은 사용할 수 없습니다.");
 			$("#id_msg").prev().css('border-color', 'red');
 			checkId = false;
 		} else {
 			
 			if (id.length < 4) {
-				$("#id_msg").css('color', '#e00000').html("4자 이상 입력하세요.");
+				$("#id_msg").css('color', 'red').html("4자 이상 입력하세요.");
 				$("#id_msg").prev().css('border-color', 'red');
 				checkId = false;
 			} else {
@@ -264,7 +264,7 @@ $(function() {
 		var pattern = /^[a-zA-Z0-9!@#$%^&*()?_~]{8,20}$/;
 		password = $("#password").val();
 		if(!pattern.test(password)) {
-			$("#password_msg").css('color', '#e00000').html("비밀번호는 숫자,영문,특수문자(!@#$%^&*()?_~)조합으로 8~20자리를 사용해야 합니다.");
+			$("#password_msg").css('color', 'red').html("비밀번호는 숫자,영문,특수문자(!@#$%^&*()?_~)조합으로 8~20자리를 사용해야 합니다.");
 			$("#password_msg").prev().css('border-color', 'red');
 			checkPassword = false;
 		} else {
@@ -306,7 +306,7 @@ $(function() {
 		$("#password_chk_msg").empty();
 		var passwordChk = $("#password_chk").val();
 		if (password != passwordChk) {
-			$("#password_chk_msg").css('color', '#e00000').html("비밀번호가 다릅니다.");
+			$("#password_chk_msg").css('color', 'red').html("비밀번호가 다릅니다.");
 			$("#password_chk_msg").prev().css('border-color', 'red');
 			checkPasswordChk = false;
 		} else {
@@ -334,7 +334,7 @@ $(function() {
 		var pattern = /^\w+@\w+[.]\w{2,3}$/;
 		email = $("#email").val();
 		if(!pattern.test(email)) {
-			$("#email_msg").css('color', '#e00000').html("이메일형식이 맞지 않습니다.");
+			$("#email_msg").css('color', 'red').html("이메일형식이 맞지 않습니다.");
 			$("#email_msg").prev().css('border-color', 'red');
 			checkEmail = false;
 		} else {
@@ -447,7 +447,7 @@ $(function() {
 				$("#email_auth_msg").css('color', 'green').html("이메일 인증번호가 일치합니다.");
 				checkEmailAuth = true;
 			} else if ($(this).val() != authKey && $(this).val().length >= 6) {
-				$("#email_auth_msg").css('color', '#e00000').html("이메일 인증번호가 일치하지 않습니다.");
+				$("#email_auth_msg").css('color', 'red').html("이메일 인증번호가 일치하지 않습니다.");
 				checkEmailAuth = false;
 			} else if ($(this).val().length < 6) {
 				$("#email_auth_msg").empty();
@@ -506,8 +506,8 @@ $(function() {
 								<span id="password_chkx" class="x"></span>
 							</div>
 						</div>
+						<div class="join_msg" id="password_chk_msg"></div>
 					</div>
-					<div class="join_msg" id="password_chk_msg"></div>
 					
 					<div class="join_item_wrap">
 						<div style="flex-direction:row;">

@@ -1,6 +1,8 @@
 package com.naver.myhome.main.Controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.naver.myhome.main.Service.MemberService;
@@ -61,8 +64,8 @@ public class MainController {
 		logger.info("keepLogin readCookie value : " + readCookie.getValue());
 		Member member = null;
 		if (readCookie != null) {
-			String email = readCookie.getValue();
-			member = memberService.memberInfo("email", email, "normal");
+			String id = readCookie.getValue();
+			member = memberService.memberInfo(id);
 			session.setAttribute("user_info", member);
 			readCookie.setPath("/myhome");
 			readCookie.setMaxAge(60*60*24*7);
@@ -76,6 +79,7 @@ public class MainController {
 							   HttpSession session,
 							   RedirectAttributes rattr) {
 		
+		logger.info("loginProcess id = " + member.getId());
 		logger.info("login_chk = " + login_chk);
 		logger.info("loginProcess login_type : " + member.getLogin_type());
 		int result = 0;
@@ -83,31 +87,32 @@ public class MainController {
 
 		switch (member.getLogin_type()) {
 		case "normal":
-			result = memberService.passwordChk(member.getEmail(), member.getPassword());
+			result = memberService.passwordChk(member.getId(), member.getPassword());
 			break;
 		case "naver":
-			result = memberService.memberChk("email", member.getEmail(), "naver");
+			result = memberService.memberChk("id", member.getId(), "naver");
 			break;
 		case "kakao":
-			result = memberService.memberChk("email", member.getEmail(), "kakao");
+			result = memberService.memberChk("id", member.getId(), "kakao");
 			break;
 		}
 		
+		logger.info("loginProcess result = " + result);
+		
 		if (result == 1) {
-			lmember = memberService.memberInfo("email", member.getEmail(), member.getLogin_type());
+			lmember = memberService.memberInfo(member.getId());
 			session.setAttribute("user_info", lmember);
-			
-			if (member.getLogin_type().equals("normal") && "1".equals(login_chk)) {
-				Cookie cookie = new Cookie("saveLogin", lmember.getEmail());
-				cookie.setPath("/myhome");
-				cookie.setMaxAge(60*60*24*7);
-				response.addCookie(cookie);
-			}
-			
+		}
+	
+		if (member.getLogin_type().equals("normal") && "1".equals(login_chk)) {
+			Cookie cookie = new Cookie("saveLogin", lmember.getId());
+			cookie.setPath("/myhome");
+			cookie.setMaxAge(60*60*24*7);
+			response.addCookie(cookie);
 		}
 		
 		rattr.addFlashAttribute("result", result);
-		rattr.addFlashAttribute("email", member.getEmail());
+		rattr.addFlashAttribute("id", member.getId());
 		rattr.addFlashAttribute("password", member.getPassword());
 		return "redirect:login";
 	}
@@ -124,24 +129,23 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value="socialLoginProcess")
-	public Map<String, Object> naverLoginProcess( @RequestParam(value = "email") String email,
+	public Map<String, Object> naverLoginProcess( @RequestParam(value = "id") String id,
+												  @RequestParam(value = "email") String email,
 								  				  @RequestParam(value = "name") String name,
 								  				  @RequestParam(value = "profile_image", required=false) String profile_image,
 								  				  @RequestParam(value = "login_type") String login_type) {
-		System.out.println(login_type);
 		Member member = new Member();
 		int result = memberService.memberChk("email", email, login_type);
 		if (result == -1) {
-			if (profile_image == null)
-				profile_image = "default.png";
+			member.setId(login_type + id);
 			member.setEmail(email);member.setLogin_type(login_type);
 			member.setName(name);member.setProfile_img(profile_image);
-			memberService.insertSocial(member);
+			memberService.insert(member);
 		}
 		
-		member = memberService.memberInfo("email", email, login_type);
+		member = memberService.memberInfo(login_type + id);
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("email", member.getEmail());
+		map.put("id", member.getId());
 		return map;
 	}
 	
@@ -173,23 +177,24 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="joinProcess")
-	public String joinProcess(Member member, HttpServletRequest request, RedirectAttributes rattr) {
+	public String joinProcess(Member member, HttpServletRequest request, RedirectAttributes rattr) throws IllegalStateException, IOException {
+
+		MultipartFile uploadfile = member.getUploadfile();
 		
-		logger.info("id = " + member.getId());
-		logger.info("password = " + member.getPassword());
-		logger.info("email = " + member.getEmail());
-		logger.info("name = " + member.getName());
-		logger.info("address = " + member.getAddress());
-		logger.info("phone_num = " + member.getPhone_num());
-		logger.info("birth = " + member.getBirth());
-		logger.info("gender = " + member.getGender());
-		logger.info("file = " + member.getProfile_img());
-		return "redirect:login";
-		/*
+		if (!uploadfile.isEmpty()) {
+			String fileName = uploadfile.getOriginalFilename();
+			member.setProfile_img_ori(fileName);
+			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "\\upload\\member_image\\";
+			String fileDBName = fileDBName(fileName, saveFolder);
+			logger.info("fileDBName = " + fileDBName);
+
+			uploadfile.transferTo(new File(saveFolder + fileDBName));
+			member.setProfile_img(fileDBName);
+		}
+
 		String encPassword = passwordEncoder.encode(member.getPassword());
 		logger.info(encPassword);
 		member.setPassword(encPassword);
-		member.setLogin_type("normal");
 		
 		int result = memberService.insert(member);
 		if (result == 1) {
@@ -198,7 +203,7 @@ public class MainController {
 		} else {
 			return "redirect:login";
 		}
-		*/
+
 	}
 	
 	@ResponseBody
@@ -209,7 +214,7 @@ public class MainController {
 		Member member = null;
 		if (session.getAttribute("user_info") != null) {
 			member = (Member) session.getAttribute("user_info");
-			logger.info("logout member email : " + member.getEmail());
+			logger.info("logout member id : " + member.getId());
 		}
 		
 		if (member.getLogin_type().equals("normal")) {
@@ -287,35 +292,39 @@ public class MainController {
 		return "main/service_center";
 	}
 	
-	/*@ResponseBody
-	@RequestMapping(value = "emailAuth")
-    public Map<String,Object> mailSend(@RequestParam(value="email") String email) throws IOException {
-        Random random = new Random();
-        int authKey = random.nextInt(4589362) + 49311;
-        
-        String title = "회원가입 인증 이메일 입니다.";
-        String content = "인증번호 = " + authKey;
-        
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            logger.info(message.toString());
-            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+	private String fileDBName(String fileName, String saveFolder) {
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH) + 1;
+		int date = c.get(Calendar.DATE);
 
-            messageHelper.setFrom("project.sender.21@gamil.com");
-            messageHelper.setTo(email);
-            messageHelper.setSubject(title);
-            messageHelper.setText(content);
-            
-            mailSender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("authKey", authKey);
-        
-        return map;  
-    }
-    */
+		String homedir = saveFolder + year + "-" + month + "-" + date;
+		logger.info(homedir);
+		File path1 = new File(homedir);
+		if (!(path1.exists())) {
+			path1.mkdir();
+		}
+
+		Random r = new Random();
+		int random = r.nextInt(100000000);
+
+		/**** 확장자 구하기 시작 ****/
+		int index = fileName.lastIndexOf(".");
+		// 문자열에서 특정 문자열의 위치 값을 반환한다.
+		// indexOf가 처음 발견되는 문자열에 대한 index를 반환하는 반면,
+		// lastIndexOf는 마지막으로 발견되는 문자열의 index를 반환합니다.
+		// (파일명에 점이 여러개 있을 경우 맨 마지막에 발견되는 문자열의 위치를 리턴합니다.)
+		logger.info("index = " + index);
+
+		String fileExtension = fileName.substring(index + 1);
+		logger.info("fileExtension = " + fileExtension);
+
+		String refileName = "bbs" + year + month + date + random + "." + fileExtension;
+		logger.info("refileName = " + refileName);
+
+		String fileDBName = "/" + year + "-" + month + "-" + date + "/" + refileName;
+		logger.info("fileDBName = " + fileDBName);
+		return fileDBName;
+	}
 	
 }
