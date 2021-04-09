@@ -1,7 +1,7 @@
 package com.naver.myhome.market.domain;
 
 public class UsedItem {
-	private int num, price;
+	private int num, price, viewcount;
 	private String id, subject, content, register_date, location, sold, imagefolder, thumbnail;
 
 	public int getNum() {
@@ -29,7 +29,7 @@ public class UsedItem {
 		this.subject = subject;
 	}
 	public String getContent() {
-		return content;
+		return content.replaceAll("<", "&lt;");
 	}
 	public void setContent(String content) {
 		this.content = content;
@@ -63,6 +63,12 @@ public class UsedItem {
 	}
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
+	}
+	public int getViewcount() {
+		return viewcount;
+	}
+	public void setViewcount(int viewcount) {
+		this.viewcount = viewcount;
 	}
 	
 }

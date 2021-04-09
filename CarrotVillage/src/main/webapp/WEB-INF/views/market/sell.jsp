@@ -32,6 +32,8 @@ html, body {
 
 #content_wrap {margin-top:20px}
 
+#content_body {opacity:0}
+
 #content_header {
 	display:flex;
 	justify-content:center;
@@ -142,6 +144,10 @@ $(document).ready(function() {
 		alert('로그인 후 이용해주시기 바랍니다.');
 		history.back();
 	}
+  	
+  	$('#content_body').animate({
+  		opacity : 1
+  	}, 300, 'linear');
 	var img_count = 0;
 	var file_input_count = 0;
 	var delete_num = '';
