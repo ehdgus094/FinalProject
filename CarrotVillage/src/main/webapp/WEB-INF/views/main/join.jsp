@@ -154,11 +154,11 @@ $(function() {
 			$("#name").focus();
 			return false;
 		}
-		if(!checkEmail) {
+		 if(!checkEmail) {
 			alert("이메일을 형식에 맞게 입력해 주세요.");
 			$("#email").focus();
 			return false;
-		}
+		} 
 		if(!checkPassword) {
 			alert("비밀번호를 형식에 맞게 입력해 주세요.");
 			$("#password").focus();
@@ -169,10 +169,10 @@ $(function() {
 			return false;
 		}
 		
-		if (!checkEmailAuth) {
+		 if (!checkEmailAuth) {
 			alert("이메일 인증을 완료해 주세요.");
 			return false;
-		}
+		} 
 		
 		alert("회원가입이 완료되었습니다.");
 		
