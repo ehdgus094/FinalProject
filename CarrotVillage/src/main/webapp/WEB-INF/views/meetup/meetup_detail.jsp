@@ -53,8 +53,7 @@ html, body {
 	border : none;
 	border-bottom: 2px solid lightgray;
 }
-input:focus {outline:none;
-}
+input:focus {outline:none;}
 .all-content-center_detail {
 	/* display: grid;
     grid-template-rows: 45% 25% 10% 15%; */
@@ -92,6 +91,14 @@ img {widht: 400px; height: 400px;}
 	font-weight: bolder;
 	margin : -3% 0;
 }
+.hashtag {
+	margin : 8% 0;
+	font-size: 1em;
+	color : gray;
+	word-spacing : 0.6em;
+}
+a {color : black}
+a:hover {color : orange;}
 
 </style>
 </head>
@@ -132,14 +139,14 @@ img {widht: 400px; height: 400px;}
 	          		<td colspan=3><i class="fas fa-clock" aria-hidden="true" ></i> 4월 3일 토 10:00 am</td>
 	          	</tr>
 	          	<tr>
-	          		<td colspan=3><i class="fas fa-map-marked-alt" aria-hidden="true" ></i>  서울시 강남구 역삼동<td>
+	          		<td colspan=3><i class="fas fa-map-marker-alt" aria-hidden="true" ></i>  서울시 강남구 역삼동<td>
 	          	</tr>
 	          	<tr>
 	          		<td colspan=3 > <i class="fas fa-user-friends" aria-hidden="true"></i> 10 명</td>
 	          	</tr>
 	          	<tr>
-	          		<td><i class="fas fa-smile" aria-hidden="true"></i> 플라워선생님123 </td>
-	          		<td colspan=2><i class="fab fa-rocketchat" aria-hidden="true"></i> <a href="#">채팅하기</a> </td>
+	          		<td><i class="fas fa-smile" aria-hidden="true"></i> &nbsp;&nbsp;플라워선생님123 </td>
+	          		<td colspan=2><i class="fas fa-comment-dots" aria-hidden="true"></i> <a href="#">채팅하기</a> </td>
 	          	</tr>
 	          	
 	          </table>
@@ -152,27 +159,24 @@ img {widht: 400px; height: 400px;}
             </div>
             <div class="detail_main">
              <p>
-	         	공자는 무엇을 위하여 천하를 철환하였는가? 밥을 위하여서 옷을 위하여서 미인을 구하기 위하여서 
-	         	그리하였는가? 아니다 그들은 커다란 어디 있으랴? 이상! 우리의 청춘이 가장 많이 품고 있는 이상! 
-	         	이것이야말로 무한한 가치를 가진 것이다 사람은 크고 작고 간에 이상이 있음으로써 용감하고 굳세게 살 수 있는 것이다 
-	         	석가는 무엇을 위하여 설산에서 고행을 하였으며 예수는 무엇을 위하여 광야에서 방황하였으며 공자는 무엇을 위하여 
-	         	천하를그림자는 천고에 사라지지 않는 것이다 이것은 현저하게 일월과 같은 예가 되려니와 그와 같지 못하다 
-	         	할지라도 창공에 반짝이는 뭇 별과 같이 산야에 피어나는 군영과 같이 이상은 실로 인간의 부패를
-	         	</p>  <p>
-	         	공자는 무엇을 위하여 천하를 철환하였는가? 밥을 위하여서 옷을 위하여서 미인을 구하기 위하여서 
-	         	그리하였는가? 아니다 그들은 커다란 어디 있으랴? 이상! 우리의 청춘이 가장 많이 품고 있는 이상! 
-	         	이것이야말로 무한한 가치를 가진 것이다 사람은 크고 작고 간에 이상이 있음으로써 용감하고 굳세게 살 수 있는 것이다 
-	         	석가는 무엇을 위하여 설산에서 고행을 하였으며 예수는 무엇을 위하여 광야에서 방황하였으며 공자는 무엇을 위하여 
-	         	천하를그림자는 천고에 사라지지 않는 것이다 이것은 현저하게 일월과 같은 예가 되려니와 그와 같지 못하다 
-	         	할지라도 창공에 반짝이는 뭇 별과 같이 산야에 피어나는 군영과 같이 이상은 실로 인간의 부패를
-	         	</p>  <p>
-	         	공자는 무엇을 위하여 천하를 철환하였는가? 밥을 위하여서 옷을 위하여서 미인을 구하기 위하여서 
-	         	그리하였는가? 아니다 그들은 커다란 어디 있으랴? 이상! 우리의 청춘이 가장 많이 품고 있는 이상! 
-	         	이것이야말로 무한한 가치를 가진 것이다 사람은 크고 작고 간에 이상이 있음으로써 용감하고 굳세게 살 수 있는 것이다 
-	         	석가는 무엇을 위하여 설산에서 고행을 하였으며 예수는 무엇을 위하여 광야에서 방황하였으며 공자는 무엇을 위하여 
-	         	천하를그림자는 천고에 사라지지 않는 것이다 이것은 현저하게 일월과 같은 예가 되려니와 그와 같지 못하다 
-	         	할지라도 창공에 반짝이는 뭇 별과 같이 산야에 피어나는 군영과 같이 이상은 실로 인간의 부패를
-	           </p>
+	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
+	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+	         	 sunt in culpa qui officia deserunt mollit anim id est laborum.
+	         </p>  <p>
+	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
+	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+	         	 sunt in culpa qui officia deserunt mollit anim id est laborum.
+	         </p>   <p>
+	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
+	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+	         	 sunt in culpa qui officia deserunt mollit anim id est laborum.
+	         </p>   
+	         	<div class="hashtag">
+	         		#원데이플라워클래스 #예약 #일산 #취미 #단기 #좋아요
+	         	</div>
          	</div>
          </div>
          <hr>
@@ -182,11 +186,12 @@ img {widht: 400px; height: 400px;}
             	공지사항 
             </div>
              <div class="detail_main">
-	            공자는 무엇을 위하여 천하를 철환하였는가? 밥을 위하여서 옷을 위하여서 미인을 구하기 위하여서 
-	            
-	         	그리하였는가? 아니다 그들은 커다란 어디 있으랴? 이상! 우리의 청춘이 가장 많이 품고 있는 이상! 
-	         	
-	         	이것이야말로 무한한 가치를 가진 것이다 사람은 크고 작고 간에 이상이 있음으로써 용감하고 굳세게 살 수 있는 것이다 
+	           <p>
+	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
+	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+	         	sunt in culpa qui officia deserunt mollit anim id est laborum.
+	          </p>  
          	</div>
          </div>
          <hr>
@@ -212,7 +217,7 @@ img {widht: 400px; height: 400px;}
 				<div class="comment_inbox">
 					<b class="comment_inbox_name" >닉네임</b> <span
 						class="comment_inbox_count">0/200</span>
-					<textarea placeholder="댓글을 남겨보세요" rows="1"
+					<textarea placeholder="리뷰를 남겨주세요" rows="1"
 						class="comment_inbox_text" maxLength="200"></textarea>
 				</div>
 				<div class="register_box" >
