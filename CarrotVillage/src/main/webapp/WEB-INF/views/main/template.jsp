@@ -4,7 +4,6 @@
 <html>
 <head>
 <title>당 근 빌 리 지</title>
-<link href="${pageContext.request.contextPath}/resources/css/header.css" rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -26,6 +25,18 @@ html, body {
 	width:1200px;
 	margin:0 auto;
 }
+#content_title {
+	width:100%;
+	height:70px;
+	padding:10px 0 0 5px;
+	border-bottom:1px solid #545454;
+}
+#content_title > span {
+	font-size:25px;
+	color:#545454;
+	display: block;
+    margin: 5px 0 0 5px;
+}
 
 /*------------- 여기까지 고정 css 속성 -------------*/
 
@@ -37,7 +48,8 @@ html, body {
 	<jsp:include page = "/WEB-INF/views/main/header.jsp" />
 
 	<div id="content_wrap">
-	
+		<div id="content_title"><span>TITLE</span></div>
+		
 	</div>
 
 	<jsp:include page = "/WEB-INF/views/main/footer.jsp" />
