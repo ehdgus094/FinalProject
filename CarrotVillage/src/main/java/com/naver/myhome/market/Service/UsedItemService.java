@@ -21,4 +21,12 @@ public class UsedItemService {
 	public List<UsedItem> select(Map<String, Object> map) {
 		return dao.select(map);
 	}
+	
+	public UsedItem detail(int num) {
+		return dao.detail(num);
+	}
+	
+	public void addViewcount(int num) {
+		dao.addViewcount(num);
+	}
 }

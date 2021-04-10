@@ -223,9 +223,7 @@ $(function() {
 	
 	var result = "${result}";
 	console.log(result);
-	if (result == 'joinSuccess') {
-		alert('회원가입을 축하합니다.');
-	} else if (result == '0') {
+	if (result == '0') {
 		$("#password_msg").css("color", "red").html("비밀번호가 일치하지 않습니다.");
 		$("#password_msg").prev().css("border-color", "red");
 		$("#password").select();
@@ -287,7 +285,7 @@ $(function() {
 				
 					<div id="id_div">
 						<input type="text" placeholder="아이디" name="id" 
-							   id="id" value="${email}" required>
+							   id="id" value="${id}" required>
 					</div>
 					<div id="id_msg"></div>
 					
@@ -353,8 +351,8 @@ $(function() {
 									sessionStorage.setItem("id", res.id);
 									sessionStorage.setItem("email", res.kakao_account.email);
 									sessionStorage.setItem("name", res.kakao_account.profile.nickname);
-									sessionStorage.setItem("profile_image", res.kakao_account.profile.profile_image);
-									location.href = "kakaoLogin";
+									sessionStorage.setItem("profile_image", res.kakao_account.profile.thumbnail_image_url);
+									location.href = "${pageContext.request.contextPath}/main/kakaoLogin";
 								},
 								fail : function(error) {
 									alert(JSON.stringify(error))

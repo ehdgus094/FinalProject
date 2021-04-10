@@ -25,5 +25,9 @@ public class MemberDAO {
     public Member memberInfo(String id) {
     	return sqlSession.selectOne("member.memberInfoId", id);
     }
+
+	public int memberUpdate(Member member) {
+		return sqlSession.update("member.update", member);
+	}
     
 }

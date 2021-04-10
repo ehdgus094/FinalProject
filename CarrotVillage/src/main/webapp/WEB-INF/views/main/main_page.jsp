@@ -4,7 +4,6 @@
 <html>
 <head>
 <title>당 근 빌 리 지</title>
-<link href="${pageContext.request.contextPath}/resources/css/header.css" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -152,7 +151,7 @@
 
 	<jsp:include page = "/WEB-INF/views/main/header.jsp" />
 	
-	<div id="cnt_wrap">
+	<div id="content_wrap">
 	
 		<div class="content">
 		

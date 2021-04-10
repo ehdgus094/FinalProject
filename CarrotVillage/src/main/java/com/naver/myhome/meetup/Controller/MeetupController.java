@@ -13,14 +13,20 @@ public class MeetupController {
 
 	@RequestMapping(value = "/list")
 	public String landing() {
-		logger.info("밋업리스트 list()");
+		logger.info("밋업 리스트 list()");
 		return "/meetup/meetup_list";
 	}
 	
 	@RequestMapping(value = "/detail")
 	public String detailPage() {
-		logger.info("밋업글읽기페이지 detail()");
+		logger.info("밋업 글읽기페이지 detail()");
 		return "/meetup/meetup_detail";
+	}
+	
+	@RequestMapping(value = "/make")
+	public String meetupMakePage() {
+		logger.info("밋업 글쓰기페이지 make()");
+		return "/meetup/meetup_make";
 	}
 
 }

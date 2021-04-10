@@ -1,9 +1,9 @@
-drop table member;
+drop table member cascade constraints;
 create table member (
 	id				varchar2(20)	primary key,
 	password		varchar2(60),
 	email			varchar2(50) 	not null,
-	name			varchar2(15)	not null,
+	name			varchar2(30)	not null,
 	post			varchar2(10),
 	address			varchar2(100),
 	phone_num		varchar2(20),
@@ -23,3 +23,9 @@ create table member (
 select * from member;
 
 delete from member;
+
+
+drop table messenger;
+create table messenger (
+
+);

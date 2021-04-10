@@ -41,7 +41,8 @@ html, body {
 #content_function {
 	display:grid;
 	grid-template-columns:1fr 1fr 1fr;
-	margin:30px 0
+	margin:30px 0;
+	opacity:0
 }
 
 #search {
@@ -107,6 +108,8 @@ html, body {
 	text-overflow:ellipsis;
 	white-space:nowrap;
 }
+
+.article #item_num {display:none}
 </style>
 <script>
 $(document).ready(function() {
@@ -154,8 +157,9 @@ $(document).ready(function() {
 						} else {
 							output += '		<div><b>'+item.subject+'</b></div>'
 						}
-						output += '		<div><i class="fas fa-won-sign"></i> '+price+'원</div>'
+						output += '		<div><i class="fas fa-won-sign" aria-hidden="true"></i> '+price+'원</div>'
 								+ '		<div><i class="fas fa-map-marked-alt" aria-hidden="true" ></i> '+item.location+'</div>'
+								+ '		<div id=item_num>'+item.num+'</div>'
 								+ '</div>'
 					});
 					$('#content_body').append(output);
@@ -169,6 +173,9 @@ $(document).ready(function() {
 		})
 	}
 //함수 영역 끝===============================================================================	
+	$('#content_function').animate({
+		opacity : 1
+	}, 300, 'linear');
 	
 	var page = 1;
 	var moreData = true;
@@ -217,7 +224,8 @@ $(document).ready(function() {
 	});
 	
 	$('#content_body').on('click', '.article', function() {
-		location.href="${pageContext.request.contextPath}/market/detail";
+		var num = $(this).find('#item_num').html();
+		location.href="${pageContext.request.contextPath}/market/detail?num="+num;
 	});
 });
 </script>

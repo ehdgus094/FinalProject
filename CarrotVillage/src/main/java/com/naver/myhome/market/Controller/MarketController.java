@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -134,7 +135,21 @@ public class MarketController {
 	}
 	
 	@GetMapping("/detail")
-	public String detail() {
-		return "market/detail";
+	public ModelAndView detail(String num, ModelAndView mv, HttpServletRequest request) {
+		usedItemService.addViewcount(Integer.parseInt(num));
+		UsedItem usedItem = usedItemService.detail(Integer.parseInt(num));
+		String path = request.getSession().getServletContext().getRealPath("resources") + "/upload/market_image/"+usedItem.getImagefolder();
+		File f = new File(path);
+		File[] files = f.listFiles();
+		List<String> imglist = new ArrayList<String>();
+		if(files != null) {
+			for(int i=0; i<files.length; i++) {
+				imglist.add(files[i].getName());
+			}			
+		}
+		mv.addObject("usedItem", usedItem);
+		mv.addObject("imglist", imglist);
+		mv.setViewName("market/detail");
+		return mv;
 	}
 }

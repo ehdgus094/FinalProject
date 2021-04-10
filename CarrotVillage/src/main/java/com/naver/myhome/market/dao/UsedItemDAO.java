@@ -21,4 +21,12 @@ public class UsedItemDAO {
 	public List<UsedItem> select(Map<String, Object> map) {
 		return sqlSession.selectList("UsedItem.select", map);
 	}
+	
+	public UsedItem detail(int num) {
+		return sqlSession.selectOne("UsedItem.detail", num);
+	}
+	
+	public void addViewcount(int num) {
+		sqlSession.update("UsedItem.addViewcount", num);
+	}
 }

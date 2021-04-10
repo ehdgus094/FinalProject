@@ -20,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.naver.myhome.main.Service.MemberService;
+import com.naver.myhome.main.domain.Cart;
 import com.naver.myhome.main.domain.Member;
 
 @Controller
@@ -53,7 +55,7 @@ public class MainController {
 	
 	@RequestMapping(value="login")
 	public String login() {
-		return "main/login";
+		return "main/member-login";
 	}
 	
 	@ResponseBody
@@ -74,10 +76,11 @@ public class MainController {
 	}
 	
 	@RequestMapping(value="/loginProcess")
-	public String loginProcess(Member member, String login_chk,
+	public String loginProcess(Member member, String login_chk, Model model,
 							   HttpServletResponse response,
 							   HttpSession session,
-							   RedirectAttributes rattr) {
+							   RedirectAttributes rattr,
+							   HttpServletRequest request) {
 		
 		logger.info("loginProcess id = " + member.getId());
 		logger.info("login_chk = " + login_chk);
@@ -101,7 +104,24 @@ public class MainController {
 		
 		if (result == 1) {
 			lmember = memberService.memberInfo(member.getId());
+			
+			for (Cart cart : EchoHandler.sessionList) {
+				if (cart.getId().equals(lmember.getId())) {
+					rattr.addFlashAttribute("result", "already");
+					return "redirect:login";
+				}
+			}
+			
 			session.setAttribute("user_info", lmember);
+			
+			String requestURL = request.getRequestURL().toString();
+			logger.info(requestURL);
+			int start = requestURL.indexOf("//");
+			//int end = requestURL.lastIndexOf("/");
+			String url = requestURL.substring(start, 28);
+			
+			logger.info("url = " + url);
+			session.setAttribute("url", url);
 		}
 	
 		if (member.getLogin_type().equals("normal") && "1".equals(login_chk)) {
@@ -119,12 +139,12 @@ public class MainController {
 	
 	@RequestMapping(value="naverLogin")
 	public String naverLogin() {
-		return "main/naver_login";
+		return "main/member-naver_login";
 	}
 	
 	@RequestMapping(value="kakaoLogin")
 	public String kakaoLogin() {
-		return "main/kakao_login";
+		return "main/member-kakao_login";
 	}
 	
 	@ResponseBody
@@ -136,14 +156,21 @@ public class MainController {
 								  				  @RequestParam(value = "login_type") String login_type) {
 		Member member = new Member();
 		int result = memberService.memberChk("email", email, login_type);
+		
 		if (result == -1) {
 			member.setId(login_type + id);
 			member.setEmail(email);member.setLogin_type(login_type);
 			member.setName(name);member.setProfile_img(profile_image);
 			memberService.insert(member);
+		} else {
+			member = memberService.memberInfo(login_type + id);
+			member.setEmail(email);
+			member.setName(name);
+			member.setProfile_img(profile_image);
+			memberService.memberUpdate(member);
 		}
 		
-		member = memberService.memberInfo(login_type + id);
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", member.getId());
 		return map;
@@ -151,12 +178,12 @@ public class MainController {
 	
 	@RequestMapping(value="joinTerms")
 	public String joinTerms() {
-		return "main/join_terms";
+		return "main/member-join_terms";
 	}
 	
 	@RequestMapping(value="join")
 	public String join() {
-		return "main/join";
+		return "main/member-join";
 	}
 	
 	@RequestMapping(value="joinMore")
@@ -164,7 +191,7 @@ public class MainController {
 		request.setAttribute("id", member.getId());
 		request.setAttribute("password", member.getPassword());
 		request.setAttribute("email", member.getEmail());
-		return "main/join_more";
+		return "main/member-join_more";
 	}
 	
 	@ResponseBody
@@ -196,13 +223,8 @@ public class MainController {
 		logger.info(encPassword);
 		member.setPassword(encPassword);
 		
-		int result = memberService.insert(member);
-		if (result == 1) {
-			rattr.addAttribute("result", "joinSuccess");
-			return "redirect:login";
-		} else {
-			return "redirect:login";
-		}
+		memberService.insert(member);
+		return "redirect:login";
 
 	}
 	
@@ -286,6 +308,16 @@ public class MainController {
         
         return map;  
     }
+	
+	@RequestMapping(value="myPage")
+	public String myPage() {
+		return "main/member-my_page";
+	}
+	
+	@RequestMapping(value="sellerPage")
+	public String sellerPage() {
+		return "main/member-seller_page";
+	}
 	
 	@RequestMapping(value="/serviceCenter")
 	public String serviceCenter() {

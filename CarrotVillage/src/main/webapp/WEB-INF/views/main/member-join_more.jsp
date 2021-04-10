@@ -275,6 +275,7 @@ $(function() {
 		}
 		
 		if(confirm("필수정보가 아닌 정보는 가입 후에도 등록하실 수 있습니다. 가입하시겠습니까?")) {
+			alert('회원가입 완료.');
 			return true;
 		} else {
 			return false;
@@ -324,11 +325,11 @@ $(function() {
 		}
 		
 		var length = name.length;
-		if (length > 15) {
-			length = 15;
+		if (length > 8) {
+			length = 8;
 			$(this).val(name.substring(0, length));
 		}
-		$("#name_count").text(length + "/15");
+		$("#name_count").text(length + "/8");
 
 		
 		

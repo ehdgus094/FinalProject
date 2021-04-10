@@ -28,4 +28,19 @@
 		where id = #{value}
 	</select>
 	
+	<update id="update" parameterType="member">
+		update member
+		set password = #{password, jdbcType=VARCHAR},
+			email = #{email, jdbcType=VARCHAR},
+			name = #{name, jdbcType=VARCHAR}, 
+			post = #{post, jdbcType=VARCHAR},
+			address = #{address, jdbcType=VARCHAR},
+			phone_num = #{phone_num, jdbcType=VARCHAR},
+			birth = #{birth, jdbcType=VARCHAR}, 
+			gender = #{gender, jdbcType=VARCHAR},
+			profile_img = #{profile_img, jdbcType=VARCHAR},
+			profile_img_ori = #{profile_img_ori, jdbcType=VARCHAR}
+		where id = #{id}
+	</update>
+	
 </mapper>
