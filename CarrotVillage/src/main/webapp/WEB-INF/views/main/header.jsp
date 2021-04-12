@@ -31,7 +31,7 @@
 }
 
 #top_bar .top_left img {
-	margin:2px 0;
+	margin-bottom: 3px;
 	width:20px;
 	height:20px;
 }
@@ -159,10 +159,15 @@
 #login_btn {
 	cursor:pointer;
 }
+#top_loc {
+	font-size: 14px;
+	font-weight: bold;
+}
 </style>
 </head>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=22ed35d588d5fe869fcf7c44448a0aaa&libraries=services"></script>
 <script>
-
+	//로그인팝업창 띄우는 함수
 	var loginFn = function(e) {
 		e.preventDefault();
 		var nWidth = 490;
@@ -177,7 +182,8 @@
 					"width=" + nWidth + ", height=" + nHeight + ", left=" + xPos
 				  + ", top=" + yPos + ", toolbars=no, resizable=yes, scrollbars=no");
 	}
-
+	
+	//로그아웃 함수
 	function logout() {
 		$.ajax({
 			url : "${pageContext.request.contextPath}/main/logout",
@@ -189,15 +195,38 @@
 		sessionStorage.clear();
 	}
 	
+	//세션에 저장된 멤버객체 변수에 담기
 	var userInfo = "${user_info}";
 		
+	
 	$(document).ready(function() {
 		
+		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(function(position) {
+                 
+        	var lat = position.coords.latitude, // 위도
+            lon = position.coords.longitude; // 경도
+            
+        	//카카오지도 api
+    		var geocoder = new kakao.maps.services.Geocoder();
+
+    		var coord = new kakao.maps.LatLng(lat, lon);
+    		var callback = function(result, status) {
+    		    if (status === kakao.maps.services.Status.OK) {
+    		    	$("#top_loc").text(result[0].address.address_name);
+    		    }
+    		};
+
+    		geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+        });
+		
+		//메신저 창 보이기/숨김 토글 상태값
 		var msg_state = sessionStorage.getItem('msg_state');
 		if (msg_state == 1) {
 			$("#msg_wrap").addClass("show");
 		}
-
+		
+		//자동 로그인
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
 		
 		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
@@ -211,14 +240,15 @@
 			});
 		}
 		
-		
+		//맨위로 버튼
 		$('#top_btn').on('click', function(e) {
 			e.preventDefault();
 			$('html,body').animate({
 				scrollTop : 0
 			}, 600);
 		});
-
+		
+		//스크롤높이 90을 기준으로 스타일시트 적용/해제
 		$(window).scroll(function() {
 			var height = $(document).scrollTop();
 			if (height > 90) {
@@ -236,7 +266,8 @@
 				$("#nav_home").css("visibility", "hidden");
 			}
 		});
-
+		
+		//햄버거 버튼
 		$('#line-wrapper').click(function() {
 			$('.line').removeClass('init');
 			$('#line-top').toggleClass('line-top').toggleClass('top-reverse');
@@ -246,9 +277,10 @@
 			$("#nav_all").toggleClass("show");
 		});
 		
+		//위에서 선언한 로그인창띄우기 함수 호출
 		$("#login_btn").click(loginFn);
 		
-
+		//메신저 창 보이기/숨김 토글 상태값 세션에 저장
 		$("#msg_btn").click(function() {
 			$("#msg_wrap").toggleClass("show");
 			
@@ -259,11 +291,12 @@
 			}
 		});
 		
-	
+		//내정보탭 토글
 		$("#user_btn").click(function() {
 			$("#user_info_tab").toggleClass("show");
 		});
 		
+		//서비스센터 버튼
 		$("#sc_btn").click(function(e) {
 			if (!userInfo) {
 				e.preventDefault();
@@ -296,7 +329,7 @@
 
 			<div class="top_left">
 				<img src="${pageContext.request.contextPath}/resources/image/nhj_pin2.png">
-				<span></span>
+				<span id="top_loc"></span>
 			</div>
 
 			<div class="top_right">

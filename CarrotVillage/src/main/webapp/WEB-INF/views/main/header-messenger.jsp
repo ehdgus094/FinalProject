@@ -199,16 +199,19 @@ $(function() {
         }
 	});
 	
-	$(document).on("mouseover", ".messages", function() {
-		$("body").on('scroll mousewheel', function(e){
+	/*
+	$(document).on("mouseover", ".messages", function(e) {
+		$("html, body").on("scroll mousewheel", function(e) {
 			e.preventDefault();
-		})
+			e.stopPropagation();
+			return false;
+		});
 	});
 	
-	$(document).on("mouseout", ".messages", function(e) {
-		$("body").off('scroll mousewheel');
+	$(document).on("mouseout", ".messages", function() {
+		$("html, body").off("scroll mousewheel");
 	});
-	
+	*/
 });
 </script>
 
