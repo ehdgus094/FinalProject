@@ -2,8 +2,8 @@ drop table useditem
 create table useditem (
 	num number primary key,
 	id varchar2(20),
-	subject varchar2(90),
-	content varchar2(900),
+	subject varchar2(150),
+	content varchar2(3000),
 	register_date date,
 	price number,
 	location varchar2(90),

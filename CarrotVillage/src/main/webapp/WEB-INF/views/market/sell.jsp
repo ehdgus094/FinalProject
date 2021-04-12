@@ -11,6 +11,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=18a58432c8c3b67a9b0539cabeaae472&libraries=services"></script> <!-- 카카오 지도 api -->
 <style>
 
 html, body {
@@ -50,9 +51,9 @@ html, body {
 }
 #grid_area>span:nth-child(4)>input {width:85%}
 
-#grid_area>input {margin-right:30px}
-#grid_area input:hover {background:#eaeaea}
-#grid_area input:focus {outline:0}
+#grid_area>input:not([type=button]) {margin-right:30px}
+#grid_area input:not([type=button]):hover {background:#eaeaea}
+#grid_area input:not([type=button]):focus {outline:0}
 
 #content_body>b {font-size:30px}
 
@@ -117,9 +118,9 @@ textarea {
 
 .cancel:hover {cursor:pointer}
 
-form button {background:orange; border:0; border-radius:10px; color:white}
-form button:hover {background:#FFBB00}
-form button:focus {outline:0}
+.btn1 {background:orange; border:0; border-radius:10px; color:white}
+.btn1:hover {background:#FFBB00}
+.btn1:focus {outline:0}
 
 #add_img {margin-right:20px}
 
@@ -136,6 +137,8 @@ form>div:last-child>input {
 form>div:last-child>input:focus {outline:0}
 form input[type=reset]:hover {background:#FFA7A7; color:white}
 form input[type=submit]:hover {background:#B7F0B1; color:white}
+
+#map {width:600px; height:500px}
 
 </style>
 <script>
@@ -183,7 +186,19 @@ $(document).ready(function() {
 		}
 	}
 	
-	$('form').on('change', '.uploadfile', show_img);
+	$('form').on('change', '.uploadfile', function(event) {
+		var img_array = $('.uploadfile').last()[0].files;
+		for(var i=0; i<img_array.length; i++) {
+			var extension = img_array[i].name.split('.')[img_array[i].name.split('.').length-1].toLowerCase();
+			if(extension != 'bmp' && extension != 'jpg' && extension != 'jpeg' && extension != 'gif' &&
+					extension != 'png') {
+				alert('이미지 파일이 아닌 파일이 포함되어있습니다.');
+				$(this).remove();
+				return;
+			}
+		}
+		show_img(event);
+	});
 	
 	$('#image_area').on('mouseenter', '.card-img-overlay', function() {
 		$(this).children().css('opacity', '1');
@@ -205,7 +220,7 @@ $(document).ready(function() {
 		event.preventDefault();
 		if(img_count < 10) {
 			if($('.uploadfile').last().val() != '') {
-				$('#image_area').before('<input type=file class=uploadfile name=uploadfile multiple>');
+				$('#image_area').before('<input type=file class=uploadfile name=uploadfile accept="image/*" multiple>');
 			}
 			$('.uploadfile').last().trigger('click');			
 		} else {
@@ -264,10 +279,36 @@ $(document).ready(function() {
  		}
  	});
  	
- 	$('#location+button').click(function(event) {
- 		event.preventDefault();
- 		//위치 변경 기능 추가
+ 	$('#change_loc').click(function() {
+ 		var url = "${pageContext.request.contextPath}/market/change_loc";
+ 		window.open(url, '_blank', 'width=1000, height=600, top=200, left=200');
  	});
+ 	
+ 	//위치 값 구하기
+ 	var geocoder = new kakao.maps.services.Geocoder();
+ 	geocoder.coord2Address(${longitude}, ${latitude}, function(result, status) {
+ 		if(status === kakao.maps.services.Status.OK) {
+ 			var addr1 = result[0].address.region_1depth_name;
+ 			var addr2 = result[0].address.region_2depth_name;
+ 			var addr3 = result[0].address.region_3depth_name;
+ 			var total_addr = addr1 + ' ' + addr2 + ' ' + addr3;
+ 			
+ 			$('#location').val(total_addr);
+ 			$('#latitude').val(${latitude});
+ 			$('#longitude').val(${longitude});
+ 		}
+ 	});
+ 	
+// 지도 관련 =============================================================================
+	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
+	var mapOption = { 
+		center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+		level: 7 // 지도의 확대 레벨 
+	};
+	var map = new kakao.maps.Map(mapContainer, mapOption);
+	$('#mapcheck').click(function() {
+		map.relayout();
+	});
 });
 </script>
 </head>
@@ -298,8 +339,10 @@ $(document).ready(function() {
 							<input type=text id=price name=price required>
 							원
 						</span>
-						<input type=text id=location name=location value=위치 readonly>
-						<button>변경</button>	
+						<input type=text id=location name=location readonly>
+						<input type=hidden id=latitude name=latitude>
+						<input type=hidden id=longitude name=longitude>
+						<input type=button id=change_loc class=btn1 value=변경>
 					</span>
 					
 					<label for=content>내용</label><br>
@@ -307,7 +350,7 @@ $(document).ready(function() {
 					
 					<input type=hidden id=delete_num name=delete_num>
 					
-					<button id=add_img>이미지 추가</button><span id=img_count>0 / 10</span>
+					<button id=add_img class=btn1>이미지 추가</button><span id=img_count>0 / 10</span>
 					<div id=arrow_area>
 						<img src="${pageContext.request.contextPath}/resources/image/kdh_arrow_left.png">
 						<img src="${pageContext.request.contextPath}/resources/image/kdh_arrow_right.png">					

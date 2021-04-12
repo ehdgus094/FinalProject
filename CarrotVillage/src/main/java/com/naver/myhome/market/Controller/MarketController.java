@@ -62,6 +62,8 @@ public class MarketController {
 	@GetMapping("/sell")
 	public ModelAndView sell(ModelAndView mv, HttpSession session) {
 		Member member = (Member) session.getAttribute("user_info");
+		mv.addObject("latitude", 37.6899422);
+		mv.addObject("longitude", 126.7199836);
 		mv.addObject("member", member);
 		mv.setViewName("market/sell");
 		return mv;
@@ -147,9 +149,19 @@ public class MarketController {
 				imglist.add(files[i].getName());
 			}			
 		}
+		mv.addObject("latitude", 37.6899422);
+		mv.addObject("longitude", 126.7199836);
 		mv.addObject("usedItem", usedItem);
 		mv.addObject("imglist", imglist);
 		mv.setViewName("market/detail");
+		return mv;
+	}
+	
+	@GetMapping("/change_loc")
+	public ModelAndView change_loc(ModelAndView mv) {
+		mv.addObject("latitude", 37.6899422);
+		mv.addObject("longitude", 126.7199836);
+		mv.setViewName("market/change_loc");
 		return mv;
 	}
 }
