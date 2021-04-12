@@ -214,6 +214,17 @@
     		var callback = function(result, status) {
     		    if (status === kakao.maps.services.Status.OK) {
     		    	$("#top_loc").text(result[0].address.address_name);
+    		    	
+    		    	//세션에 저장
+    		    	$.ajax({
+    					type : "get",
+    					url : "${pageContext.request.contextPath}/main/saveLoc",
+    					data : { "loc" : result[0].address.address_name },
+    					success : function() {
+    						console.log("세션에 저장된 loc : ${loc}");
+    					}
+    				});
+    		    	
     		    }
     		};
 

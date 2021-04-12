@@ -19,13 +19,34 @@ create table member (
 	login_type		varchar2(20)	default 'normal'
 );
 
-
 select * from member;
-
 delete from member;
 
+/*---------------------------------------------------------------------------------*/
 
-drop table messenger;
-create table messenger (
-	
+drop sequence chat_room_seq;
+create sequence chat_room_seq;
+drop table chat_room cascade constraints;
+create table chat_room (
+	num    number    primary key
+);
+
+drop sequence chat_join_seq;
+create sequence chat_join_seq;
+drop table chat_join;
+create table chat_join (
+	num				number			primary key,
+	member_id		varchar2(20)	references member(id),
+	chat_room_num	number			references chat_room(num)
+);
+
+drop sequence chat_message_seq;
+create sequence chat_message_seq;
+drop table chat_message;
+create table chat_message (
+	num				number				primary key,
+	message 		varchar2(1000),
+	chat_date		date				default sysdate,
+	member_id		varchar2(20)		references member(id),
+	chat_room_num	number				references chat_room(num)
 );

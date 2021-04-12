@@ -5,6 +5,7 @@ import javax.websocket.Session;
 public class Cart {
 	private Session session;
 	private String id;
+	private String name;
 	private String filename;
 	private String login_type;
 	
@@ -31,6 +32,12 @@ public class Cart {
 	}
 	public void setLogin_type(String login_type) {
 		this.login_type = login_type;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	

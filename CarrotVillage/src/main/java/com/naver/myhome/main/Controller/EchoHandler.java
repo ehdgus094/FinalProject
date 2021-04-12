@@ -38,14 +38,15 @@ public class EchoHandler {
 		String queryString = URLDecoder.decode(session.getQueryString(), "UTF-8");
 		logger.info("session 쿼리 스트링 : " + queryString);
 		
-		String id = queryString.substring(queryString.indexOf("=") + 1,
-										  queryString.indexOf("&"));
-		String filename = queryString.substring(queryString.indexOf("=", 3) + 1, queryString.lastIndexOf("&"));
-		String login_type = queryString.substring(queryString.lastIndexOf("=") + 1);
+		String id = queryString.substring(queryString.indexOf("id") + 3, queryString.indexOf("name") - 1);
+	    String name = queryString.substring(queryString.indexOf("name") + 5, queryString.indexOf("filename") - 1);
+	    String filename = queryString.substring(queryString.indexOf("filename") + 9, queryString.indexOf("login_type") - 1);
+	    String login_type = queryString.substring(queryString.indexOf("login_type") + 11);
 		Cart cart = new Cart();
 		cart.setSession(session);
-		cart.setFilename(filename);
 		cart.setId(id);
+		cart.setName(name);
+		cart.setFilename(filename);
 		cart.setLogin_type(login_type);
 		sessionList.add(cart);
 		
@@ -60,7 +61,7 @@ public class EchoHandler {
 			for (Cart cart : EchoHandler.sessionList) {
 				Session s = cart.getSession();
 				if (self.getId().equals(s.getId())) {
-					information = cart.getId() + "&" + cart.getFilename() + "&" + cart.getLogin_type();
+					information = cart.getName() + "&" + cart.getFilename() + "&" + cart.getLogin_type();
 					logger.info("보낸 사람의 정보 = " + information);
 					break;
 				}				

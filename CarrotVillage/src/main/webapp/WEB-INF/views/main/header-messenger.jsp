@@ -86,7 +86,7 @@ button:focus { outline:none; }
 	border:none; 
 }
 #msg_slider span {
-	background: #088835;
+	background: linear-gradient(to bottom, #ff9900 30%, #ffe0b3);
     border-radius: 50%;
     border:none;
     margin-top: 2px;
@@ -136,6 +136,7 @@ button:focus { outline:none; }
 	flex-direction:row;
 	background:#f1f1f1;
 	border-radius:5px;
+	min-width: 112px;
 	max-width:60%;
 }
 #reply_content {
@@ -175,6 +176,49 @@ button:focus { outline:none; }
 	color:silver;
 	margin-left:6px;
 }
+#msg_left_list {
+    width: 100%;
+    height: 100%;
+}
+#chat_room_list {
+	background:pink;
+    width: 100%;
+    height: 100%;
+    display:flex;
+    flex-direction:column;
+}
+#chat_search_list {
+	background:silver;
+    width: 100%;
+    height: 100%;
+    display:flex;
+    flex-direction:column;
+}
+#chat_menu {
+	background: white;
+    position: fixed;
+    display: none;
+    flex-direction: column;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 1px 1px 4px 1px rgb(0 0 0 / 10%);
+}
+#chat_menu.show {
+	display:flex;
+}
+#chat_menu > a {
+	width: 100%;
+    height: 50%;
+    font-size: 13px;
+    color: #7d7d7d;
+    padding: 4px 7px 3px 7px;
+    cursor:pointer;
+}
+#chat_menu > a:hover {
+	background:#e4e4e4;
+}
+#chat_menu > a:not(:last-child) {
+	border-bottom: #e6e6e6 solid 1px;
+}
 </style>
 
 <script>
@@ -212,16 +256,47 @@ $(function() {
 		$("html, body").off("scroll mousewheel");
 	});
 	*/
+	
+	$("#chat_menu_btn").click(function() {
+		$("#chat_menu").toggleClass("show");
+	});
+	$("#chat_room_btn").click(function() {
+		getChatRoomList();
+		$("#chat_menu").removeClass("show");
+	});
+	$("#chat_search_btn").click(function() {
+		getChatSearchList();
+		$("#chat_menu").removeClass("show");
+	});
+	
 });
+
+function getChatRoomList() {
+	output =  "<div id='chat_room_list'>"
+			+ "</div>";
+	$("#msg_left_list").html(output);
+}
+
+function getChatSearchList() {
+	output =  "<div id='chat_search_list'>"
+			+ "</div>";
+	$("#msg_left_list").html(output);
+}
+
 </script>
 
 <div id="msg_wrap">
 	
 	<div id="msg_left" style="">
 		<div>
-			<img src="${pageContext.request.contextPath}/resources/image/nhj_white_hamburger.png">
+			<img src="${pageContext.request.contextPath}/resources/image/nhj_white_hamburger.png" id="chat_menu_btn">
 			<div id="msg_slider" style="float:right;width:100px;"></div>
+			<div id="chat_menu">
+				<a id="chat_room_btn">내 채팅방 보기</a>
+				<a id="chat_search_btn">대화상대 검색</a>
+			</div>
 		</div>
+		<div id="msg_left_list"></div>
 	</div>
 	
 	<div id="msg_right" style="display:flex;flex-direction:column">
@@ -302,7 +377,8 @@ $(function() {
 		return false;
 	});
 
-	var url = "ws://${url}/boot.do?id=${user_info.name}&filename=${user_info.profile_img}&login_type=${user_info.login_type}";
+	var url = "ws://${url}/boot.do?id=${user_info.id}&name=${user_info.name}"
+			+ "&filename=${user_info.profile_img}&login_type=${user_info.login_type}";
 	ws = new WebSocket(url);
 
 	//웹 소켓이 연결되었을 때 호출되는 이벤트

@@ -52,6 +52,13 @@ public class MainController {
 		return "main/main_page";
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="saveLoc")
+	public void saveLoc(HttpSession session,
+						@RequestParam(value = "loc") String loc) {
+		session.setAttribute("loc", loc);
+	}
+	
 	
 	@RequestMapping(value="login")
 	public String login() {
