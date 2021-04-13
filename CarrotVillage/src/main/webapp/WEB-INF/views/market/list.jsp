@@ -184,7 +184,7 @@ $(document).ready(function() {
 	load_articles();
 	
 	$('#sell>button').click(function() {
-		location.href="${pageContext.request.contextPath}/market/sell";
+		location.href="${pageContext.request.contextPath}/market/write";
 	})
 	
 	//스크롤 내리면 데이터 ajax 로드

@@ -195,6 +195,18 @@ $(document).ready(function() {
 	var register_date = '${usedItem.register_date}'.substring(0,10);
 	$('#detail>div').eq(4).find('p').html(register_date);
 	
+	//삭제 버튼 클릭 시
+	$('#delete_btn').click(function() {
+		if(confirm('정말 삭제하시겠습니까?')) {
+			location.href="${pageContext.request.contextPath}/market/delete?num=${usedItem.num}&imagefolder=${usedItem.imagefolder}";			
+		}
+	});
+	
+	//수정 버튼 클릭 시
+	$('#modify_btn').click(function() {
+		location.href = "${pageContext.request.contextPath}/market/modify?num=${usedItem.num}";
+	});
+	
 //지도 관련 =========================================================================
 	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
 	var mapOption = { 
@@ -215,23 +227,18 @@ $(document).ready(function() {
 	        var lat = position.coords.latitude, // 위도
 	            lon = position.coords.longitude; // 경도
 	            
-	        geocoder.coord2Address(lon, lat, function(result, status) {
-	        	if(status === kakao.maps.services.Status.OK) {
-	        		var addr = result[0].address.address_name;
-	        		
- 			        var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-			            message = '<div style="padding:5px;">'+addr+'</div>'; // 인포윈도우에 표시될 내용입니다
-			            
-			        //물건 위치
-			        setMarker(locPosition, message);
-			            
-			       	//내 위치
-			        setMarker(new kakao.maps.LatLng(33.450701, 126.570667), '내 위치');
-			        
-			        map.setCenter(locPosition);
-	        	}
-	        });
-	      });
+            var myPosition = new kakao.maps.LatLng(lat, lon) // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+            var itemPosition = new kakao.maps.LatLng(${usedItem.latitude}, ${usedItem.longitude});
+	            
+	        //내 위치
+	        setMarker(myPosition, '내 위치');
+	            
+	       	//물건 위치
+	        setMarker(itemPosition, '${usedItem.location}');
+	        
+	        map.setCenter(itemPosition);
+	        
+	   });
 	    
 	} else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
 	    
@@ -314,8 +321,14 @@ $(document).ready(function() {
 					<div><b>등록일</b><p></p></div>
 					<div><b>지역</b><p>${usedItem.location}</p></div>
 					<div>
-						<button><i class="fas fa-comment-dots" aria-hidden="true"></i> 메시지</button>
-						<button><i class="fas fa-heart" aria-hidden="true"></i> 찜하기</button>
+						<c:if test="${member.id == usedItem.id}">
+							<button id=modify_btn>수정</button>
+							<button id=delete_btn>삭제</button>
+						</c:if>
+						<c:if test="${member.id != usedItem.id}">
+							<button><i class="fas fa-comment-dots" aria-hidden="true"></i> 메시지</button>
+							<button><i class="fas fa-heart" aria-hidden="true"></i> 찜하기</button>
+						</c:if>
 					</div>
 				</div>
 			</div><hr>

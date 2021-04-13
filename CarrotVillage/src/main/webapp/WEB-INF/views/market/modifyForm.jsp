@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -143,16 +144,12 @@ form input[type=submit]:hover {background:#B7F0B1; color:white}
 </style>
 <script>
 $(document).ready(function() {
-  	if('${member}' == '') {
-		alert('로그인 후 이용해주시기 바랍니다.');
-		history.back();
-	}
   	
   	$('#content_body').animate({
   		opacity : 1
   	}, 300, 'linear');
-	var img_count = 0;
-	var file_input_count = 0;
+	var img_count = ${fn:length(imglist)};
+	var file_input_count = ${fn:length(imglist)};
 	var delete_num = '';
 	
 	//이미지 미리보기
@@ -170,7 +167,7 @@ $(document).ready(function() {
 							  '<div class=card_container><div class=card>'
 							+	'<img class="card-img-top" src=' + e.target.result + ' alt=' + num + '>'
 							+	'<div class="card-img-overlay">'
-							+		'<img class=cancel src="${pageContext.request.contextPath}/resources/image/kdh_cancel.png"'
+							+		'<img class=cancel src="${pageContext.request.contextPath}/resources/image/kdh_cancel.png">'
 							+	'</div>'
 							+ '</div></div>';
 						$('#image_area').append(output);
@@ -184,6 +181,10 @@ $(document).ready(function() {
 		} else {
 			alert('이미지 업로드 최대 개수는 10개 입니다.');
 		}
+	}
+	
+	if(img_count != 0) {
+		$('#img_count').html(img_count + ' / 10');
 	}
 	
 	$('form').on('change', '.uploadfile', function(event) {
@@ -284,18 +285,9 @@ $(document).ready(function() {
  		window.open(url, '_blank', 'width=1000, height=600, top=200, left=200');
  	});
  	
- 	//위치 값 구하기
- 	var geocoder = new kakao.maps.services.Geocoder();
- 	geocoder.coord2Address(${longitude}, ${latitude}, function(result, status) {
- 		if(status === kakao.maps.services.Status.OK) {
- 			var addr1 = result[0].address.region_1depth_name;
- 			var addr2 = result[0].address.region_2depth_name;
- 			var addr3 = result[0].address.region_3depth_name;
- 			var total_addr = addr1 + ' ' + addr2 + ' ' + addr3;
- 			
- 			$('#location').val(total_addr);
- 			$('#latitude').val(${latitude});
- 			$('#longitude').val(${longitude});
+ 	$('input[type=reset]').click(function() {
+ 		if(confirm('작성을 취소하시겠습니까?')) {
+ 			location.href="${pageContext.request.contextPath}/market/list";
  		}
  	});
  	
@@ -306,9 +298,6 @@ $(document).ready(function() {
 		level: 7 // 지도의 확대 레벨 
 	};
 	var map = new kakao.maps.Map(mapContainer, mapOption);
-	$('#mapcheck').click(function() {
-		map.relayout();
-	});
 });
 </script>
 </head>
@@ -318,51 +307,60 @@ $(document).ready(function() {
 	<jsp:include page = "/WEB-INF/views/main/header.jsp" />
 
 	<div id="content_wrap">
-	 	<c:if test="${!empty member.name}">
-			<h2 id=content_header>
-				중고 마켓
-			</h2>
-			<div id=content_body>
-				<b>판매글 등록</b><hr>
-				<form method=post action=sellProcess enctype="multipart/form-data">
-					<label for=subject>제목</label><br>
-					<input type=text id=subject name=subject required><br>
-					
-					<label for=id>작성자</label><br>
-					<input type=text id=id name=id value="${member.name}" readonly><br>
-					
-					<span id=grid_area>
-						<label for=price>가격</label>
-						<label for=location>위치</label>
-						<span></span>
-						<span>
-							<input type=text id=price name=price required>
-							원
-						</span>
-						<input type=text id=location name=location readonly>
-						<input type=hidden id=latitude name=latitude>
-						<input type=hidden id=longitude name=longitude>
-						<input type=button id=change_loc class=btn1 value=변경>
+		<h2 id=content_header>
+			중고 마켓
+		</h2>
+		<div id=content_body>
+			<b>판매글 수정</b><hr>
+			<form method=post action=modifyProcess enctype="multipart/form-data">
+				<label for=subject>제목</label><br>
+				<input type=text id=subject name=subject value="${usedItem.subject}" required><br>
+				
+				<label for=id>작성자</label><br>
+				<input type=text id=id name=id value="${usedItem.id}" readonly><br>
+				
+				<span id=grid_area>
+					<label for=price>가격</label>
+					<label for=location>위치</label>
+					<span></span>
+					<span>
+						<input type=text id=price name=price value="${usedItem.price}" required>
+						원
 					</span>
-					
-					<label for=content>내용</label><br>
-					<textarea id=content name=content required></textarea><br>
-					
-					<input type=hidden id=delete_num name=delete_num>
-					
-					<button id=add_img class=btn1>이미지 추가</button><span id=img_count>0 / 10</span>
-					<div id=arrow_area>
-						<img src="${pageContext.request.contextPath}/resources/image/kdh_arrow_left.png">
-						<img src="${pageContext.request.contextPath}/resources/image/kdh_arrow_right.png">					
-					</div>
-					<div id=image_area></div>
-					<div>
-						<input type=submit value=등록>
-						<input type=reset value=취소>				
-					</div>
-				</form>
-			</div>
-		</c:if>
+					<input type=text id=location name=location value="${usedItem.location}" readonly>
+					<input type=hidden id=latitude name=latitude value="${usedItem.latitude}">
+					<input type=hidden id=longitude name=longitude value="${usedItem.longitude}">
+					<input type=hidden id=imagefolder name=imagefolder value="${usedItem.imagefolder}">
+					<input type=button id=change_loc class=btn1 value=변경>
+				</span>
+				
+				<label for=content>내용</label><br>
+				<textarea id=content name=content required>${usedItem.content}</textarea><br>
+				
+				<input type=hidden id=delete_num name=delete_num>
+				
+				<button id=add_img class=btn1>이미지 추가</button><span id=img_count>0 / 10</span>
+				<div id=arrow_area>
+					<img src="${pageContext.request.contextPath}/resources/image/kdh_arrow_left.png">
+					<img src="${pageContext.request.contextPath}/resources/image/kdh_arrow_right.png">					
+				</div>
+				<div id=image_area>
+					<c:forEach var="img" items="${imglist}" varStatus="status">
+						<div class=card_container><div class=card>
+							<img class="card-img-top" src="${pageContext.request.contextPath}/resources/upload/market_image/${usedItem.imagefolder}/${img}" alt="${status.index}">
+							<div class="card-img-overlay">
+								<img class=cancel src="${pageContext.request.contextPath}/resources/image/kdh_cancel.png">
+							</div>
+							</div>
+						</div>
+					</c:forEach>
+				</div>
+				<div>
+					<input type=submit value=수정>
+					<input type=reset value=취소>	
+				</div>
+			</form>
+		</div>
 	</div>
 
 	<jsp:include page = "/WEB-INF/views/main/footer.jsp" />

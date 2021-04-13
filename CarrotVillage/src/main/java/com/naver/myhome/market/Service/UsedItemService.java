@@ -29,4 +29,8 @@ public class UsedItemService {
 	public void addViewcount(int num) {
 		dao.addViewcount(num);
 	}
+	
+	public int delete(int num) {
+		return dao.delete(num);
+	}
 }

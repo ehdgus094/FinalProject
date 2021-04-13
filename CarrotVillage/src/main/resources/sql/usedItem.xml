@@ -6,7 +6,7 @@
 	<insert id="insert" parameterType="usedItem">
 		insert into useditem values(
 		useditem_seq.nextval, #{id}, #{subject}, #{content}, 
-		sysdate, #{price}, #{location}, 'n', #{imagefolder}, #{thumbnail}, 0)
+		sysdate, #{price}, #{location}, 'n', #{imagefolder}, #{thumbnail}, 0, #{latitude}, #{longitude})
 	</insert>
 	
 	<select id="select" resultType="usedItem" parameterType="java.util.Map">
@@ -30,4 +30,9 @@
 		set viewcount = viewcount+1
 		where num = #{num}
 	</update>
+	
+	<delete id="delete">
+		delete useditem
+		where num = #{num}
+	</delete>
 </mapper>
