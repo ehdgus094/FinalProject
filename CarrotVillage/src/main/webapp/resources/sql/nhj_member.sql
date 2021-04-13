@@ -30,6 +30,7 @@ drop table chat_room cascade constraints;
 create table chat_room (
 	num    number    primary key
 );
+select * from chat_room;
 
 drop sequence chat_join_seq;
 create sequence chat_join_seq;
@@ -39,6 +40,7 @@ create table chat_join (
 	member_id		varchar2(20)	references member(id),
 	chat_room_num	number			references chat_room(num)
 );
+select * from chat_room;
 
 drop sequence chat_message_seq;
 create sequence chat_message_seq;
@@ -50,3 +52,7 @@ create table chat_message (
 	member_id		varchar2(20)		references member(id),
 	chat_room_num	number				references chat_room(num)
 );
+
+select chat_room_num
+from chat_join
+where ;

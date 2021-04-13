@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.naver.myhome.main.dao.MemberDAO;
+import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
  
 @Service
@@ -66,10 +67,13 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Member> memberSearch(String search) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("search", search);
+	public List<Member> memberSearch(Map<String, String> map) {
 		return dao.memberSearch(map);
 	}
 
+	@Override
+	public List<ChatRoom> roomList(String id) {
+		return dao.roomList(id);
+	}
+	
 }
