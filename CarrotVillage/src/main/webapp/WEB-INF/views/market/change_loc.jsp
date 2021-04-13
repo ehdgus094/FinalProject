@@ -15,51 +15,58 @@
 </style>
 <script>
 $(document).ready(function() {
+	var latitude = ${latitude};
+	var longitude = ${longitude};
 	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
 	var mapOption = { 
-	        center: new kakao.maps.LatLng(${latitude}, ${longitude}), // 지도의 중심좌표
+	        center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
 	        level: 7 // 지도의 확대 레벨 
 	    }; 
 	
 	var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 	
-	var locPosition = new kakao.maps.LatLng(${latitude}, ${longitude}); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+	var locPosition = new kakao.maps.LatLng(latitude, longitude); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
    	var message = '<div style="padding:5px;">내 위치</div>'; // 인포윈도우에 표시될 내용입니다
-	var markers = [];
-   	var infowindows = [];
-   	
-   	setMarker(locPosition, message);
+   	var marker = new kakao.maps.Marker({
+    	map : map,
+    	position : locPosition
+    });
+    var infowindow = new kakao.maps.InfoWindow({
+    	content : message,
+    	removable : true
+    });
+    infowindow.open(map, marker);
    	
 	// 지도를 클릭했을때 클릭한 위치에 마커를 추가하도록 지도에 클릭이벤트를 등록합니다
 	kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-		// 이전 마커를 제거합니다
-		hideMarker();
-		// 클릭한 위치에 마커를 표시합니다 
-		setMarker(mouseEvent.latLng, '<div><button id=change_loc>변경하기</button></div>');             
+		var latlng = mouseEvent.latLng;
+		
+		marker.setPosition(latlng);
+		infowindow.setContent('<div><button id=change_loc>변경하기</button></div>');
+		infowindow.open(map, marker);
+		
+		//바뀐 위도 경도 값 저장
+		latitude = latlng.getLat();
+		longitude = latlng.getLng();
 	});
 	
 	$('#map').on('click', '#change_loc', function() {
-		//지도에서 변경하기 버튼 클릭시
+		var geocoder = new kakao.maps.services.Geocoder();
+		
+		geocoder.coord2Address(longitude, latitude, function(result, status) {
+        	if(status === kakao.maps.services.Status.OK) {
+        		var addr1 = result[0].address.region_1depth_name;
+     			var addr2 = result[0].address.region_2depth_name;
+     			var addr3 = result[0].address.region_3depth_name;
+     			var total_addr = addr1 + ' ' + addr2 + ' ' + addr3;
+     			
+        		$(opener.document).find("#location").val(total_addr);
+        		$(opener.document).find("#latitude").val(latitude);
+        		$(opener.document).find("#longitude").val(longitude);
+        		window.close();
+        	}
+        });
 	});
-	
-	function setMarker(location, message) {
-		var marker = new kakao.maps.Marker({
-        	map : map,
-        	position : location
-        });
-        var infowindow = new kakao.maps.InfoWindow({
-        	content : message,
-        	removable : true
-        });
-        infowindow.open(map, marker);
-        markers.push(marker);
-        infowindows.push(infowindow);
-	}
-	
-	function hideMarker() {
-		markers[markers.length-1].setMap(null);
-		infowindows[infowindows.length-1].close();
-	}
 });
 </script>
 </head>

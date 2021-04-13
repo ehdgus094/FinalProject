@@ -3,7 +3,20 @@ package com.naver.myhome.market.domain;
 public class UsedItem {
 	private int num, price, viewcount;
 	private String id, subject, content, register_date, location, sold, imagefolder, thumbnail;
+	private double latitude, longitude;
 
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 	public int getNum() {
 		return num;
 	}

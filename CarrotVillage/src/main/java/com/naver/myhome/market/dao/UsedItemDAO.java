@@ -29,4 +29,8 @@ public class UsedItemDAO {
 	public void addViewcount(int num) {
 		sqlSession.update("UsedItem.addViewcount", num);
 	}
+	
+	public int delete(int num) {
+		return sqlSession.delete("UsedItem.delete", num);
+	}
 }
