@@ -240,6 +240,9 @@
 		
 		//자동 로그인
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
+		if ("${user_info}".length <= 0) {
+			keepLoginState = "0";
+		}
 		
 		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
 			$.ajax({

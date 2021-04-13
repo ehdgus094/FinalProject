@@ -46,9 +46,22 @@
 	<select id="search" parameterType="java.util.Map" resultType="member">
 		select *
 		from member
-		where id like '%${search}%'
-		or name like '%${search}%'
+		where id != #{sessionId}
+		and (id like '%${search}%'
+		or name like '%${search}%')
 		order by name
+	</select>
+	
+	<select id="roomList" parameterType="String" resultType="com.naver.myhome.main.domain.ChatRoom">
+		select *
+		from chat_join
+		where member_id = #{toId}
+		and num in ()
+		and chat_room_num in (select chat_room_num
+							  from chat_join
+							  where member_id = #{myId})
+		
+		select num from chat_join where 
 	</select>
 	
 </mapper>

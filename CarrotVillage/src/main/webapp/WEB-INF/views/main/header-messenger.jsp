@@ -196,21 +196,25 @@ button:focus { outline:none; }
 #chat_menu {
 	background: white;
     position: fixed;
-    display: none;
+    max-width:0;
+    -webkit-transition: max-width .5s;
+    display:flex;
     flex-direction: column;
-    border-radius: 0 0 4px 4px;
     box-shadow: 1px 1px 4px 1px rgb(0 0 0 / 10%);
+    overflow:hidden;
+    height:48px;
 }
 #chat_menu.show {
-	display:flex;
+	max-width:100px;
 }
 #chat_menu > a {
 	width: 100%;
-    height: 50%;
+    height: 24px;
     font-size: 13px;
     color: #7d7d7d;
-    padding: 4px 7px 3px 7px;
+    padding: 3px 7px;
     cursor:pointer;
+    overflow:hidden;
 }
 #chat_menu > a:hover {
 	background:#e4e4e4;
@@ -218,14 +222,12 @@ button:focus { outline:none; }
 #chat_menu > a:not(:last-child) {
 	border-bottom: #e6e6e6 solid 1px;
 }
-#chat_menu > a:last-child {
-	border-radius: 0 0 4px 4px;
-}
 #chat_search_input {
 	width: 100%;
     height: 60px;
     display:flex;
     flex-direction:row;
+    background: #ffb52c;
 }
 #chat_search_input > input {
 	margin: 17px auto;
@@ -237,67 +239,86 @@ button:focus { outline:none; }
 	outline:none;
 }
 #chat_search_result {
-	width:100%;
-	height:100%;
+	width: 100%;
+    height: 365px;
+    display: grid;
+    grid-template-rows: 87%;
+}
+#chat_search_result > div {
+	background:black;
 }
 #chat_search_result ul {
 	list-style: none;
     padding: 0;
     margin: 0;
+    overflow:auto;
 }
 #chat_search_result li {
 	height:50px;
-	cursor:pointer;
 }
-#chat_search_result li:nth-child(2n+1) {
-	background:#ececec;
+#chat_search_result li {
+	border-bottom: #ffa50052 1px solid;
+}
+#chat_search_result li:hover {
+	box-shadow: 3px 0 7px 1px rgb(255 131 0 / 20%);
 }
 #chat_search_result li img {
 	width:30px;
 	height:30px;
-	margin:10px;
+	margin:10px 15px 10px 10px;
 }
-#chat_search_result li span {
+#chat_search_result li > label > div > div span {
 	font-size:14px;
-	display: inline-block;
-    margin-top: 15px;
+	color: #565656;
 }
-#chat_search_result li > div:nth-child(2) {
+#chat_search_result li > label > div {
 	display:flex;
 	flex-direction:row;
 }
+#chat_search_result li > label > div > div {
+	display:flex;
+	flex-direction:column;
+}
+
 #chat_search_result > span {
 	font-size: 14px;
     color: #565656;
-    margin: 15px auto;
     display: block;
     text-align: center;
+    margin-top: 20px;
 }
-.chat_search_menu {
-	background:white;
-	width:259px;
-	height:50px;
-	position:fixed;
-	border-radius:0 0 5px 5px;
-	display:none;
-	flex-direction:column;
+input[type="checkbox"] {
+	display: none;
 }
-.chat_search_menu.show {
+
+input[type="checkbox"]+label {
 	display:flex;
+	flex-direction:row;
+	width: 100%;
+	cursor: pointer;
+	margin:0;
 }
-.chat_search_menu > a {
-	height:30px;
-	width:100%;
-	cursor:pointer;
+
+input[type="checkbox"] + label > span {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
+	background:
+		url(${pageContext.request.contextPath}/resources/image/nhj_unchecked.png)
+		no-repeat;
+	background-size: 15px 15px;
+	cursor: pointer;
+	border: none;
+	margin-top: 17px;
 }
-.chat_search_menu > a:hover {
-	background:#e4e4e4;
-}
-.chat_search_menu > a:not(:last-child) {
-	border-bottom: #e6e6e6 solid 1px;
-}
-.chat_search_menu > a:last-child {
-	border-radius:0 0 5px 5px;
+
+input[type="checkbox"]:checked + label > span {
+	background:
+		url(${pageContext.request.contextPath}/resources/image/nhj_checked.png)
+		no-repeat;
+	border: none;
+	background-size: 15px 15px;
 }
 </style>
 
@@ -357,44 +378,41 @@ $(function() {
 		$.ajax({
 			type : "get",
 			url : "${pageContext.request.contextPath}/main/memberSearch",
-			data : { "search" : $("#chat_search_input > input").val() },
+			data : { "search" : $("#chat_search_input > input").val(), "sessionId" : "${user_info.id}" },
 			success : function(rdata) {
 				console.log(rdata.memberList);
-				var output = "";
+				var output = "<span>검색 결과가 없습니다.</span>";
 				
 				if (rdata.memberList.length > 0) {
-					output += "<ul>";
+					output = "<ul>";
 					$(rdata.memberList).each(function(index, item) {
-						if (this.id != "${user_info.id}") {
-							output += "<li>"
-									+ "    <div class='chat_search_menu'>"
-									+ "        <a>대화하기</a>"
-									+ "        <a>초대하기</a>"
-									+ "    </div>"
-									+ "    <div>";
+						output += "<li>"
+								+ "    <input type='checkbox' id='" + this.id +"'>"
+								+ "    <label for='" + this.id + "'>"
+								+ "        <div>";
 								
-							if (this.login_type == 'normal') {
-								output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this.profile_img + "'>";
-							} else if (this.login_type != 'normal' && this.profile_img != 'undefined') {
-								output += "<img src='" + this.profile_img + "'>";
-							} else if (this.profile_img == 'undefined') {
-								output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
-							}
-								
-							output += "        <div>"	
-									+ "            <span>" + this.name + "&nbsp;&nbsp;</span>"
-									+ "            <span>" + this.id + "</span>"
-									+ "        </div>"	
-									+ "    </div>"
-									+ "</li>";
+						if (this.login_type == 'normal') {
+							output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this.profile_img + "'>";
+						} else if (this.login_type != 'normal' && this.profile_img != 'undefined') {
+							output += "<img src='" + this.profile_img + "'>";
+						} else if (this.profile_img == 'undefined') {
+							output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
 						}
+								
+						output += "            <div style='width:175px;'>"	
+								+ "                <span style='margin-top:3px;'>" + this.id + "</span>"
+								+ "                <span>" + this.name + "</span>"
+								+ "            </div>"
+								+ "        </div>"
+								+ "        <span></span>"
+								+ "    </label>"
+								+ "</li>";
 					});
-					output += "</ul>";
-					
+					output += "</ul>"
+							+ "<div>"
+							+ "</div>";
 				} else if ($("#chat_search_input > input").val() == "") {
 					output = "<span>검색어를 입력해주세요.</span>";
-				} else {
-					output = "<span>검색 결과가 없습니다.</span>";
 				}
 				
 				$("#chat_search_result").html(output);
@@ -402,11 +420,28 @@ $(function() {
 		});
 		
 	});
-		
-	$(document).on("click", "#chat_search_result li", function() {
-		$(this).children(".chat_search_menu").toggleClass("show");
+	
+	$(document).on("mouseover", "#chat_search_result li", function() {
+		$(this).children("div").children(".chat_search_menu").addClass("show");
+	});
+	$(document).on("mouseout", "#chat_search_result li", function() {
+		$(this).children("div").children(".chat_search_menu").removeClass("show");
 	});
 	
+	$(document).on("click", ".chat_btn", function() {
+		
+		$("#msg_text_input").focus();
+		
+		$.ajax({
+			type : "post",
+			url : "${pageContext.request.contextPath}/main/chat",
+			data : { "to" : $(this).prev().val() },
+			success: function() {
+				
+			}
+		});
+	});
+
 });
 
 function getChatRoomList() {

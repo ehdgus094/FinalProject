@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
 
 @Repository
@@ -33,6 +34,10 @@ public class MemberDAO {
 
 	public List<Member> memberSearch(Map<String, String> map) {
 		return sqlSession.selectList("member.search", map);
+	}
+
+	public List<ChatRoom> roomList(String id) {
+		return sqlSession.selectOne("member.roomList", id);
 	}
     
 }

@@ -264,14 +264,18 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value = "memberSearch")
-	public Map<String, Object> memberSearch(@RequestParam(value="search") String search) {
+	public Map<String, Object> memberSearch(@RequestParam(value="search") String search,
+											@RequestParam(value="sessionId") String sessionId) {
 		if (search.equals("")) {
 			search = " ";
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		List<Member> list = memberService.memberSearch(search);
-        map.put("memberList", list);
-        return map;
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("sessionId", sessionId);
+		map.put("search", search);
+		List<Member> list = memberService.memberSearch(map);
+		Map<String, Object>result = new HashMap<String, Object>();
+        result.put("memberList", list);
+        return result;
 	}
 	
 	@ResponseBody
@@ -347,6 +351,14 @@ public class MainController {
 	public String serviceCenter() {
 		return "main/service_center";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "chat")
+	public void chat(@RequestParam(value="to") String to) {
+		
+	}
+	
+	
 	
 	private String fileDBName(String fileName, String saveFolder) {
 		Calendar c = Calendar.getInstance();
