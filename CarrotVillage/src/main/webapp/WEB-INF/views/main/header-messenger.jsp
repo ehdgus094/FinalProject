@@ -47,7 +47,7 @@ button:focus { outline:none; }
 	background:#ffb52c;
 	border-top-left-radius: 5px;
 }
-#msg_left img {
+#msg_left > div:first-child > img {
 	width:20px;
 	height:15px;
 	margin:10px;
@@ -188,7 +188,6 @@ button:focus { outline:none; }
     flex-direction:column;
 }
 #chat_search_list {
-	background:silver;
     width: 100%;
     height: 100%;
     display:flex;
@@ -218,6 +217,87 @@ button:focus { outline:none; }
 }
 #chat_menu > a:not(:last-child) {
 	border-bottom: #e6e6e6 solid 1px;
+}
+#chat_menu > a:last-child {
+	border-radius: 0 0 4px 4px;
+}
+#chat_search_input {
+	width: 100%;
+    height: 60px;
+    display:flex;
+    flex-direction:row;
+}
+#chat_search_input > input {
+	margin: 17px auto;
+    height: 25px;
+    border: 1px solid orange;
+    border-radius: 5px;
+}
+#chat_search_input > input:focus {
+	outline:none;
+}
+#chat_search_result {
+	width:100%;
+	height:100%;
+}
+#chat_search_result ul {
+	list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#chat_search_result li {
+	height:50px;
+	cursor:pointer;
+}
+#chat_search_result li:nth-child(2n+1) {
+	background:#ececec;
+}
+#chat_search_result li img {
+	width:30px;
+	height:30px;
+	margin:10px;
+}
+#chat_search_result li span {
+	font-size:14px;
+	display: inline-block;
+    margin-top: 15px;
+}
+#chat_search_result li > div:nth-child(2) {
+	display:flex;
+	flex-direction:row;
+}
+#chat_search_result > span {
+	font-size: 14px;
+    color: #565656;
+    margin: 15px auto;
+    display: block;
+    text-align: center;
+}
+.chat_search_menu {
+	background:white;
+	width:259px;
+	height:50px;
+	position:fixed;
+	border-radius:0 0 5px 5px;
+	display:none;
+	flex-direction:column;
+}
+.chat_search_menu.show {
+	display:flex;
+}
+.chat_search_menu > a {
+	height:30px;
+	width:100%;
+	cursor:pointer;
+}
+.chat_search_menu > a:hover {
+	background:#e4e4e4;
+}
+.chat_search_menu > a:not(:last-child) {
+	border-bottom: #e6e6e6 solid 1px;
+}
+.chat_search_menu > a:last-child {
+	border-radius:0 0 5px 5px;
 }
 </style>
 
@@ -257,6 +337,8 @@ $(function() {
 	});
 	*/
 	
+	getChatRoomList();
+	
 	$("#chat_menu_btn").click(function() {
 		$("#chat_menu").toggleClass("show");
 	});
@@ -269,6 +351,62 @@ $(function() {
 		$("#chat_menu").removeClass("show");
 	});
 	
+	//채팅 상대 검색
+	$(document).on("keyup", "#chat_search_input", function() {
+		
+		$.ajax({
+			type : "get",
+			url : "${pageContext.request.contextPath}/main/memberSearch",
+			data : { "search" : $("#chat_search_input > input").val() },
+			success : function(rdata) {
+				console.log(rdata.memberList);
+				var output = "";
+				
+				if (rdata.memberList.length > 0) {
+					output += "<ul>";
+					$(rdata.memberList).each(function(index, item) {
+						if (this.id != "${user_info.id}") {
+							output += "<li>"
+									+ "    <div class='chat_search_menu'>"
+									+ "        <a>대화하기</a>"
+									+ "        <a>초대하기</a>"
+									+ "    </div>"
+									+ "    <div>";
+								
+							if (this.login_type == 'normal') {
+								output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this.profile_img + "'>";
+							} else if (this.login_type != 'normal' && this.profile_img != 'undefined') {
+								output += "<img src='" + this.profile_img + "'>";
+							} else if (this.profile_img == 'undefined') {
+								output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
+							}
+								
+							output += "        <div>"	
+									+ "            <span>" + this.name + "&nbsp;&nbsp;</span>"
+									+ "            <span>" + this.id + "</span>"
+									+ "        </div>"	
+									+ "    </div>"
+									+ "</li>";
+						}
+					});
+					output += "</ul>";
+					
+				} else if ($("#chat_search_input > input").val() == "") {
+					output = "<span>검색어를 입력해주세요.</span>";
+				} else {
+					output = "<span>검색 결과가 없습니다.</span>";
+				}
+				
+				$("#chat_search_result").html(output);
+			}
+		});
+		
+	});
+		
+	$(document).on("click", "#chat_search_result li", function() {
+		$(this).children(".chat_search_menu").toggleClass("show");
+	});
+	
 });
 
 function getChatRoomList() {
@@ -279,8 +417,15 @@ function getChatRoomList() {
 
 function getChatSearchList() {
 	output =  "<div id='chat_search_list'>"
+			+ "    <div id='chat_search_input'>"
+			+ "        <input type='text'>"
+			+ "    </div>"
+			+ "    <div id='chat_search_result'>"
+			+ "        <span>검색어를 입력해주세요.</span>"
+			+ "    </div>"
 			+ "</div>";
 	$("#msg_left_list").html(output);
+	$("#chat_search_input > input").focus();
 }
 
 </script>

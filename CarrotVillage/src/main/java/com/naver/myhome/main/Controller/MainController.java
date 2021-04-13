@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -55,8 +56,12 @@ public class MainController {
 	@ResponseBody
 	@RequestMapping(value="saveLoc")
 	public void saveLoc(HttpSession session,
-						@RequestParam(value = "loc") String loc) {
-		session.setAttribute("loc", loc);
+						@RequestParam(value = "address") String address,
+						@RequestParam(value = "lat") String lat,
+						@RequestParam(value = "lon") String lon) {
+		session.setAttribute("address", address);
+		session.setAttribute("lat", lat);
+		session.setAttribute("lon", lon);
 	}
 	
 	
@@ -255,6 +260,18 @@ public class MainController {
 		}
 		
 		session.invalidate();
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "memberSearch")
+	public Map<String, Object> memberSearch(@RequestParam(value="search") String search) {
+		if (search.equals("")) {
+			search = " ";
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Member> list = memberService.memberSearch(search);
+        map.put("memberList", list);
+        return map;
 	}
 	
 	@ResponseBody

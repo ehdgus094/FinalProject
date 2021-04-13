@@ -189,7 +189,7 @@
 			url : "${pageContext.request.contextPath}/main/logout",
 			success : function(rdata) {
 				alert("로그아웃 되었습니다.");
-				window.location.reload()
+				location.href = "${pageContext.request.contextPath}/main/mainPage";
 			}
 		});
 		sessionStorage.clear();
@@ -213,15 +213,16 @@
     		var coord = new kakao.maps.LatLng(lat, lon);
     		var callback = function(result, status) {
     		    if (status === kakao.maps.services.Status.OK) {
-    		    	$("#top_loc").text(result[0].address.address_name);
+    		    	var address	= result[0].address.address_name.substring(0, result[0].address.address_name.lastIndexOf(' '));
+    		    	$("#top_loc").text(address);
     		    	
     		    	//세션에 저장
     		    	$.ajax({
     					type : "get",
     					url : "${pageContext.request.contextPath}/main/saveLoc",
-    					data : { "loc" : result[0].address.address_name },
+    					data : { "address" :address, "lat" : lat, "lon" : lon },
     					success : function() {
-    						console.log("세션에 저장된 loc : ${loc}");
+    						console.log("세션 address : ${address}, lat : ${lat}, lon : ${lon}");
     					}
     				});
     		    	

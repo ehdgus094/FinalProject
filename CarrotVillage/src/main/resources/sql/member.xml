@@ -43,4 +43,12 @@
 		where id = #{id}
 	</update>
 	
+	<select id="search" parameterType="java.util.Map" resultType="member">
+		select *
+		from member
+		where id like '%${search}%'
+		or name like '%${search}%'
+		order by name
+	</select>
+	
 </mapper>
