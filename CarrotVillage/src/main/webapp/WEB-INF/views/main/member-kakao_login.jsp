@@ -16,17 +16,18 @@
 		$.ajax({
 			type : "post",
 			url : "${pageContext.request.contextPath}/main/socialLoginProcess",
-			data : {"email" : sessionStorage.getItem("email"),
+			data : {"id" : sessionStorage.getItem("id"),
+					"email" : sessionStorage.getItem("email"),
 					"name" : sessionStorage.getItem("name"),
 					"profile_image" : sessionStorage.getItem("profile_image"),
 					"login_type" : "kakao"
 				   },
 			success : function(rdata) {
-				console.log(rdata.email);
+				sessionStorage.removeItem("id");
 				sessionStorage.removeItem("email");
 				sessionStorage.removeItem("name");
 				sessionStorage.removeItem("profile_image");
-				$("#email").val(rdata.email);
+				$("#id").val(rdata.id);
 				$("form").submit();
 			}
 		});
@@ -35,7 +36,7 @@
 </head>
 <body>
 	<form action="loginProcess" method="post">
-		<input type="hidden" name="email" id="email">
+		<input type="hidden" name="id" id="id">
 		<input type="hidden" name="login_type" id="login_type" value="kakao">
 	</form>
 </body>

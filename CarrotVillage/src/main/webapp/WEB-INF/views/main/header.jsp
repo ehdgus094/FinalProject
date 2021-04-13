@@ -4,9 +4,170 @@
 <head>
 <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/image/favicon.ico" type="image/x-icon">
 <link rel="icon" href="${pageContext.request.contextPath}/resources/image/favicon.ico" type="image/x-icon">
-</head>
-<script>
+<style>
+#top_wrap {
+	position: fixed;
+    z-index: 999;
+    height: 24px;
+    width: 100%;
+    background: rgba(255,255,255,0.9);
+}
 
+#top_bar {
+    width: 1200px;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#nav_wrap.fixed {
+	top:24px;
+	position:fixed;
+	z-index:10;
+}
+
+#top_bar .top_left {
+	float:left;
+	height:24px;
+}
+
+#top_bar .top_left img {
+	margin-bottom: 3px;
+	width:20px;
+	height:20px;
+}
+
+#top_bar .top_right {
+    float: right;
+    height: auto;
+    font-size: 13px;
+    margin: 3px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#top_bar .top_right ul {
+	list-style:none;
+	margin:0;
+}
+
+#top_bar .top_right li {
+	display: inline-block;
+    float: right;
+    position: relative;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+#top_bar .top_right a {
+	color:#6f6f6f;
+}
+
+#top_bar a:hover {
+	text-decoration:underline;
+}
+#user_btn {
+	cursor:pointer;
+}
+
+#logo_wrap {
+    z-index: 10;
+    width: 100%;
+    height: 90px;
+    text-align: center;
+    position: absolute;
+    top: 24px;
+    border-bottom: 1px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
+    background: rgba(255,255,255,0.9);
+}
+
+#logo_bar {
+	height: 100%;
+    text-align: center;
+    margin: 0 auto;
+    width: 1200px;
+}
+
+#logo_bar a {
+    color: orange;
+    letter-spacing: 3px;
+    font-size: 25px;
+    line-height: 3.5em;
+    text-transform: uppercase;
+    font-weight: 800;
+    text-decoration:none;
+}
+
+#top_btn {
+	position:fixed;
+	z-index:999;
+	display:block;
+	width:45px;
+	height:45px;
+	background:rgba(0,0,0,0);
+	bottom:20px;
+	right:20px;
+	border-radius:50%;
+	transition: background-color .3s, 
+    			opacity .5s, visibility .5s;
+    opacity: 0;
+    visibility: hidden;
+    cursor:pointer;
+}
+
+#top_btn.show {
+  opacity: .9;
+  visibility: visible;
+}
+
+#top_btn img {
+	width:35px;
+	height:35px;
+	margin:5px auto;
+	display:block;
+	opacity:.9;
+}
+
+#msg_btn {
+	position:fixed;
+	z-index:999;
+	display:block;
+	width:45px;
+	height:45px;
+	background:rgba(0,0,0,0);
+	bottom:20px;
+	right:20px;
+	border-radius:50%;
+    opacity: .9;
+    cursor:pointer;
+    transition:0.8s;
+}
+
+#msg_btn img {
+	width:30px;
+	height:30px;
+	margin:8px auto;
+	display:block;
+	opacity:.9;
+}
+
+#msg_btn:hover, #top_btn:hover {
+	box-shadow: 0px 0px 3px 1px #5a5a5a;
+	background:orange;
+}
+
+#login_btn {
+	cursor:pointer;
+}
+#top_loc {
+	font-size: 14px;
+	font-weight: bold;
+}
+</style>
+</head>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=22ed35d588d5fe869fcf7c44448a0aaa&libraries=services"></script>
+<script>
+	//로그인팝업창 띄우는 함수
 	var loginFn = function(e) {
 		e.preventDefault();
 		var nWidth = 490;
@@ -21,64 +182,103 @@
 					"width=" + nWidth + ", height=" + nHeight + ", left=" + xPos
 				  + ", top=" + yPos + ", toolbars=no, resizable=yes, scrollbars=no");
 	}
-
+	
+	//로그아웃 함수
 	function logout() {
 		$.ajax({
 			url : "${pageContext.request.contextPath}/main/logout",
 			success : function(rdata) {
-				alert("로그아웃 되었습니다." + $("#cookie").val());
+				alert("로그아웃 되었습니다.");
 				window.location.reload()
 			}
 		});
 		sessionStorage.clear();
 	}
 	
+	//세션에 저장된 멤버객체 변수에 담기
 	var userInfo = "${user_info}";
 		
+	
 	$(document).ready(function() {
+		
+		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(function(position) {
+                 
+        	var lat = position.coords.latitude, // 위도
+            lon = position.coords.longitude; // 경도
+            
+        	//카카오지도 api
+    		var geocoder = new kakao.maps.services.Geocoder();
 
+    		var coord = new kakao.maps.LatLng(lat, lon);
+    		var callback = function(result, status) {
+    		    if (status === kakao.maps.services.Status.OK) {
+    		    	$("#top_loc").text(result[0].address.address_name);
+    		    	
+    		    	//세션에 저장
+    		    	$.ajax({
+    					type : "get",
+    					url : "${pageContext.request.contextPath}/main/saveLoc",
+    					data : { "loc" : result[0].address.address_name },
+    					success : function() {
+    						console.log("세션에 저장된 loc : ${loc}");
+    					}
+    				});
+    		    	
+    		    }
+    		};
+
+    		geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+        });
+		
+		//메신저 창 보이기/숨김 토글 상태값
+		var msg_state = sessionStorage.getItem('msg_state');
+		if (msg_state == 1) {
+			$("#msg_wrap").addClass("show");
+		}
+		
+		//자동 로그인
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
-		/*
+		
 		if ($("#cookie").val().length > 0 && keepLoginState != "1") {
 			$.ajax({
 				type : "post",
 				url : "${pageContext.request.contextPath}/main/keepLogin",
-				data : { "email" : $("#cookie").val() },
 				success : function() {
 					sessionStorage.setItem("keepLoginState", "1");
 					window.location.reload();
 				}
 			});
 		}
-		*/
-		var msg_state = sessionStorage.getItem('msg_state');
-		console.log(msg_state);
 		
-		if (msg_state == 1) {
-			$("#msg_wrap").addClass("show");
-		}
-		
+		//맨위로 버튼
 		$('#top_btn').on('click', function(e) {
 			e.preventDefault();
 			$('html,body').animate({
 				scrollTop : 0
 			}, 600);
 		});
-
+		
+		//스크롤높이 90을 기준으로 스타일시트 적용/해제
 		$(window).scroll(function() {
 			var height = $(document).scrollTop();
 			if (height > 90) {
 				$('#nav_wrap').addClass('fixed');
 				$('#top_btn').addClass('show');
 				$("#logo_wrap").css("display", "none");
+				$("#msg_btn").css("bottom", "75px");
+				$("#nav_home").css("visibility", "visible");
 
 			} else if (height < 90) {
 				$('#nav_wrap').removeClass('fixed');
 				$('#top_btn').removeClass('show');
 				$("#logo_wrap").css("display", "block");
+				$("#msg_btn").css("bottom", "20px");
+				$("#nav_home").css("visibility", "hidden");
 			}
 		});
-
+		
+		//햄버거 버튼
 		$('#line-wrapper').click(function() {
 			$('.line').removeClass('init');
 			$('#line-top').toggleClass('line-top').toggleClass('top-reverse');
@@ -88,10 +288,12 @@
 			$("#nav_all").toggleClass("show");
 		});
 		
+		//위에서 선언한 로그인창띄우기 함수 호출
 		$("#login_btn").click(loginFn);
 		
+		//메신저 창 보이기/숨김 토글 상태값 세션에 저장
 		$("#msg_btn").click(function() {
-			$('#msg_wrap').toggleClass('show');
+			$("#msg_wrap").toggleClass("show");
 			
 			if (msg_state == 0 || msg_state == null) {
 				sessionStorage.setItem('msg_state', 1);
@@ -100,11 +302,12 @@
 			}
 		});
 		
-		
+		//내정보탭 토글
 		$("#user_btn").click(function() {
-			$("#user_info_tab").toggleClass("show")
+			$("#user_info_tab").toggleClass("show");
 		});
 		
+		//서비스센터 버튼
 		$("#sc_btn").click(function(e) {
 			if (!userInfo) {
 				e.preventDefault();
@@ -118,29 +321,33 @@
 
 <input type="hidden" id="cookie" value="${cookie.saveLogin.value}">
 
+<c:if test="${!empty user_info}">
+	<a id="msg_btn"> 
+		<img src="${pageContext.request.contextPath}/resources/image/nhj_msg.png">
+	</a>
+	
+	<jsp:include page = "/WEB-INF/views/main/header-messenger.jsp" />
+</c:if>
+
 <a id="top_btn"> 
-	<img src="${pageContext.request.contextPath}/resources/image/nhj_arrowup.png">
-</a>
-<a id="msg_btn"> 
-	<img src="${pageContext.request.contextPath}/resources/image/nhj_msg.png">
+	<img src="${pageContext.request.contextPath}/resources/image/nhj_double_up.png">
 </a>
 
-<div id="msg_wrap">
-</div>
 
 <div id="header">
 	<div id="top_wrap">
 		<div id="top_bar">
 
-			<div class="left">
+			<div class="top_left">
 				<img src="${pageContext.request.contextPath}/resources/image/nhj_pin2.png">
-				<span></span>
+				<span id="top_loc"></span>
 			</div>
 
-			<div class="right">
+			<div class="top_right">
 				<ul>
-				
-					<li style="margin-right:10px;"><a href="${pageContext.request.contextPath}/main/serviceCenter" id="sc_btn">고객센터</a></li>
+					<li>
+						<a href="${pageContext.request.contextPath}/main/serviceCenter" id="sc_btn">고객센터</a>
+					</li>
 					
 						<c:if test="${empty user_info}">				
 							<li><a id="login_btn">로그인</a></li>
@@ -149,27 +356,11 @@
 							<li><a id="user_btn">${user_info.name} 님</a></li>
 						</c:if>
 				</ul>
-				
-				<div id="user_info_tab">
-					<div style=" width: 35%;height: 100%;">
-						<div id="user_profile_img"></div>
-					</div>
-    				<div style="width: 65%;height: 100%;">
-    				
-    					<div id="user_title">
-    					
-    						<c:if test="${!empty user_info}">				
-								<b>${user_info.name}</b>&nbsp;님&nbsp;&nbsp;&nbsp;&nbsp;
-							</c:if>
-							
-    						<a onclick="logout()" style="cursor:pointer;">로그아웃</a>
-    					</div>
-    					
-    				</div>
-				</div><!-- #user_info_tab end -->
-				
-			</div>
+		
+				<jsp:include page = "/WEB-INF/views/main/header-user_info_tab.jsp" />
 
+			</div><!-- .right end -->
+			
 		</div>
 	</div>
 
@@ -180,64 +371,6 @@
 		</div>
 	</div>
 
-
-	<div id="nav_wrap">
-
-		<div id="nav_bar">
-
-			<div id="hbg_btn">
-				<div id="line-wrapper">
-					<div id="line-top" class="line init top-reverse"></div>
-					<div id="line-mid" class="line init mid-reverse"></div>
-					<div id="line-bot" class="line init bot-reverse"></div>
-				</div>
-			</div>
-
-			<div id="nav_lst">
-				<ul>
-					<li><a href="${pageContext.request.contextPath}/market/list">FLEE MARKET</a></li>
-					<li><a href="${pageContext.request.contextPath}/meetup/list">MEETUP</a></li>
-					<li><a href="${pageContext.request.contextPath}/sub/submarket">CARROT MART</a></li>
-					<li><a href="#">navi4</a></li>
-				</ul>
-			</div>
-			
-		</div><!-- #nav_bar end -->
-		
-		<div id="nav_all">
-				<div>
-					<ul>
-						<li><a>nav1-1</a></li>
-						<li><a>nav1-2</a></li>
-						<li><a>nav1-3</a></li>
-						<li><a>nav1-4</a></li>
-						<li><a>nav1-5</a></li>
-					</ul>
-					<ul>
-						<li><a>nav2-1</a></li>
-						<li><a>nav2-2</a></li>
-						<li><a>nav2-3</a></li>
-						<li><a>nav2-4</a></li>
-						<li><a>nav2-5</a></li>
-						<li><a>nav2-6</a></li>
-						<li><a>nav2-7</a></li>
-					</ul>
-					<ul>
-						<li><a>nav3-1</a></li>
-						<li><a>nav3-2</a></li>
-						<li><a>nav3-3</a></li>
-						<li><a>nav3-4</a></li>
-					</ul>
-					<ul>
-						<li><a>nav4-1</a></li>
-						<li><a>nav4-2</a></li>
-						<li><a>nav4-3</a></li>
-						<li><a>nav4-4</a></li>
-						<li><a>nav4-5</a></li>
-						<li><a>nav4-6</a></li>
-					</ul>
-				</div>
-			</div>
-
-	</div><!-- #nav_wrap end -->
+	<jsp:include page = "/WEB-INF/views/main/header-navigation.jsp" />
+	
 </div>

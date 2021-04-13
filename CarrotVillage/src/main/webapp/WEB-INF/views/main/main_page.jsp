@@ -4,8 +4,6 @@
 <html>
 <head>
 <title>당 근 빌 리 지</title>
-<link href="${pageContext.request.contextPath}/resources/css/header.css" rel="stylesheet" type="text/css">
-<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -55,26 +53,8 @@
 	  }
 </style>
 <script>
-	$(document).ready(function() {
-		
-		console.log("${email}");
-		
-		$("#header").mouseenter(function() {
-			var height = $(document).scrollTop();
-			if (height < 80) {
-				$('#nav_bar').addClass('fixed');
-			}
-		});
-		$("#header").mouseleave(function() {
-			var height = $(document).scrollTop();
-			if (height < 80) {
-				$('#nav_bar').removeClass('fixed');
-			}
-		});
-		
-	});
 	
-	
+	//스크롤 기본이벤트를막고 화면 한칸씩 움직이게하는 함수
 	var scroll = function(){
 	    
 	    var $nav = null,
@@ -152,7 +132,7 @@
 
 	<jsp:include page = "/WEB-INF/views/main/header.jsp" />
 	
-	<div id="cnt_wrap">
+	<div id="content_wrap">
 	
 		<div class="content">
 		

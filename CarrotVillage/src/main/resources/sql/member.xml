@@ -5,13 +5,14 @@
 <mapper namespace="member">
 
 	<insert id="insert" parameterType="member">
-		insert into member (num, name, password, email, login_type)
-		values (member_seq.nextval, #{name}, #{password}, #{email}, #{login_type})
-	</insert>
-	
-	<insert id="insertSocial" parameterType="java.util.Map">
-		insert into member (num, name, email, profile_img, login_type)
-		values (member_seq.nextval, #{name}, #{email}, #{profile_img}, #{login_type})
+		insert into member (id, password, email, name, 
+							post, address, phone_num, birth, 
+							gender, profile_img, profile_img_ori,
+							login_type)
+		values (#{id}, #{password, jdbcType=VARCHAR}, #{email}, #{name}, 
+				#{post, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{phone_num, jdbcType=VARCHAR}, #{birth, jdbcType=VARCHAR},
+				#{gender, jdbcType=VARCHAR}, #{profile_img, jdbcType=VARCHAR}, #{profile_img_ori, jdbcType=VARCHAR},
+				#{login_type})
 	</insert>
 	
 	<select id="memberInfo" parameterType="java.util.Map" resultType="member">
@@ -20,5 +21,26 @@
 		where ${field} = #{value}
 		and login_type = #{login_type}
 	</select>
+	
+	<select id="memberInfoId" parameterType="String" resultType="member">
+		select * 
+		from member 
+		where id = #{value}
+	</select>
+	
+	<update id="update" parameterType="member">
+		update member
+		set password = #{password, jdbcType=VARCHAR},
+			email = #{email, jdbcType=VARCHAR},
+			name = #{name, jdbcType=VARCHAR}, 
+			post = #{post, jdbcType=VARCHAR},
+			address = #{address, jdbcType=VARCHAR},
+			phone_num = #{phone_num, jdbcType=VARCHAR},
+			birth = #{birth, jdbcType=VARCHAR}, 
+			gender = #{gender, jdbcType=VARCHAR},
+			profile_img = #{profile_img, jdbcType=VARCHAR},
+			profile_img_ori = #{profile_img_ori, jdbcType=VARCHAR}
+		where id = #{id}
+	</update>
 	
 </mapper>

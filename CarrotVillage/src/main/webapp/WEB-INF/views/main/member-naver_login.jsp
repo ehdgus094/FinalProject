@@ -23,6 +23,7 @@
 		function naverSignInCallback() {
 			//alert(naver_id_login.getProfileData('email'));
 			
+			var id = naver_id_login.getProfileData('id');
 			var email = naver_id_login.getProfileData('email');
 			var name = naver_id_login.getProfileData('name');
 			var profile_image = naver_id_login.getProfileData('profile_image');
@@ -30,13 +31,14 @@
 			$.ajax({
 				type : "post",
 				url : "${pageContext.request.contextPath}/main/socialLoginProcess",
-				data : {"email" : email,
+				data : {"id" : id,
+						"email" : email,
 						"name" : name,
 						"profile_image" : profile_image,
 						"login_type" : "naver"
 					   },
 				success : function(rdata) {
-					$("#email").val(rdata.email);
+					$("#id").val(rdata.id);
 					$("form").submit();
 				}
 			});
@@ -46,7 +48,7 @@
 </head>
 <body>
 	<form action="loginProcess" method="post">
-		<input type="hidden" name="email" id="email">
+		<input type="hidden" name="id" id="id">
 		<input type="hidden" name="login_type" id="login_type" value="naver">
 	</form>
 </body>

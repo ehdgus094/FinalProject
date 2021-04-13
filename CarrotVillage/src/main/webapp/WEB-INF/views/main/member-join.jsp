@@ -155,23 +155,11 @@ $(function() {
 	
 	$('form').on("submit", function() {
 		
-<<<<<<< HEAD
 		if(!checkId) {
 			alert("아이디를 형식에 맞게 입력해 주세요.");
 			$("#id").focus();
-=======
-		
-		if(!checkName) {
-			alert("이름을 형식에 맞게 입력해 주세요.");
-			$("#name").focus();
 			return false;
 		}
-		 if(!checkEmail) {
-			alert("이메일을 형식에 맞게 입력해 주세요.");
-			$("#email").focus();
->>>>>>> branch 'master' of https://github.com/ehdgus094/FinalProject.git
-			return false;
-		} 
 		if(!checkPassword) {
 			alert("비밀번호를 형식에 맞게 입력해 주세요.");
 			$("#password").focus();
@@ -181,27 +169,15 @@ $(function() {
 			$("#password_chk").focus();
 			return false;
 		}
-<<<<<<< HEAD
 		if(!checkEmail) {
 			alert("이메일을 형식에 맞게 입력해 주세요.");
 			$("#email").focus();
-=======
-		
-		 if (!checkEmailAuth) {
-			alert("이메일 인증을 완료해 주세요.");
->>>>>>> branch 'master' of https://github.com/ehdgus094/FinalProject.git
 			return false;
-<<<<<<< HEAD
 		}
 		/*if (!checkEmailAuth) {
 			alert("이메일 인증을 완료해 주세요.");
 			return false;
 		}*/
-=======
-		} 
-		
-		alert("회원가입이 완료되었습니다.");
->>>>>>> branch 'master' of https://github.com/ehdgus094/FinalProject.git
 		
 	});
 	
