@@ -1,5 +1,6 @@
 package com.naver.myhome.main.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -28,6 +29,10 @@ public class MemberDAO {
 
 	public int memberUpdate(Member member) {
 		return sqlSession.update("member.update", member);
+	}
+
+	public List<Member> memberSearch(Map<String, String> map) {
+		return sqlSession.selectList("member.search", map);
 	}
     
 }

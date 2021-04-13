@@ -1,6 +1,7 @@
 package com.naver.myhome.main.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,13 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int memberUpdate(Member member) {
 		return dao.memberUpdate(member);
+	}
+
+	@Override
+	public List<Member> memberSearch(String search) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("search", search);
+		return dao.memberSearch(map);
 	}
 
 }
