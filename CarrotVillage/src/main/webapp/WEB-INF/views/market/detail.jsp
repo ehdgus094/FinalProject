@@ -204,8 +204,30 @@ $(document).ready(function() {
 	
 	//수정 버튼 클릭 시
 	$('#modify_btn').click(function() {
+		if('${usedItem.sold}' == 'y') {
+			alert('판매완료된 게시글은 수정이 불가능합니다.');
+			return false;
+		}
 		location.href = "${pageContext.request.contextPath}/market/modify?num=${usedItem.num}";
 	});
+	
+	//판매완료 버튼 클릭 시
+	$('#sold_btn').click(function() {
+		location.href = "${pageContext.request.contextPath}/market/updateSold?num=${usedItem.num}&sold=y";
+	});
+	
+	//판매중 버튼 클릭 시
+	$('#sold_cancel_btn').click(function() {
+		location.href = "${pageContext.request.contextPath}/market/updateSold?num=${usedItem.num}&sold=n";
+	})
+	
+	//이미지 캐시 방지
+	if('${usedItem.imagefolder}' != '') {
+		<c:forEach var="image" items="${imglist}" varStatus="status">
+			var src = "${pageContext.request.contextPath}/resources/upload/market_image/${usedItem.imagefolder}/${image}?"+Date.now();
+			$('#image_area>div').eq(${status.index}).children().attr('src', src);
+		</c:forEach>
+	}
 	
 //지도 관련 =========================================================================
 	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
@@ -216,39 +238,16 @@ $(document).ready(function() {
 	
 	var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 	
-	var geocoder = new kakao.maps.services.Geocoder();
-	
-	// HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
-	if (navigator.geolocation) {
-	    
-	    // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-	    navigator.geolocation.getCurrentPosition(function(position) {
-	        
-	        var lat = position.coords.latitude, // 위도
-	            lon = position.coords.longitude; // 경도
-	            
-            var myPosition = new kakao.maps.LatLng(lat, lon) // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-            var itemPosition = new kakao.maps.LatLng(${usedItem.latitude}, ${usedItem.longitude});
-	            
-	        //내 위치
-	        setMarker(myPosition, '내 위치');
-	            
-	       	//물건 위치
-	        setMarker(itemPosition, '${usedItem.location}');
-	        
-	        map.setCenter(itemPosition);
-	        
-	   });
-	    
-	} else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-	    
-		    var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),    
-	        message = 'geolocation을 사용할수 없어요..'
-        	
-	        setMarker(locPosition, message);
-	        
-	        map.setCenter(locPosition);
-	}
+	var myPosition = new kakao.maps.LatLng(${latitude}, ${longitude});
+    var itemPosition = new kakao.maps.LatLng(${usedItem.latitude}, ${usedItem.longitude});
+        
+    //내 위치
+    setMarker(myPosition, '내 위치');
+        
+   	//물건 위치
+    setMarker(itemPosition, '${usedItem.location}');
+    
+    map.setCenter(itemPosition);
 	
 	
 	
@@ -294,7 +293,7 @@ $(document).ready(function() {
 							<c:if test="${!empty usedItem.imagefolder}">
 								<c:forEach var="image" items="${imglist}">
 									<div>
-										<img src="${pageContext.request.contextPath}/resources/upload/market_image/${usedItem.imagefolder}/${image}">
+										<img>
 									</div>
 								</c:forEach>
 							</c:if>
@@ -323,6 +322,12 @@ $(document).ready(function() {
 					<div>
 						<c:if test="${member.id == usedItem.id}">
 							<button id=modify_btn>수정</button>
+							<c:if test="${usedItem.sold == 'n'}">
+								<button id=sold_btn>판매완료</button>
+							</c:if>
+							<c:if test="${usedItem.sold == 'y'}">
+								<button id=sold_cancel_btn>판매중</button>
+							</c:if>
 							<button id=delete_btn>삭제</button>
 						</c:if>
 						<c:if test="${member.id != usedItem.id}">

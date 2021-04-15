@@ -6,16 +6,19 @@
 	<insert id="insert" parameterType="usedItem">
 		insert into useditem values(
 		useditem_seq.nextval, #{id}, #{subject}, #{content}, 
-		sysdate, #{price}, #{location}, 'n', #{imagefolder}, #{thumbnail}, 0, #{latitude}, #{longitude})
+		sysdate, #{price}, #{location}, 'n', #{imagefolder}, #{thumbnail}, 0, #{latitude}, #{longitude}, #{deadline})
 	</insert>
 	
 	<select id="select" resultType="usedItem" parameterType="java.util.Map">
 		select * from
 				(select rownum rnum, a.* from
-					(select * from useditem
+					(select * from
+						(select * from useditem
+						 where location like '%' || #{neighborhood} || '%')
 					 where subject like '%' || #{search} || '%'
 					 or content like '%' || #{search} || '%'
-					 order by sold asc) a
+					 order by sold asc, decode(location, #{location}, 1)
+					) a
 				)
 		where rnum &gt;= #{start} and rnum &lt;= #{end}
 	</select>
@@ -35,4 +38,17 @@
 		delete useditem
 		where num = #{num}
 	</delete>
+	
+	<update id="update" parameterType="usedItem">
+		update useditem
+		set subject = #{subject}, content = #{content}, price = #{price}, location = #{location}, imagefolder = #{imagefolder}, 
+		thumbnail = #{thumbnail}, latitude = #{latitude}, longitude = #{longitude}, deadline = #{deadline}
+		where num = #{num}
+	</update>
+	
+	<update id="updateSold" parameterType="java.util.Map">
+		update useditem
+		set sold = #{sold}
+		where num = #{num}
+	</update>
 </mapper>

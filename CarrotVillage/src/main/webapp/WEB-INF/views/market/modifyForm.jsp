@@ -69,6 +69,10 @@ form input[type=text], textarea {
 
 label {font-weight:bold; margin-bottom:10px; font-size:20px}
 
+#isFree {font-size:15px}
+
+#free_area {width:700px; display:flex; justify-content:space-between}
+
 form>input, form>textarea {width:700px; margin-bottom:20px}
 form>input:hover, form>textarea:hover {background:#eaeaea}
 form>input:focus, form>textarea:focus {outline:0}
@@ -139,8 +143,6 @@ form>div:last-child>input:focus {outline:0}
 form input[type=reset]:hover {background:#FFA7A7; color:white}
 form input[type=submit]:hover {background:#B7F0B1; color:white}
 
-#map {width:600px; height:500px}
-
 </style>
 <script>
 $(document).ready(function() {
@@ -151,6 +153,7 @@ $(document).ready(function() {
 	var img_count = ${fn:length(imglist)};
 	var file_input_count = ${fn:length(imglist)};
 	var delete_num = '';
+	var delete_num_new = '';
 	
 	//이미지 미리보기
 	function show_img(e) {
@@ -209,12 +212,16 @@ $(document).ready(function() {
 	});
 	
  	$('#image_area').on('click', '.cancel', function() {
-		var index = $(this).parent().prev().attr('alt').split('-');
+ 		var index = $(this).parent().prev().attr('alt');
 		$(this).parent().parent().parent().remove();
 		img_count--;
 		$('#img_count').html(img_count + ' / 10');
-		delete_num += $(this).parent().prev().attr('alt') + ';';
 		$('#image_area').scrollLeft(0);
+		if(index < ${fn:length(imglist)}) {
+			delete_num += index + ';';			
+		} else {
+			delete_num_new += index-${fn:length(imglist)} + ';';
+		}
 	});
 	
 	$('#add_img').click(function(event) {
@@ -237,11 +244,29 @@ $(document).ready(function() {
 		if(delete_num != '') {
 			$('#delete_num').val(delete_num);
 		}
+		if(delete_num_new != '') {
+			$('#delete_num_new').val(delete_num_new);
+		}
+		//무료 나눔 시 마감 기한 체크
+		if($('#isFree>input').prop('checked')) {
+			var now = new Date();
+			var ddate = $('#deadline_date').val().split('-');
+			var dtime = $('#deadline_time').val().split(':');
+			var deadline = new Date(ddate[0], ddate[1]-1, ddate[2], dtime[0], dtime[1], 0);
+			if(now.getTime() >= deadline.getTime()) {
+				alert('마감시간을 확인해주시기 바랍니다.');
+				return false;
+			}
+		}
 		this.submit();
 	});
  	$('#price').keyup(function() {
  		if(isNaN($(this).val())) {
  			alert('숫자를 입력해 주세요.');
+ 			$(this).val('').focus();
+ 		}
+ 		if($(this).val() == '0' && $('#isFree>input').prop('checked') == false) {
+ 			alert('금액을 입력해 주세요.');
  			$(this).val('').focus();
  		}
  	});
@@ -286,18 +311,40 @@ $(document).ready(function() {
  	});
  	
  	$('input[type=reset]').click(function() {
- 		if(confirm('작성을 취소하시겠습니까?')) {
+ 		if(confirm('수정을 취소하시겠습니까?')) {
  			location.href="${pageContext.request.contextPath}/market/list";
  		}
  	});
  	
-// 지도 관련 =============================================================================
-	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
-	var mapOption = { 
-		center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-		level: 7 // 지도의 확대 레벨 
-	};
-	var map = new kakao.maps.Map(mapContainer, mapOption);
+ 	//이미지 캐시 방지
+ 	if('${usedItem.imagefolder}' != '') {
+		<c:forEach var="image" items="${imglist}" varStatus="status">
+			var src = "${pageContext.request.contextPath}/resources/upload/market_image/${usedItem.imagefolder}/${image}?"+Date.now();
+			$('.card_container').eq(${status.index}).find('.card-img-top').attr('src', src);
+		</c:forEach>
+	}
+ 	
+ 	//무료나눔 여부
+ 	$('#isFree>input').change(function() {
+ 		if($(this).prop('checked')) {
+ 			$('#price').val('0').prop('readonly', true);
+ 			var deadline = '${usedItem.deadline}'.split(' ');
+ 			$('#free_area').append(
+ 					'<div>'
+ 					+	'추첨 마감 <input type=date id=deadline_date name=date value='+deadline[0]+' required>'
+ 					+	'<input type=time id=deadline_time name=time value='+deadline[1]+' required> 까지'
+ 					+'</div>'
+ 					);
+ 		} else {
+ 			$('#price').val('').prop('readonly', false).focus();
+ 			$('#free_area>div').remove();
+ 		}
+ 	});
+ 	
+ 	//무료나눔 게시글 일시
+ 	if('${usedItem.deadline}' != '') {
+ 		$('#isFree>input').prop('checked', true).trigger('change');
+ 	}
 });
 </script>
 </head>
@@ -313,12 +360,16 @@ $(document).ready(function() {
 		<div id=content_body>
 			<b>판매글 수정</b><hr>
 			<form method=post action=modifyProcess enctype="multipart/form-data">
+				<input type=hidden name=num value="${usedItem.num}">
 				<label for=subject>제목</label><br>
 				<input type=text id=subject name=subject value="${usedItem.subject}" required><br>
 				
 				<label for=id>작성자</label><br>
 				<input type=text id=id name=id value="${usedItem.id}" readonly><br>
 				
+				<div id=free_area>
+					<label id=isFree><input type=checkbox> 무료나눔</label>
+				</div>
 				<span id=grid_area>
 					<label for=price>가격</label>
 					<label for=location>위치</label>
@@ -331,6 +382,8 @@ $(document).ready(function() {
 					<input type=hidden id=latitude name=latitude value="${usedItem.latitude}">
 					<input type=hidden id=longitude name=longitude value="${usedItem.longitude}">
 					<input type=hidden id=imagefolder name=imagefolder value="${usedItem.imagefolder}">
+					<input type=hidden name=thumbnail value="${usedItem.thumbnail}">
+					<input type=hidden id=imagecount name=imagecount value="${fn:length(imglist)}">
 					<input type=button id=change_loc class=btn1 value=변경>
 				</span>
 				
@@ -338,6 +391,7 @@ $(document).ready(function() {
 				<textarea id=content name=content required>${usedItem.content}</textarea><br>
 				
 				<input type=hidden id=delete_num name=delete_num>
+				<input type=hidden id=delete_num_new name=delete_num_new>
 				
 				<button id=add_img class=btn1>이미지 추가</button><span id=img_count>0 / 10</span>
 				<div id=arrow_area>
@@ -347,7 +401,7 @@ $(document).ready(function() {
 				<div id=image_area>
 					<c:forEach var="img" items="${imglist}" varStatus="status">
 						<div class=card_container><div class=card>
-							<img class="card-img-top" src="${pageContext.request.contextPath}/resources/upload/market_image/${usedItem.imagefolder}/${img}" alt="${status.index}">
+							<img class="card-img-top" alt="${status.index}">
 							<div class="card-img-overlay">
 								<img class=cancel src="${pageContext.request.contextPath}/resources/image/kdh_cancel.png">
 							</div>

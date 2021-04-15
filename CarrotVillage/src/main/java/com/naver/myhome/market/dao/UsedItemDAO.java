@@ -33,4 +33,12 @@ public class UsedItemDAO {
 	public int delete(int num) {
 		return sqlSession.delete("UsedItem.delete", num);
 	}
+	
+	public void update(UsedItem usedItem) {
+		sqlSession.update("UsedItem.update", usedItem);
+	}
+	
+	public void updateSold(Map<String, Object> map) {
+		sqlSession.update("UsedItem.updateSold", map);
+	}
 }

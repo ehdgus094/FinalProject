@@ -48,22 +48,32 @@ public class MarketController {
 	
 	@ResponseBody
 	@GetMapping(value = "/loadList")
-	public List<UsedItem> loadList(String page, String search) {
+	public List<UsedItem> loadList(String page, String search, HttpSession session) {
+		String address = (String) session.getAttribute("address");
+		String[] arr = address.split(" ");
+		String neighborhood = arr[arr.length-2];
+		int showcount = 16;
 		int num = Integer.parseInt(page);
-		int start = (num-1)*16+1;
-		int end = num*16;
+		int start = (num-1)*showcount+1;
+		int end = num*showcount;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("start", start);
 		map.put("end", end);
 		map.put("search", search);
+		map.put("neighborhood", neighborhood);
+		map.put("location", address);
 		return usedItemService.select(map);
 	}
 	
 	@GetMapping("/write")
 	public ModelAndView write(ModelAndView mv, HttpSession session) {
 		Member member = (Member) session.getAttribute("user_info");
-		mv.addObject("latitude", 37.6899422);
-		mv.addObject("longitude", 126.7199836);
+		String lat = (String) session.getAttribute("lat");
+		String lon = (String) session.getAttribute("lon");
+		String addr = (String) session.getAttribute("address");
+		mv.addObject("latitude", lat);
+		mv.addObject("longitude", lon);
+		mv.addObject("address", addr);
 		mv.addObject("member", member);
 		mv.setViewName("market/writeForm");
 		return mv;
@@ -71,9 +81,13 @@ public class MarketController {
 	
 	@PostMapping("/writeProcess")
 	public String writeProcess(
-			UsedItem usedItem, MultipartHttpServletRequest request, String delete_num) throws Exception {
+			UsedItem usedItem, MultipartHttpServletRequest request, String delete_num, String date, String time) throws Exception {
 		usedItem.setImagefolder("");
 		usedItem.setThumbnail("");
+		usedItem.setDeadline("");
+		if(date != null) {
+			usedItem.setDeadline(date + " " + time + ":00");
+		}
 		List<MultipartFile> uploadfiles = request.getFiles("uploadfile");
 		//추가했다가 삭제한 이미지 정보 구하기
 		String[] delete_num_arr = null;
@@ -106,14 +120,14 @@ public class MarketController {
 				}
 				usedItem.setImagefolder(num);
 				//이미지 저장
-				int img_name = 0;
+				int img_name = 10;
 				for(int i=0; i<uploadfiles.size(); i++) {
 					if(size != 0) {
 						if(!Arrays.asList(delete_num_arr).contains(Integer.toString(i))) {
 							int index = uploadfiles.get(i).getOriginalFilename().lastIndexOf(".");
 							String extension = uploadfiles.get(i).getOriginalFilename().substring(index+1);
 							uploadfiles.get(i).transferTo(new File(path + num + "/" + img_name + "." + extension));
-							if(img_name == 0) {
+							if(img_name == 10) {
 								usedItem.setThumbnail(img_name + "." + extension);
 							}
 							img_name++;
@@ -122,7 +136,7 @@ public class MarketController {
 						int index = uploadfiles.get(i).getOriginalFilename().lastIndexOf(".");
 						String extension = uploadfiles.get(i).getOriginalFilename().substring(index+1);
 						uploadfiles.get(i).transferTo(new File(path + num + "/" + img_name + "." + extension));
-						if(img_name == 0) {
+						if(img_name == 10) {
 							usedItem.setThumbnail(img_name + "." + extension);
 						}
 						img_name++;
@@ -137,6 +151,8 @@ public class MarketController {
 	@GetMapping("/detail")
 	public ModelAndView detail(String num, ModelAndView mv, HttpServletRequest request) {
 		Member member = (Member) request.getSession().getAttribute("user_info");
+		String lat = (String) request.getSession().getAttribute("lat");
+		String lon = (String) request.getSession().getAttribute("lon");
 		usedItemService.addViewcount(Integer.parseInt(num));
 		UsedItem usedItem = usedItemService.detail(Integer.parseInt(num));
 		String path = request.getSession().getServletContext().getRealPath("resources") + "/upload/market_image/"+usedItem.getImagefolder();
@@ -149,8 +165,8 @@ public class MarketController {
 			}			
 		}
 		mv.addObject("member", member);
-		mv.addObject("latitude", 37.6899422);
-		mv.addObject("longitude", 126.7199836);
+		mv.addObject("latitude", lat);
+		mv.addObject("longitude", lon);
 		mv.addObject("usedItem", usedItem);
 		mv.addObject("imglist", imglist);
 		mv.setViewName("market/detail");
@@ -158,9 +174,11 @@ public class MarketController {
 	}
 	
 	@GetMapping("/change_loc")
-	public ModelAndView change_loc(ModelAndView mv) {
-		mv.addObject("latitude", 37.6899422);
-		mv.addObject("longitude", 126.7199836);
+	public ModelAndView change_loc(ModelAndView mv, HttpSession session) {
+		String lat = (String) session.getAttribute("lat");
+		String lon = (String) session.getAttribute("lon");
+		mv.addObject("latitude", lat);
+		mv.addObject("longitude", lon);
 		mv.setViewName("market/change_loc");
 		return mv;
 	}
@@ -217,49 +235,55 @@ public class MarketController {
 	
 	@PostMapping("/modifyProcess")
 	public String modifyProcess(
-			UsedItem usedItem, MultipartHttpServletRequest request, String delete_num) throws Exception {
-		usedItem.setImagefolder("");
-		usedItem.setThumbnail("");
+			UsedItem usedItem, MultipartHttpServletRequest request, String delete_num, String delete_num_new,
+			String imagecount, String date, String time) throws Exception {
+		String path = request.getSession().getServletContext().getRealPath("resources") + "/upload/market_image/";
 		List<MultipartFile> uploadfiles = request.getFiles("uploadfile");
 		//추가했다가 삭제한 이미지 정보 구하기
 		String[] delete_num_arr = null;
 		if(!delete_num.equals("")) {
 			delete_num_arr = delete_num.split(";");
 		}
+		String[] delete_num_new_arr = null;
+		if(!delete_num_new.equals("")) {
+			delete_num_new_arr = delete_num_new.split(";");
+		}
 		
+		//새로 추가된 이미지 업로드
 		if(!uploadfiles.isEmpty()) {
 			int size = 0;
-			if(delete_num_arr != null) {
-				size = delete_num_arr.length;
+			if(delete_num_new_arr != null) {
+				size = delete_num_new_arr.length;
 			}
 			if(uploadfiles.size() > size) {
-				//이미지 저장 폴더 생성
-				String path = request.getSession().getServletContext().getRealPath("resources") + "/upload/market_image/";
-				String num = "";
-				while(true) {
-					Random random = new Random();
-					int n = random.nextInt(10000001);
-					File folder = new File(path+n);
-					if(!folder.exists()) {
-						try {
-							folder.mkdir();
-							num += n;
-							break;
-						} catch(Exception e) {
-							e.printStackTrace();
+				if(usedItem.getImagefolder().equals("")) {
+					//이미지 저장 폴더 생성
+					String num = "";
+					while(true) {
+						Random random = new Random();
+						int n = random.nextInt(10000001);
+						File folder = new File(path+n);
+						if(!folder.exists()) {
+							try {
+								folder.mkdir();
+								num += n;
+								break;
+							} catch(Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
+					usedItem.setImagefolder(num);
 				}
-				usedItem.setImagefolder(num);
 				//이미지 저장
-				int img_name = 0;
+				int img_name = Integer.parseInt(imagecount) + 10;
 				for(int i=0; i<uploadfiles.size(); i++) {
 					if(size != 0) {
-						if(!Arrays.asList(delete_num_arr).contains(Integer.toString(i))) {
+						if(!Arrays.asList(delete_num_new_arr).contains(Integer.toString(i))) {
 							int index = uploadfiles.get(i).getOriginalFilename().lastIndexOf(".");
 							String extension = uploadfiles.get(i).getOriginalFilename().substring(index+1);
-							uploadfiles.get(i).transferTo(new File(path + num + "/" + img_name + "." + extension));
-							if(img_name == 0) {
+							uploadfiles.get(i).transferTo(new File(path + usedItem.getImagefolder() + "/" + img_name + "." + extension));
+							if(img_name == 10) {
 								usedItem.setThumbnail(img_name + "." + extension);
 							}
 							img_name++;
@@ -267,8 +291,8 @@ public class MarketController {
 					} else {
 						int index = uploadfiles.get(i).getOriginalFilename().lastIndexOf(".");
 						String extension = uploadfiles.get(i).getOriginalFilename().substring(index+1);
-						uploadfiles.get(i).transferTo(new File(path + num + "/" + img_name + "." + extension));
-						if(img_name == 0) {
+						uploadfiles.get(i).transferTo(new File(path + usedItem.getImagefolder() + "/" + img_name + "." + extension));
+						if(img_name == 10) {
 							usedItem.setThumbnail(img_name + "." + extension);
 						}
 						img_name++;
@@ -276,7 +300,61 @@ public class MarketController {
 				}
 			}
 		}
-		usedItemService.insert(usedItem);
+		
+		//기존 이미지 삭제 시
+		int size = 0;
+		if(delete_num_arr != null) {
+			size = delete_num_arr.length;
+		}
+		//삭제할 이미지 존재 시
+		if(size>0) {
+			File folder = new File(path+usedItem.getImagefolder());
+			
+			try {
+				File[] folder_list = folder.listFiles(); //파일리스트 얻어오기
+				
+				for (int j = 0; j < folder_list.length; j++) {
+					if(Arrays.asList(delete_num_arr).contains(Integer.toString(j))) {
+						folder_list[j].delete(); //파일 삭제 						
+					}
+				}
+				File[] new_folder_list = folder.listFiles(); //파일리스트 얻어오기
+				//남은 이미지 파일들 이름 수정
+				if(new_folder_list.length != 0) {
+					for(int i=0; i<new_folder_list.length; i++) {
+						int index = new_folder_list[i].getName().lastIndexOf(".");
+						String extension = new_folder_list[i].getName().substring(index+1);
+						File newFileName = new File(path+usedItem.getImagefolder()+"/"+(i+10)+"."+extension);
+						new_folder_list[i].renameTo(newFileName);
+						if(i == 0) {
+							usedItem.setThumbnail("10."+extension);
+						}
+					}
+				} else {
+					//이미지 파일 없을 시 폴더 삭제
+					folder.delete();
+					usedItem.setImagefolder("");
+					usedItem.setThumbnail("");
+				}
+			} catch (Exception e) {
+				e.getStackTrace();
+			}
+		}
+		usedItem.setDeadline("");
+		if(date != null) {
+			usedItem.setDeadline(date + " " + time + ":00");
+		}
+		
+		usedItemService.update(usedItem);
 		return "redirect:list";
+	}
+	
+	@GetMapping("/updateSold")
+	public String updateSold(String num, String sold) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("num", num);
+		map.put("sold", sold);
+		usedItemService.updateSold(map);
+		return "redirect:detail?num="+num;
 	}
 }
