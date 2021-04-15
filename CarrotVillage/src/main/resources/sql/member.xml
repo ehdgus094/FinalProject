@@ -52,16 +52,49 @@
 		order by name
 	</select>
 	
-	<select id="roomList" parameterType="String" resultType="com.naver.myhome.main.domain.ChatRoom">
+	<select id="existRoom" parameterType="java.util.Map" resultType="com.naver.myhome.main.domain.ChatRoom">
 		select *
+		from chat_room
+		where num_of = #{length}
+		and num in (
+			select ${myId}.chat_room_num
+			from chat_join ${myId}
+			<foreach collection="chatMembers" item="item">
+				join chat_join ${item}
+				on ${myId}.chat_room_num = ${item}.chat_room_num
+			</foreach>
+				and ${myId}.member_id = #{myId}
+			<foreach collection="chatMembers" item="item">
+				and ${item}.member_id = #{item}
+			</foreach>
+		)
+	</select>
+	
+	<insert id="insertChatRoom" parameterType="int">
+		insert into chat_room
+		values(chat_room_seq.nextval, #{num_of})
+	</insert>
+	
+	<select id="getLastChatRoomNum" resultType="int">
+		select max(num) from chat_room
+	</select>
+	
+	<insert id="insertChatJoin" parameterType="com.naver.myhome.main.domain.ChatJoin">
+		insert into chat_join
+		values (chat_join_seq.nextval, #{member_id}, #{chat_room_num})
+	</insert>
+	
+	<select id="roomList" parameterType="String" resultType="com.naver.myhome.main.domain.ChatJoin">
+		select chat_room_num
 		from chat_join
-		where member_id = #{toId}
-		and num in ()
-		and chat_room_num in (select chat_room_num
-							  from chat_join
-							  where member_id = #{myId})
-		
-		select num from chat_join where 
+		where member_id = #{value}
+		order by chat_room_num desc
+	</select>
+	
+	<select id="roomMember" parameterType="int" resultType="com.naver.myhome.main.domain.ChatJoin">
+		select member_id
+		from chat_join
+		where chat_room_num = #{value}
 	</select>
 	
 </mapper>

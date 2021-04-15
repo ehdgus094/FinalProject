@@ -82,15 +82,18 @@ button:focus { outline:none; }
 	margin:0 0 4px 0;
 }
 #msg_slider { 
-	margin:10px 15px 0 0;
+	margin:14px 15px 0 0;
 	border:none; 
+	height: 8px;
 }
 #msg_slider span {
-	background: linear-gradient(to bottom, #ff9900 30%, #ffe0b3);
+	background: #006500;
     border-radius: 50%;
-    border:none;
+    border: none;
     margin-top: 2px;
-    cursor:pointer;
+    cursor: pointer;
+    width: 15px;
+    height: 15px;
 }
 #msg_slider span:focus {
 	outline:none;
@@ -181,7 +184,6 @@ button:focus { outline:none; }
     height: 100%;
 }
 #chat_room_list {
-	background:pink;
     width: 100%;
     height: 100%;
     display:flex;
@@ -228,6 +230,7 @@ button:focus { outline:none; }
     display:flex;
     flex-direction:row;
     background: #ffb52c;
+    color:#717171;
 }
 #chat_search_input > input {
 	margin: 17px auto;
@@ -245,7 +248,8 @@ button:focus { outline:none; }
     grid-template-rows: 87%;
 }
 #chat_search_result > div {
-	background:black;
+	display: flex;
+    flex-direction: row;
 }
 #chat_search_result ul {
 	list-style: none;
@@ -260,16 +264,16 @@ button:focus { outline:none; }
 	border-bottom: #ffa50052 1px solid;
 }
 #chat_search_result li:hover {
-	box-shadow: 3px 0 7px 1px rgb(255 131 0 / 20%);
+	box-shadow: 0px 0px 4px 1px rgb(255 131 0 / 15%) inset;
 }
 #chat_search_result li img {
 	width:30px;
 	height:30px;
 	margin:10px 15px 10px 10px;
 }
-#chat_search_result li > label > div > div span {
+#chat_search_result label > div > div span {
 	font-size:14px;
-	color: #565656;
+	color: #717171;
 }
 #chat_search_result li > label > div {
 	display:flex;
@@ -287,11 +291,11 @@ button:focus { outline:none; }
     text-align: center;
     margin-top: 20px;
 }
-input[type="checkbox"] {
+#chat_search_result input[type="checkbox"] {
 	display: none;
 }
 
-input[type="checkbox"]+label {
+#chat_search_result input[type="checkbox"]+label {
 	display:flex;
 	flex-direction:row;
 	width: 100%;
@@ -299,7 +303,7 @@ input[type="checkbox"]+label {
 	margin:0;
 }
 
-input[type="checkbox"] + label > span {
+#chat_search_result input[type="checkbox"] + label > span {
 	display: inline-block;
 	width: 15px;
 	height: 15px;
@@ -313,12 +317,69 @@ input[type="checkbox"] + label > span {
 	margin-top: 17px;
 }
 
-input[type="checkbox"]:checked + label > span {
+#chat_search_result input[type="checkbox"]:checked + label > span {
 	background:
 		url(${pageContext.request.contextPath}/resources/image/nhj_checked.png)
 		no-repeat;
 	border: none;
 	background-size: 15px 15px;
+}
+button.chat_search_btn {
+	border: none;
+    background: #ffb52c;
+    font-size: 15px;
+    height: 50px;
+    width: 50%;
+    color:white;
+}
+button.chat_search_btn:first-child {
+	border-right: white solid 1px;
+}
+#chat_room_list li {
+	border-bottom: #ffa50052 solid 1px;
+}
+#chat_room_list li > div {
+	display:flex;
+	flex-direction:row;
+	width:100%;
+	height:100%;
+}
+#chat_room_list li > div > div:nth-child(1) {
+	width: 25%;
+    background: silver;
+}
+#chat_room_list li > div > div:nth-child(2) {
+	width: 75%;
+    height: 100%;
+}
+#chat_room_list li > div > div:nth-child(2) > div:nth-child(1) {
+	width: 184px;
+    display: flex;
+    height: 22px;
+    margin: 5px 5px 0 5px;
+}
+#chat_room_list li > div > div:nth-child(2) > div:nth-child(2) {
+	height:40px;
+}
+#chat_room_list li span:nth-child(1) {
+	font-size: 14px;
+    color: #4e4e4e;
+    overflow: hidden;
+    width: 124px;
+    font-weight: 600;
+}
+#chat_room_list li span:nth-child(2) {
+	float: right;
+    font-size: 12px;
+    color: #9c9c9c;
+    width: 60px;
+}
+#chat_room_list p {
+	overflow: hidden;
+    font-size: 13px;
+    color: #5f5f5f;
+    height: 20px;
+    margin: 10px;
 }
 </style>
 
@@ -380,7 +441,7 @@ $(function() {
 			url : "${pageContext.request.contextPath}/main/memberSearch",
 			data : { "search" : $("#chat_search_input > input").val(), "sessionId" : "${user_info.id}" },
 			success : function(rdata) {
-				console.log(rdata.memberList);
+				//console.log(rdata.memberList);
 				var output = "<span>검색 결과가 없습니다.</span>";
 				
 				if (rdata.memberList.length > 0) {
@@ -410,6 +471,8 @@ $(function() {
 					});
 					output += "</ul>"
 							+ "<div>"
+							+ "    <button class='chat_search_btn chat_btn'>대화 시작</button>"
+							+ "    <button class='chat_search_btn'>대화 초대</button>"
 							+ "</div>";
 				} else if ($("#chat_search_input > input").val() == "") {
 					output = "<span>검색어를 입력해주세요.</span>";
@@ -421,44 +484,82 @@ $(function() {
 		
 	});
 	
-	$(document).on("mouseover", "#chat_search_result li", function() {
-		$(this).children("div").children(".chat_search_menu").addClass("show");
-	});
-	$(document).on("mouseout", "#chat_search_result li", function() {
-		$(this).children("div").children(".chat_search_menu").removeClass("show");
+	//체크박스 선택/해제시 배열에 추가/삭제
+	var chat_members = ["${user_info.id}"];
+	$(document).on("change", "input[type='checkbox']", function() {
+		if ($(this).prop("checked")) {
+			chat_members.push($(this).prop("id"));
+		} else {
+			var delete_index = chat_members.indexOf($(this).prop("id"));
+			chat_members.splice(delete_index, 1);
+		}
+		console.log(chat_members);
 	});
 	
+	//대화 시작 버튼
 	$(document).on("click", ".chat_btn", function() {
+		if (chat_members.length <= 1) {
+			alert("대화를 시작할 상대를 고르세요.");
+		} else {
+			$.ajax({
+				type : "post",
+				url : "${pageContext.request.contextPath}/main/chat",
+				data : { "chat_members" : chat_members },
+				success: function() {
+					
+				}
+			});
+		}
 		
 		$("#msg_text_input").focus();
-		
-		$.ajax({
-			type : "post",
-			url : "${pageContext.request.contextPath}/main/chat",
-			data : { "to" : $(this).prev().val() },
-			success: function() {
-				
-			}
-		});
 	});
 
 });
 
 function getChatRoomList() {
-	output =  "<div id='chat_room_list'>"
-			+ "</div>";
-	$("#msg_left_list").html(output);
+	$.ajax({
+		type : "get",
+		url : "${pageContext.request.contextPath}/main/roomList",
+		data : { "id" : "${user_info.id}" },
+		success : function(rdata) {
+			var output = "<div id='chat_room_list'><ul style='list-style:none;padding:0;'>";
+			if (rdata.length > 0) {
+				$(rdata).each(function(index, item) {
+					output += "<li>"
+							+ "    <div>"
+							+ "        <div>"
+							+ "        </div>"
+							+ "        <div>"
+							+ "            <div>"
+							+ "                <span>" + this.room_member + "</span>"
+							+ "                <span>오전 11:19</span>"
+							+ "            </div>"
+							+ "            <div>"
+							+ "                <p></p>"	
+							+ "            </div>"
+							+ "        </div>"
+							+ "    </div>"
+							+ "</li>";
+				});
+				output += "</ul>";
+			} else {
+				output += "<span>채팅 목록이 없습니다.</span>";
+			}
+			output += "</div>";
+			$("#msg_left_list").html(output);
+		}
+	});
 }
 
 function getChatSearchList() {
-	output =  "<div id='chat_search_list'>"
-			+ "    <div id='chat_search_input'>"
-			+ "        <input type='text'>"
-			+ "    </div>"
-			+ "    <div id='chat_search_result'>"
-			+ "        <span>검색어를 입력해주세요.</span>"
-			+ "    </div>"
-			+ "</div>";
+	var output =  "<div id='chat_search_list'>"
+				+ "    <div id='chat_search_input'>"
+				+ "        <input type='text'>"
+				+ "    </div>"
+				+ "    <div id='chat_search_result'>"
+				+ "        <span>검색어를 입력해주세요.</span>"
+				+ "    </div>"
+				+ "</div>";
 	$("#msg_left_list").html(output);
 	$("#chat_search_input > input").focus();
 }
