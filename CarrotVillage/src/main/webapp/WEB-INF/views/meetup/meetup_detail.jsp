@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>       
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet"> <!--CDN 링크 -->
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/meetup_detail.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/nhr_meetup_detail.css">
 <style>
 
 html, body {
@@ -84,7 +85,13 @@ table {border-spacing: 5%;}
 
 i {margin-right : 5%}
 
-img {widht: 400px; height: 400px;}
+img {
+    width: 450px; 
+    height: 450px;
+    border-radius: 10px;
+    outline: none !important;
+    box-shadow: 0 0 10px #ffb01f;;
+ }
 
 #content_wrap > div.all-content-center_detail > div.info > table > tbody > tr:nth-child(2) > td {
 	font-size: 1.3em;
@@ -100,7 +107,38 @@ img {widht: 400px; height: 400px;}
 a {color : black}
 a:hover {color : orange;}
 
+
+#content_wrap > div.all-content-center_detail > div.info > table > tbody > tr:nth-child(3) > td {
+	width : 35%; 
+}
+strong {margin-right: 10%;}
 </style>
+
+<script>
+$(document).ready(function(){
+	
+	$('.fa-comment-dots').on('click', function(){
+		$('#msg_wrap').open();
+	});
+	
+	//글자수
+	 $('.CommentBox').on('keyup', '.comment_inbox_text', function(){
+		 var length = $(this).val().length;
+		 $(this).prev().text(length + '/200');
+	 });
+	
+	//가격체크
+	  var price = "${groups.price}";
+		if(price == ("무료")){
+			$(".price").css('color','green');
+		} else {
+			$(".price").css('color','orange');
+		}
+  });
+
+
+
+</script>
 </head>
 <body>
 <div id="wrap">
@@ -109,6 +147,8 @@ a:hover {color : orange;}
 
 	
 	<div id="content_wrap"> 
+	
+	  <input type="hidden" id="num" value="${groups.num}" name="groups.num">
 		
 		 <div class="all-content-top">
 		  <div id="title">
@@ -124,29 +164,29 @@ a:hover {color : orange;}
 	      <div class="info">
 	          <table>
 	          	<tr>
-	          	   <td rowspan=6 ><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg"></td>
+	          	   <td rowspan=6 ><img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${groups.img_file}"></td>
 	          	   <td rowspan=6  style = "width: 20%"></td>
 	          	   <td>
-		          	   <i class="fas fa-heart" aria-hidden="true" > 580</i> 
-					   <i class="fas fa-eye " aria-hidden="true" > 30</i> 
-				  	   무료
+		          	   <i class="fas fa-heart" aria-hidden="true" style="color:red"></i><strong>${groups.like_count}</strong>
+					   <i class="fas fa-eye " aria-hidden="true" >&nbsp;&nbsp;${groups.view_count}</i> 
+				  	   <span class="price">&nbsp;&nbsp;${groups.price}</span>
 			  	   </td>
 	          	</tr>
 	          	<tr>
-	          		<td colspan=3>플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</td>
+	          		<td colspan=3>${groups.subject}</td>
 	          	</tr>
 	          	<tr>
-	          		<td colspan=3><i class="fas fa-clock" aria-hidden="true" ></i> 4월 3일 토 10:00 am</td>
+	          		<td colspan=3><i class="fas fa-clock" aria-hidden="true" ></i>${groups.start_date}&nbsp; - &nbsp;${groups.end_date}</td>
 	          	</tr>
 	          	<tr>
-	          		<td colspan=3><i class="fas fa-map-marker-alt" aria-hidden="true" ></i>  서울시 강남구 역삼동<td>
+	          		<td colspan=3><i class="fas fa-map-marker-alt" aria-hidden="true" ></i>${groups.location}<td>
 	          	</tr>
 	          	<tr>
-	          		<td colspan=3 > <i class="fas fa-user-friends" aria-hidden="true"></i> 10 명</td>
+	          		<td colspan=3 > <i class="fas fa-user-friends" aria-hidden="true"></i>${groups.joined_member}</td>
 	          	</tr>
 	          	<tr>
-	          		<td><i class="fas fa-smile" aria-hidden="true"></i> &nbsp;&nbsp;플라워선생님123 </td>
-	          		<td colspan=2><i class="fas fa-comment-dots" aria-hidden="true"></i> <a href="#">채팅하기</a> </td>
+	          		<td><i class="fas fa-smile" aria-hidden="true"></i> &nbsp;${member.name}</td>
+	          		<td colspan=2><i class="fas fa-comment-dots" aria-hidden="true"></i><a href="#">채팅하기</a> </td>
 	          	</tr>
 	          	
 	          </table>
@@ -158,22 +198,7 @@ a:hover {color : orange;}
             	우리 모임은 이런 모임이에요! 
             </div>
             <div class="detail_main">
-             <p>
-	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-	         	 sunt in culpa qui officia deserunt mollit anim id est laborum.
-	         </p>  <p>
-	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-	         	 sunt in culpa qui officia deserunt mollit anim id est laborum.
-	         </p>   <p>
-	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-	         	 sunt in culpa qui officia deserunt mollit anim id est laborum.
-	         </p>   
+             ${groups.content}
 	         	<div class="hashtag">
 	         		#원데이플라워클래스 #예약 #일산 #취미 #단기 #좋아요
 	         	</div>
@@ -186,12 +211,7 @@ a:hover {color : orange;}
             	공지사항 
             </div>
              <div class="detail_main">
-	           <p>
-	         	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-	         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-	         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-	         	sunt in culpa qui officia deserunt mollit anim id est laborum.
-	          </p>  
+	           ${groups.notice}
          	</div>
          </div>
          <hr>
