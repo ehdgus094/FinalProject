@@ -2,9 +2,15 @@ package com.naver.myhome.market.domain;
 
 public class UsedItem {
 	private int num, price, viewcount;
-	private String id, subject, content, register_date, location, sold, imagefolder, thumbnail;
+	private String id, subject, content, register_date, location, sold, imagefolder, thumbnail, deadline;
 	private double latitude, longitude;
 
+	public String getDeadline() {
+		return deadline;
+	}
+	public void setDeadline(String deadline) {
+		this.deadline = deadline;
+	}
 	public double getLatitude() {
 		return latitude;
 	}

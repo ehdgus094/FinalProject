@@ -148,17 +148,23 @@ $(document).ready(function() {
 						var price = item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 						output += '<div class=article>';
 						if(item.imagefolder) {
-							output += '<img src="${pageContext.request.contextPath}/resources/upload/market_image/'+item.imagefolder+'/'+item.thumbnail+'">';
+							output += '<img src="${pageContext.request.contextPath}/resources/upload/market_image/'+item.imagefolder+'/'+item.thumbnail+'?'+Date.now()+'">'; 								
 						} else {
 							output += '<img src="${pageContext.request.contextPath}/resources/image/kdh_default_image.png">';
 						}
-						if(item.sold == 'y') {
-							output += '		<div><span class="badge badge-success">판매완료</span><b>'+item.subject+'</b></div>'
-						} else {
-							output += '		<div><b>'+item.subject+'</b></div>'
+						output += '<div>';
+						if(item.price == '0') {
+							output += '		<span class="badge badge-info">무료나눔</span>';
+						} else if(item.sold == 'y') {
+							output += '		<span class="badge badge-success">판매완료</span>';
 						}
-						output += '		<div><i class="fas fa-won-sign" aria-hidden="true"></i> '+price+'원</div>'
-								+ '		<div><i class="fas fa-map-marked-alt" aria-hidden="true" ></i> '+item.location+'</div>'
+						output += '		<b>'+item.subject+'</b></div>';
+						if(item.price == '0') {
+							output += '		<div><i class="fas fa-clock" aria-hidden="true"></i> '+item.deadline.substring(0,16)+' 마감</div>';
+						} else {
+							output += '		<div><i class="fas fa-won-sign" aria-hidden="true"></i> '+price+'원</div>';
+						}
+						output += '		<div><i class="fas fa-map-marked-alt" aria-hidden="true" ></i> '+item.location+'</div>'
 								+ '		<div id=item_num>'+item.num+'</div>'
 								+ '</div>'
 					});

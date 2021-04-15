@@ -33,4 +33,12 @@ public class UsedItemService {
 	public int delete(int num) {
 		return dao.delete(num);
 	}
+	
+	public void update(UsedItem usedItem) {
+		dao.update(usedItem);
+	}
+	
+	public void updateSold(Map<String, Object> map) {
+		dao.updateSold(map);
+	}
 }

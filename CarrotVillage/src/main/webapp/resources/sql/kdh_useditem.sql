@@ -12,7 +12,8 @@ create table useditem (
 	thumbnail varchar2(30),
 	viewcount number,
 	latitude number,
-	longitude number
+	longitude number,
+	deadline varchar2(19)
 )
 /*
  * id 외래키로 바꾸기
@@ -22,3 +23,12 @@ create sequence useditem_seq
 select * from useditem
 
 delete from useditem
+	 
+select rownum rnum, a.* from
+							(select * from (select * from useditem
+										    where location like '%일산서구%'
+										   )
+							where subject like '%' || '' || '%'
+							or content like '%' || '' || '%'
+							order by sold asc, decode(location, '경기 고양시 일산서구 가좌동', 1)
+							) a
