@@ -5,15 +5,17 @@
 
 <configuration>
    <typeAliases>
-      <typeAlias alias="usedItem"	type="com.naver.myhome.market.domain.UsedItem" />
-      <typeAlias alias="member"		type="com.naver.myhome.main.domain.Member"/>
+      <typeAlias alias="usedItem"	    type="com.naver.myhome.market.domain.UsedItem" />
+      <typeAlias alias="member"		    type="com.naver.myhome.main.domain.Member"/>
       <typeAlias alias="martList"		type="com.naver.myhome.sub.domain.MartList"/>
+      <typeAlias alias="groups"		    type="com.naver.myhome.meetup.domain.Groups"/>
    </typeAliases>
    
    <mappers>
       <mapper resource="sql/usedItem.xml"/>
       <mapper resource="sql/member.xml"/>
       <mapper resource="sql/sub.xml"/>
+      <mapper resource="sql/groups.xml"/>
    </mappers>
    
 </configuration>

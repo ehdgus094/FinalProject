@@ -10,6 +10,10 @@
 		</layout>
 	</appender>
 	
+	<!-- <logger name="Groups">
+		<level value="trace" />
+	</logger> -->
+	
 	<!-- Application Loggers -->
 	<logger name="com.naver.myhome">
 		<level value="info" />

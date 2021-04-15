@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>     
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,7 +66,7 @@ input:focus , #searchicon > button:focus  {
 	margin-top: 5%;
 }
 .all-content-center_list {
-	margin-top: -2%;
+	margin: -2% 0 5% 0;
 }
 #famous, #interested  {
 	display : grid;
@@ -77,11 +79,10 @@ input:focus , #searchicon > button:focus  {
 
 }
 .con-m {
-	width: 82%;
-	margin : 10%;
+	margin: 10% 4%;
 }
 .fa-eye {
-	margin : 1.5% 0 0 60%;
+	margin : 1.5% 0 0 65%;
 	color : #676565;
 }
 .head-content-s {
@@ -93,13 +94,14 @@ input:focus , #searchicon > button:focus  {
 	display : flex;
 	justify-content: space-between;
 	color : orange;
+	margin-bottom: 3%;
 }
 .body_content_m{
 	padding : 2%;
 }
 .watch {
 	color : black;
-	margin-right: 3%;
+	margin-right: 4%;
 }
 .group_sub {
 	margin : 8% 0;
@@ -110,9 +112,92 @@ a {color : black;}
 a:hover {
     color: #433f3f;
     text-decoration: none;
-  }
+ }
+img {
+	width: 270px;
+    height: 270px;
+    border-radius: 10px;
+    outline: none !important;
+    box-shadow: 0 0 10px #ffb01f;;
+}
+
+#more{
+	text-align: center;
+    font-weight: bolder;
+    font-size: 1.2em;
+    border: 3px solid #f1e8e8;
+    padding: 1%;
+    width: 20%;
+    margin: 0 auto;
+}
+
+#more:hover {
+   background-color: #f1e8e8;
+   color: gray;
+   font-weight: bolder;
+}
+  
+.green {
+	color : green
+} 
+.orange {
+	color : orange
+}
 
 </style>
+
+<script>
+	$(function(){
+		
+		getList();
+		
+		var result = "${result}";
+		if(result == 'makeSuccess') {
+		  alert("그룹이 생성되었습니다.")
+		}
+		
+		//가격 색상
+		
+		
+	});//ready end
+	
+	//list목록 + 각 데이터 ajax로 받아오기
+	function getList() { 
+		$.ajax({
+			type : "get" ,
+			data : data, 
+			url  : "${pageContext.request.contextPath}/meetup/list",
+			dataType : "json",
+			success : function(data) {
+				if(data.listcount > 0) {
+					$("#famous").show();
+					$("#interested").show();
+						output = '';
+					$(data.list).each(function(index, item){
+						output += '<div class="con-m">'
+						output += '     <div class="head-content-m">' + item.price 
+						output += '       <i class="fas fa-eye " aria-hidden="true"></i>'
+						output += '       <div class="watch">350</div>'
+					    output += '     </div><a href = "${pageContext.request.contextPath}/meetup/detail">'
+					    output += ' <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/' + item.img_file ">';
+						output += ' <div class="group_sub">' + item.subject + '</div>'
+						output += ' <div class="group_time">'
+						output += ' <i class="fas fa-clock" aria-hidden="true" ></i>' + item.start_date + ' - ' + item.end_date + '</div>'
+						output += ' <div class="group_loc">' + item.location + '</div></a> '
+						output += '</div>';
+					}) //each
+					
+					$('#famous').append(output);
+					$('#interested').append(output);
+					
+				} else {
+					 $('#message').text('등록된 글이 없습니다.');
+					 $('#famous').hide();
+					 $('#interested').hide();
+				 }
+		    }
+		})
+</script>
 </head>
 <body>
 <div id="wrap">
@@ -121,6 +206,8 @@ a:hover {
 
 		
 		<div id="content_wrap"> 
+			
+		  <input type="hidden" id="num" value="${num}" name="num">
 			
 		  <div class="all-content-top">
 			  <div id="title">
@@ -132,171 +219,83 @@ a:hover {
 				 <input type="text" id="searching" >
 			  </div>
 		  </div>
-		  
+		  			
 		  <div class="all-content-center_list">
 		  
 		   <i class="fas fa-fire-alt" aria-hidden="true" >&nbsp;&nbsp;
 		   		현재 회원님들이 가장 관심을 많이 보이는 그룹이에요! </i>
-		  	 <div id="famous">
-		  	 	<div class="con-s">
-			  	 	<div class="head-content-s">무료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail"><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg"></a>
+		   		
+	  	  <div id="famous">
+	  	   
+  	  		 <c:forEach items="${list}" var="f">
+  	  		
+  	  		 <div class="con-m">
+		  	 	<div class="head-content-m">&nbsp;
+		  	 	<span
+		  	 	     <c:if test="${f.price == '무료'}"  >
+		  	 	        class='green'
+		  	 	     </c:if> 
+		  	 	     <c:if test="${f.price == '유료'}"  >
+		  	 	        class='orange'
+		  	 	     </c:if> 
+		  	 	 >
+		  	 	${f.price}</span>
+		  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
+		  	 		 <div class="watch">${f.view_count}</div>
 		  	 	</div>
-		  	 		<div class="con-s">
-			  	 	<div class="head-content-s">무료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail"><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg"></a>
-		  	 	</div>
-		  	 		<div class="con-s">
-			  	 	<div class="head-content-s">무료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail"><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg"></a>
-		  	 	</div>
-		  	 		<div class="con-s">
-			  	 	<div class="head-content-s">무료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail"><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg"></a>
-		  	 	</div>
-		  	 		<div class="con-s">
-			  	 	<div class="head-content-s">무료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail"><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg"></a>
-		  	 	</div>
-		  	 		<div class="con-s">
-			  	 	<div class="head-content-s">무료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail"><img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot.jpg"></a>
-		  	 	</div>
-		  	 	
-		  	 </div>
+		  	 	 <a href="${pageContext.request.contextPath}/meetup/detail?num=${f.num}">
+			  	 	  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file}">
+			  	 	  <div class="group_sub">${f.subject }</div>
+			  	 	  <div class="group_time">
+			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
+			  	 	  		${f.start_date}
+			  	 	  </div>
+			  	 	  <div class="group_loc">
+			  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
+			  	 	  		${f.location}
+			  	 	  </div>
+		  	 	    </a>  
+	  	 	    </div>
+	  	  		</c:forEach>
+		  	  </div>
+	  	 		  <c:if test="${page_view *8 < count }">
+	  	 		     <c:set var="viewPlus" value="${page_view + 1 }"/>
+	  	 			  <div id="more"><a href="${pageContext.request.contextPath}/meetup/list?page_view=${viewPlus}">더보기</a></div>
+	  	 		  </c:if> 
 		  	 <hr>
 		  	 
-	  	 	 <i class="fas fa-heart" aria-hidden="true" >&nbsp;&nbsp;&nbsp;&nbsp;내가 관심을 보인 그룹이에요!</i>
+	  	 	<i class="fas fa-heart" aria-hidden="true" >&nbsp;&nbsp;&nbsp;&nbsp;
+	  	 				내가 관심을 보인 그룹이에요!</i>
 		  	 	 	
-		  	 <div id="interested">
-		  	   <div class="con-m">
-			  	 	<div class="head-content-m">유료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail">
-				  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-				  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
-				  	 	  <div class="group_time">
-				  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
-				  	 	  		4월 3일 토 10:00 am
-				  	 	  </div>
-				  	 	  <div class="group_loc">
-				  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
-				  	 	  		서울시 강남구 역삼동
-				  	 	  </div>
-			  	 	 </a>  
-		  	 	 </div>
-		  	 	  <div class="con-m">
-			  	 	<div class="head-content-m">유료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail">
-				  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-				  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
-				  	 	  <div class="group_time">
-				  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
-				  	 	  		4월 3일 토 10:00 am
-				  	 	  </div>
-				  	 	  <div class="group_loc">
-				  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
-				  	 	  		서울시 강남구 역삼동
-				  	 	  </div>
-			  	 	 </a>  
-		  	 	 </div>
-		  	 	 <div class="con-m">
-			  	 	<div class="head-content-m">유료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail">
-				  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-				  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
-				  	 	  <div class="group_time">
-				  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
-				  	 	  		4월 3일 토 10:00 am
-				  	 	  </div>
-				  	 	  <div class="group_loc">
-				  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
-				  	 	  		서울시 강남구 역삼동
-				  	 	  </div>
-			  	 	 </a>  
-		  	 	 </div>
-		  	 	 <div class="con-m">
-			  	 	<div class="head-content-m">유료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail">
-				  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-				  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
-				  	 	  <div class="group_time">
-				  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
-				  	 	  		4월 3일 토 10:00 am
-				  	 	  </div>
-				  	 	  <div class="group_loc">
-				  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
-				  	 	  		서울시 강남구 역삼동
-				  	 	  </div>
-			  	 	 </a>  
-		  	 	 </div>
-		  	 	 <div class="con-m">
-			  	 	<div class="head-content-m">유료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail">
-				  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-				  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
-				  	 	  <div class="group_time">
-				  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
-				  	 	  		4월 3일 토 10:00 am
-				  	 	  </div>
-				  	 	  <div class="group_loc">
-				  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
-				  	 	  		서울시 강남구 역삼동
-				  	 	  </div>
-			  	 	 </a>  
-		  	 	 </div>
-		  	 	 <div class="con-m">
-			  	 	<div class="head-content-m">유료
-			  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-			  	 		 <div class="watch">350</div>
-			  	 	</div>
-			  	 	 <a href="/myhome/meetup/detail">
-				  	 	  <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg">
-				  	 	  <div class="group_sub">플라워 원데이 클래스플라워 원데이 클래스플라워 원데이 클래스</div>
-				  	 	  <div class="group_time">
-				  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
-				  	 	  		4월 3일 토 10:00 am
-				  	 	  </div>
-				  	 	  <div class="group_loc">
-				  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
-				  	 	  		서울시 강남구 역삼동
-				  	 	  </div>
-			  	 	 </a>  
-		  	 	 </div>
-		  	 	 
+	  	     <div id="interested">
+	  	         <c:forEach items="${like}" var="i"> <!-- key값 -->
+  	  		
+  	  		 <div class="con-m">
+		  	 	<div class="head-content-m">&nbsp;${i.price}
+		  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
+		  	 		 <%--  <c:set var="viewCount_list" value="${viewCount_list}"/> --%>
+		  	 		 <div class="watch">${i.view_count}</div>
+		  	 	</div>
+		  	 	 <a href="/myhome/meetup/detail">
+			  	 	  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${i.img_file}">
+			  	 	  <div class="group_sub">${i.subject }</div>
+			  	 	  <div class="group_time">
+			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
+			  	 	  		${i.start_date}
+			  	 	  </div>
+			  	 	  <div class="group_loc">
+			  	 	  		<i class="fas fa-map-marker-alt" aria-hidden="true" ></i>
+			  	 	  		${i.location}
+			  	 	  </div>
+		  	 	    </a>  
+	  	 	    </div>
+	  	  		
+	  	  		</c:forEach>
 		  	 </div>	
+		  	 <c:if test="${page_like *8 < count }">
+	  	 		     <c:set var="viewPlus" value="${page_like + 1 }"/>
+	  	 			  <div id="more"><a href="${pageContext.request.contextPath}/meetup/list?page_like=${viewPlus}">더보기</a></div>
+	  	 		  </c:if> 
 		  </div>
 			
 		</div>

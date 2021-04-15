@@ -12,6 +12,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet"> <!--CDN 링크 -->
+<link href='http://bevacqua.github.io/rome/dist/rome.css' rel='stylesheet' type='text/css' />
+<script src='http://bevacqua.github.io/rome/dist/rome.js'></script>
 <style>
 
 html, body {
@@ -77,7 +79,7 @@ textarea {
 	border-color : orange;
 	padding: 5%;
 }
-#content_wrap > div.all-content-center_make > form > fieldset > div:nth-child(8) > textarea {
+#notice {
 	width: 100%;
     height: 300px;
 	resize: none;
@@ -88,14 +90,29 @@ input[type="text"] {
 	border-bottom: 1px solid orange;
  }
  
-select{
+.input {
+	border : 1px solid orange;
+	border-radius: 20px;
+	padding: 3% 5%;
+    text-align: center;
+}
+ 
+select  {
 	width:120%;
 	border :1px solid orange;
 	padding: 4%;
 }
-.time-control {
+.date-control , .price-control , .file-control{
 	display: grid;
 	grid-auto-flow: column;
+}
+
+.price-control{
+	margin-left: 25%;
+}
+
+.file-control {
+	background: pink;
 }
 
 .time-word{
@@ -109,22 +126,157 @@ button{
 	padding : 1% 7%;
 	width: 30%;
 }
-input[type="text"]:focus, select:focus, textarea:focus, button:focus {
+input[type="text"]:focus, select:focus, textarea:focus, button:focus, date-control:focus{
 	outline: none !important;
     border: 1px solid #ff9800;
     box-shadow: 0 0 10px #ff9800;
 }
-#content_wrap > div.all-content-center_make > form > fieldset > div:nth-child(9) > label:nth-child(2){
+#upfile1 {
 	background-color: orange;
 	color : white;
 	border: none;
 	padding : 1.5% 8%;
 	width: 30%;
 }
-button, select , textarea, #upfile1 {
+button, select , textarea, #upfile1, .clearfix  {
 	border-radius: 20px;
 } 
+.submitbtn {
+	background-color: #ff5924;
+	color : white;
+	border: none;
+	padding : 1.5% 4%;
+	width: 15%;
+	float : right;
+	
+}
+.resetbtn{
+	background-color: #fdd355;
+	color : white;
+	border: none;
+	padding : 1.5% 4%;
+	width: 15%;
+	float : right;
+	margin-right: 2%;
+}
+
+#date_gap {
+	margin : 10% 10%;
+	text-align: -webkit-center;
+}
+
+/* 
+calendar_api
+#calendar{
+   width:60%;
+   margin:20px auto;
+} */
+
 </style>
+
+<script>
+	$(document).ready(function(){
+		/*
+		//var a = ${member.name} 어떤값을 문자열 변수에 저장하려면 무조건 "" 필요 문법임(반환이 아니라 치환....)
+		var b = "${member.name}"
+		var c = "abc"
+		//console.log(a)
+		console.log(b)
+		console.log(c)
+		*/
+		
+		//뜸
+		$('form').submit(function(){
+			
+			if($.trim($('#subject').val()) == ''){
+				alert('제목을 입력하세요.');
+		        $('#subject').focus();
+		        return false;
+			}
+			 if($.trim($('#start').val()) == ''){
+		        alert('시작일을 선택해주세요.');
+		        $('#start').focus();
+		        return false;
+			 }
+		     if($.trim($('#end').val()) == ''){
+		           alert('종료일을 선택해주세요.');
+		           $('#end').focus();
+		           return false;
+		      }; 
+		      if($.trim($('#content').val()) == ''){
+		           alert('내용을 입력하세요.');
+		           $('#content').focus();
+		           return false;
+		      };
+		});
+		
+		    
+		    //datepicker
+		    rome(start, {
+		    	  dateValidator: rome.val.beforeEq(end)
+		    	});
+
+	    	rome(end, {
+	    	      dateValidator: rome.val.afterEq(start)
+	    	   });
+		    
+		    
+	        var formData = new FormData($('#makeForm')[0]); 
+	        
+	        $.ajax({ 
+	        	type: "POST", 
+	        	enctype: 'multipart/form-data', 
+	        	url: '/addFile',
+	        	data: formData, 
+	        	processData: false,
+	        	contentType: false,
+	        	cache: false, 
+	        	success: function (result) {
+	        	}, error: function (e) { 
+	        	} 
+	        });//ajax 
+	        
+	        $("#upfile").change(function(){
+				console.log($(this).val())  // c:\fakepath\upload.png  -> 이렇게 내부적으로 관리함.
+				var inputfile = $(this).val().split('\\');
+				$('#filevalue').text(inputfile[inputfile.length -1]);
+			})
+	 	
+	 }); //ready 
+	 
+	
+ <%--  calendar_api
+ document.addEventListener('DOMContentLoaded', function() {
+	  var calendarEl = document.getElementById('calendar');
+
+	  var calendar = new FullCalendar.Calendar(calendarEl, {
+	    googleCalendarApiKey: 'AIzaSyDhsP7sI1j3jywjCotfkYO3TClw-zIYa18',
+	    eventSources: [
+	       {
+	          googleCalendarId: 'AIzaSyDhsP7sI1j3jywjCotfkYO3TClw-zIYa18',
+	          className: '웹디자인기능사',
+	          color: '#be5683', 
+	          //textColor: 'black' 
+	        },
+	      {
+	          googleCalendarId: 'AIzaSyDhsP7sI1j3jywjCotfkYO3TClw-zIYa18',
+	          className: '정보처리기능사',
+	            color: '#204051',
+	            //textColor: 'black' 
+	        },
+	      {
+	          googleCalendarId: 'AIzaSyDhsP7sI1j3jywjCotfkYO3TClw-zIYa18',
+	          className: '정보처리기사',
+	            color: '#3b6978',
+	            //textColor: 'black' 
+	        }
+	    ]
+	  });
+	  calendar.render();
+	}); 
+		 --%>
+</script>
+
 </head>
 <body>
 <div id="wrap">
@@ -146,96 +298,121 @@ button, select , textarea, #upfile1 {
 	  
 	  <div class="all-content-center_make">
 	  	
-	  	<form method="post" action="#" enctype="multipart/form-data">
+	  	<form  method="post" action="makeProcess" enctype="multipart/form-data" id="makeForm"><%--  action="makeProcess" --%>
   		  <fieldset>
   			<legend>그룹생성폼</legend>
   			
   			<div class="control-form">
   			<label>그룹리더명</label>
-  			<input type="text" id="name"><br>
+	  			<input 
+	  			    type="text" 
+	  			    id="name" 
+	  			    name="name" 
+	  			    value="${member.name}"
+	  			 ><br>
   			</div>
   			
   			<div class="control-form">
   			<label>제목</label>
-  			<input type="text" id="subject"><br>
+  				   <input 
+  				      type="text" 
+  				      id="subject" 
+  				      name="subject" 
+  				      placeholder="제목을 입력해주세요."
+  				    ><br>
   			</div>
   			
   			<div class="control-form">
-  			<label>날짜</label>
-  			<button type="">선택</button>
+  			<label>가격</label>
+	  		  <div class="price-control">
+	  			<label>
+	  				<input 
+	  					type="radio" 
+	  					class="price" 
+	  					name="price"  
+	  					value="무료" 
+	  					checked
+	  				  >&nbsp;무료
+	  				</label>
+	  			 <label>
+  				     <input 
+  			            type="radio" 
+  			            class="price" 
+  			            name="price"  
+  			            value="유료"
+  			          >&nbsp;유료
+	  			   </label>
+	  		   </div>
   			</div>
   			
   			<div class="control-form">
-  			<label>시간</label>
-  			  <div class="time-control">
-	  			<div class="select-box mw30p">
-	  	   		  	<select id="startTimeH">
-	  	   		  	   <c:forEach var="hour" begin="0" end="23">
-	  	   		  			<option value="<c:if test="${hour < 10}">0</c:if>${hour}">
-	  	   		  			<c:if test="${hour < 10}">0</c:if>${hour}</option>
-	  	   		  		</c:forEach>	
-	  	   		  	</select>
-	  	   		  	<span class="caret"></span>
-	  	   		  </div>
-	  	   		  <span class="time-word">시</span>
-	  	   		  <div class="select-box mw30p">
-	  	   		  <!-- 	<select id="startTimeM" class="form-control w100 ml5"> -->
-	  	   		  	<select id="startTimeM" >
-	  	   		  	   <c:forEach var="min" begin="0" end="59">
-	  	   		  			<option value="<c:if test="${min < 10}">0</c:if>${min}">
-	  	   		  			<c:if test="${min < 10}">0</c:if>${min}</option>
-	  	   		  		</c:forEach>	
-	  	   		  	</select>
-	  	   		  	<span class="caret"></span>
-	  	   		  </div>
-	  	   		  <span class="time-word">분</span>
-  	   		   </div>
-  	   		  </div>
-  	   		  
-  	   		  <div class="control-form">
-  	   		  <label>장소</label>
-  			  <input type="text" id="location">
-  			  </div>
+	  		  <label> 날짜, 시간 </label>
+	  		    <div class="date-control">
+	  			  <input 
+		  			class= "input"
+		  			id="start" 
+		  			name = "start_date"
+		  			placeholder="연도-월-일 시간:분"  
+		  			value= ""
+		  			required
+	  		      />
+	  		    <div id="date_gap">ㅡ</div>
+	  			  <input 
+		  			class="input"
+		  			id="end" 
+		  			name = "end_date"
+		  			placeholder="연도-월-일 시간:분"  
+		  			value= ""
+		  			required
+	  			  />
+	  		   </div>	
+		     </div>
   			  
+  			  <div class="control-form">
+  			  	 <label>위치</label>
+  				   <input 
+  				      type="text" 
+  				      id="location" 
+  				      name="location" 
+  				    />
+  			  </div>
   			  
   			  <div class="control-form">
   			  <label>내용</label>
-  			 <textarea >
-  			  		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-		         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-		         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-		         	sunt in culpa qui officia deserunt mollit anim id est laborum.	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-		         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-		         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-		         	sunt in culpa qui officia deserunt mollit anim id est laborum.	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-		         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-		         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-		         	sunt in culpa qui officia deserunt mollit anim id est laborum.
-  			</textarea> 
+  			  <textarea id="content" name="content" placeholder="최대 1500자까지 작성가능합니다."></textarea> 
   			  </div>
   			  
   			  <div class="control-form">
   			  <label>공지사항</label>
-  			  <textarea>
-  			  		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-		         	Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-		         	in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-		         	sunt in culpa qui officia deserunt mollit anim id est laborum.	
-  			  </textarea>
+  			  <textarea id="notice" name="notice" placeholder="최대 800자까지 작성가능합니다."></textarea>
   			  </div>
+  			  
+  			  
   			
   			<div class="control-form">
   	   		  <label for="board_file">파일첨부</label>
 				<label for="upfile" id="upfile1">
 					이미지첨부
 				</label>
-				<input type="file" name="uploadfile" id="upfile" style="display:none">
-				<span id="filevalue"></span>
+				  <div class="file-control">
+				    <input 
+				        type="file" 
+				        name="uploadfile" 
+				        id="upfile" 
+				        style="display:none"
+				     > <!--  multiple -->
+				<span id="filevalue" ></span>
+			   </div>	 
 			</div>
   			
+  			<div class="clearfix">
+				<button type="submit" class="submitbtn">등록</button>
+				<button type="reset" class="resetbtn">취소</button>
+		    </div>
 		 	
   		   </fieldset>
 	   	 </form>
+		 
 	  </div>
    </div>
 		

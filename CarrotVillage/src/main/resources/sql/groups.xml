@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Groups">
+
+	<insert id="insert" parameterType="groups">
+		insert into groups values(
+		groups_seq.nextval, #{name}, #{subject}, #{content}, #{notice} , #{img_file} , #{start_date} ,
+	    #{end_date} , sysdate, #{location}, #{joined_member}, #{like_count}, #{view_count},  #{price} )
+	</insert>
+	
+	<select id="selectList" resultType="groups" parameterType="map"> <!-- resultType="list" -->
+		select * 
+   		from ( select rownum rnum, s.*
+   				from (
+   					select *
+   					from groups
+   					order by view_count desc
+   				) s
+   			)
+   		where rnum between #{start} and #{end}	
+	</select>
+	
+	<select id="selectListLike" resultType="groups" parameterType="map"> <!-- resultType="list" -->
+		select * 
+   		from ( select rownum rnum, s.*
+   				from (
+   					select *
+   					from groups
+   					order by like_count desc
+   				) s
+   			)
+   		where rnum between #{start} and #{end}	
+	</select>
+	
+	<select id="detail" parameterType="int" resultType="groups">
+		select * 
+		from groups
+		where num = #{num}
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(*) from groups
+	</select>
+	
+	<update id="getViewCount" parameterType="int">
+		update groups
+		set view_count = view_count+1
+		where num = #{num}
+	</update>
+	
+</mapper>
