@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.naver.myhome.main.domain.ChatJoin;
 import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
 
@@ -36,8 +37,27 @@ public class MemberDAO {
 		return sqlSession.selectList("member.search", map);
 	}
 
-	public List<ChatRoom> roomList(String id) {
-		return sqlSession.selectOne("member.roomList", id);
+	public ChatRoom existRoom(Map<String, Object> map) {
+		return sqlSession.selectOne("member.existRoom", map);
+	}
+	
+	public int insertChatRoom(int numOf) {
+		return sqlSession.insert("member.insertChatRoom", numOf);
+	}
+	
+	public int getLastChatRoomNum() {
+		return sqlSession.selectOne("member.getLastChatRoomNum");
+	}
+	
+	public int insertChatJoin(ChatJoin cj) {
+		return sqlSession.insert("member.insertChatJoin", cj);
 	}
     
+	public List<ChatJoin> roomList(String id) {
+		return sqlSession.selectList("member.roomList", id);
+	}
+	
+	public List<ChatJoin> roomMember(int roomNum) {
+		return sqlSession.selectList("member.roomMember", roomNum);
+	}
 }

@@ -354,8 +354,27 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value = "chat")
-	public void chat(@RequestParam(value="to") String to) {
+	public void chat(@RequestParam(value="chat_members[]") List<String> chatMembers) {
 		
+		int result = memberService.existRoom(chatMembers);
+		logger.info("chat after existRoom chatMembers.size = " + chatMembers.size());
+		logger.info("chat result = " + result);
+		if (result == 0) {
+			memberService.insertRoom(chatMembers);
+		}
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "roomList")
+	public List<Map<String, Object>> roomList(@RequestParam(value="id") String id) {
+		logger.info("roomList id = " + id);
+		List<Map<String, Object>> list = memberService.roomList(id);
+		for(int i = 0; i < list.size(); i++) {
+			logger.info("roomList list.map(" + i + ").room_num = " + list.get(i).get("room_num"));
+			logger.info("roomList list.map(" + i + ").room_member = " + list.get(i).get("room_member"));
+		}
+		return list;
 	}
 	
 	

@@ -28,7 +28,8 @@ drop sequence chat_room_seq;
 create sequence chat_room_seq;
 drop table chat_room cascade constraints;
 create table chat_room (
-	num    number    primary key
+	num    	number    	primary key,
+	num_of  number(20) 
 );
 select * from chat_room;
 
@@ -40,7 +41,7 @@ create table chat_join (
 	member_id		varchar2(20)	references member(id),
 	chat_room_num	number			references chat_room(num)
 );
-select * from chat_room;
+select * from chat_join;
 
 drop sequence chat_message_seq;
 create sequence chat_message_seq;
@@ -53,6 +54,31 @@ create table chat_message (
 	chat_room_num	number				references chat_room(num)
 );
 
+
+select *
+from CHAT_ROOM
+where num_of = 2
+and num in (
+	select aaaaa.chat_room_num
+	from chat_join aaaaa 
+	join chat_join naver99678673 
+	on aaaaa.chat_room_num = naver99678673.chat_room_num
+	and aaaaa.member_id = 'aaaaa'
+	and naver99678673.member_id = 'naver99678673'
+);
+					  						  
+select max(num) from CHAT_ROOM;
+
+insert into CHAT_JOIN
+values (chat_join_seq.nextval, 'naver99678673', 1);
+
+
 select chat_room_num
 from chat_join
-where ;
+where member_id = 'naver99678673';
+
+select member_id
+from CHAT_JOIN
+where chat_room_num = 1;
+
+
