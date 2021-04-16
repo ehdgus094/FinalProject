@@ -1,11 +1,15 @@
 package com.naver.myhome.sub.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.naver.myhome.sub.dao.MartListDAO;
+import com.naver.myhome.sub.domain.MartDetail;
 import com.naver.myhome.sub.domain.MartList;
 
 
@@ -19,6 +23,59 @@ public class MartListServiceImpl implements MartListService{
 	public int addmart(MartList m) {
 
 		return dao.addmart(m);
+	}
+	@Override
+	public List<MartList> listup(String martloc, String si , String gu) {
+		Map<String, Object> map = new  HashMap<String, Object>();
+		map.put("martloc",martloc);
+		map.put("si", si);
+		map.put("gu", gu);
+		return dao.listup(map);
+	}
+	@Override
+	public int listupcount(String martloc, String si , String gu) {
+		Map<String, Object> map = new  HashMap<String, Object>();
+		map.put("martloc",martloc);
+		map.put("si", si);
+		map.put("gu", gu);
+		
+		return dao.listupcount(map);
+	}
+	@Override
+	public void insertsub(MartDetail md) {
+		
+		dao.insertsub(md);
+	}
+	@Override
+	public List<MartList> listview(int num) {
+		
+		return dao.listDetail(num);
+	}
+	@Override
+	public List<MartDetail> listDeta(int num) {
+		String m_na = dao.listname(num);
+		logger.info("m_na = "+m_na);
+		if(m_na==null) {
+			return null;
+		}else {
+			return dao.martDetail(m_na);
+		}
+		
+	}
+	@Override
+	public List<MartList> listup2() {
+	
+		return dao.listup2();
+	}
+	@Override
+	public int listupcount2() {
+		
+		return dao.listupcount2();
+	}
+	@Override
+	public List<MartDetail> detailview(int num) {
+	
+		return dao.detailview(num);
 	}
 
 }

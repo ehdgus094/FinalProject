@@ -12,7 +12,7 @@
 <link
 	href="${pageContext.request.contextPath}/resources/css/pjh_sub_write.css"
 	rel="stylesheet" type="text/css">
-		
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -22,11 +22,11 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/pjh_subwrite.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/pjh_subwrite.js"></script>
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 </head>
-<style>
 
-</style>
 <body>
 	<div id="wrap">
 
@@ -37,14 +37,14 @@
 			<div id="int_wrap">Carrot Mart</div>
 			<hr>
 			<div class="write_wrap">
-				<form action="SubAddAction" method="post"
-					enctype="multipart/form-data" name=board-form>
+				<form action="subAdd" method="post" enctype="multipart/form-data"
+					name=board-form>
 					<div class="write_subj">판매 글 작성</div>
 					<hr>
 					<div class="form-one">
 						<p>
 							<label for="mart_main"> Main-Category :&nbsp; </label> <select
-								name="main_category" id="main_categoty" onchange="catechange()">
+								name="main_category" id="main_category" onchange="catechange()">
 								<option>----</option>
 								<option>우리동네장보기</option>
 								<option>구독서비스</option>
@@ -57,7 +57,7 @@
 						<label for="mart_subject">&nbsp; 제 &nbsp;&nbsp;목&nbsp;
 							:&emsp; </label><input type="text" name="mart_subject"
 							placeholder="제목을 입력하세요" id="mart_subject" maxlength="30"
-							class="form-input">
+							class="form-input" required>
 
 					</div>
 					<hr>
@@ -70,7 +70,7 @@
 									<c:set var='src'
 										value='${"boardupload/"}${boardbean.board_thumbnail}}' />
 								</c:if> <img src="${src}" width="500px" height="500px" alt="profile">
-						</span> <input type="file" name="board_thumbnail" accept="image/*"
+						</span> <input type="file" name="uploadfile" accept="image/*"
 							style="display: none;">
 
 						</label>
@@ -90,7 +90,7 @@
 
 								<label for="mart_name">상&emsp;호&emsp;명&ensp; :&emsp; </label> <input
 									name="mart_name" id="mart_name" type="text" maxlength="200"
-									class="form-input" placeholder="Enter MartName">&nbsp;
+									class="form-input" placeholder="Enter MartName" required>&nbsp;
 
 							</div>
 
@@ -98,10 +98,11 @@
 
 							<div class="form-group">
 								<label for="mart_addr">주&emsp; &nbsp;&emsp;소
-									&emsp;:&emsp; </label> <input name="mart_addr" id="mart_addr"
+									&emsp;:&emsp; <input name="mart_addr" id="mart_addr"
 									type="text" maxlength="200" class="form-input"
-									placeholder="Enter Address">&nbsp;
-
+									placeholder="Enter Address" required>&nbsp; <input
+									type="button" value="주소검색" id="postcode">
+								</label>
 
 
 							</div>
@@ -112,7 +113,7 @@
 
 								<label for="mart_ori">원&emsp;산&emsp;지&ensp; :&emsp; </label> <input
 									name="mart_ori" id="mart_ori" type="text" maxlength="100"
-									class="form-input" placeholder="Enter origin">
+									class="form-input" placeholder="Enter origin" required>
 
 							</div>
 							<hr>
@@ -131,8 +132,8 @@
 
 
 										<label for="board_storage">배 송 비 용 &emsp;:&emsp; <input
-											type="text" name="board_deliverycost" id="board_deliverycost"
-											placeholder="Enter 배송비용">원
+											type="text" name="mart_deliverycost" id="mart_deliverycost"
+											placeholder="Enter 배송비용" required>원
 
 										</label>
 									</div>
@@ -152,33 +153,33 @@
 										<td>가격</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name" id="item_name"
+										<td><input type="text" name="item_name1" id="item_name1"
 											style="width: 200px"></td>
-										<td><input type="text" name="item_price" id="item_price"
-											style="width: 200px">원</td>
+										<td><input type="text" name="item_price1"
+											id="item_price1" style="width: 200px">원</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name" id="item_name"
+										<td><input type="text" name="item_name2" id="item_name2"
 											style="width: 200px"></td>
-										<td><input type="text" name="item_price" id="item_price"
-											style="width: 200px">원</td>
+										<td><input type="text" name="item_price2"
+											id="item_price2" style="width: 200px">원</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name" id="item_name"
+										<td><input type="text" name="item_name3" id="item_name3"
 											style="width: 200px"></td>
-										<td><input type="text" name="item_price" id="item_price"
-											style="width: 200px">원</td>
+										<td><input type="text" name="item_price3"
+											id="item_price3" style="width: 200px">원</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name" id="item_name"
+										<td><input type="text" name="item_name4" id="item_name4"
 											style="width: 200px"></td>
-										<td><input type="text" name="item_price" id="item_price"
-											style="width: 200px">원</td>
+										<td><input type="text" name="item_price4"
+											id="item_price4" style="width: 200px">원</td>
 									</tr>
 									<tr>
 										<td><img
-								src="${pageContext.request.contextPath}/resources/image/pjh_add.JPG"
-								width="20px" id="item_add" style="margin:0px"></td>
+											src="${pageContext.request.contextPath}/resources/image/pjh_add.JPG"
+											width="20px" id="item_add" style="margin: 0px"></td>
 										<td>최대 6개까지 등록가능</td>
 									</tr>
 
@@ -196,35 +197,34 @@
 						<div class="section_info">
 
 
-							<span id="board_thumbnailname" style="display: none;"></span>
 
 							<table class="table table-striped">
 
 								<caption>상품 상세정보</caption>
 								<tr>
 									<th>상 호 명</th>
-									<td><input type="text" name="mart_name"
-										id="mart_name" placeholder="Enter mart_name"></td>
+									<td><input type="text" name="mart_name2" id="mart_name2"
+										placeholder="Enter mart_name" readOnly></td>
 								</tr>
 								<tr>
 									<th>생 산 자</th>
-									<td><input type="text" name="mart_prod"
-										id="mart_prod" placeholder="Enter producer"></td>
+									<td><input type="text" name="mart_prod" id="mart_prod"
+										placeholder="Enter producer" required></td>
 								</tr>
 								<tr>
 									<th>상 품 명</th>
-									<td><input type="text" name="itme_name"
-										id="item_name" placeholder="Enter Item_Name"></td>
+									<td><input type="text" name="item_name" id="item_name"
+										placeholder="Enter Item_Name" required></td>
 								</tr>
 								<tr>
-									<th>원 산  지</th>
-									<td><input type="text" name="item_origin"
-										id="item_origin" placeholder="Enter origin"></td>
+									<th>원 산 지</th>
+									<td><input type="text" name="item_origin" id="item_origin"
+										placeholder="상세한 원산지를 작성해주세요" required></td>
 								</tr>
 								<tr>
 									<th>유 통 기 간</th>
-									<td><input type="text" name="item_exp"
-										id="item_exp" placeholder="Enter exp"></td>
+									<td><input type="text" name="item_exp" id="item_exp"
+										placeholder="Enter exp" required></td>
 								</tr>
 								<tr>
 
@@ -250,11 +250,15 @@
 
 						<div class="form-file">
 							<label for="upfile1" id="picinfo"> <input type="file"
-								id="upfile1" name="board_file1" accept="image/*"> <span
+								id="upfile1" name="uploadfile1" accept="image/*"> <span
 								id="filevalue1" style="display: none;"></span> <input
-								type="file" id="upfile2" name="board_file2" accept="image/*">
+								type="file" id="uploadfile2" name="uploadfile2" accept="image/*">
 								<span id="filevalue2" style="display: none;"></span><br>
-
+								
+								<input type='file' id='upfile3' name='uploadfile3' accept='image/*'>
+								<span id="filevalue3" style="display: none;"></span> 
+								<input type='file' id='upfile4' name='uploadfile4' accept='image/*'>
+								<span id="filevalue4" style="display: none;"></span>
 							</label> <img
 								src="${pageContext.request.contextPath}/resources/image/pjh_add.JPG"
 								width="20px" id="file_add" style="">

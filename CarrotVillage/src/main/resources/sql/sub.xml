@@ -1,12 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
- 
+
 <mapper namespace="Sub">
 	<insert id="insert" parameterType="MartList">
 		insert into martlist
 		values(martlist_seq.nextval,#{martname},#{martloc},#{mart_delloc},#{mart_deltime},#{mart_delprice})
 	</insert>
 
-	
+	<select id="listup" parameterType="Map" resultType="MartList">
+		select * from martlist
+		where
+		mart_delloc like '%' ||#{gu}|| '%' and
+		martloc like '%' ||#{si}|| '%'
+
+
+		<!-- <if test='martloc!=null'> where martloc LIKE '%#{martloc}%' </if> -->
+	</select>
+
+	<select id="listupcount" resultType="int" parameterType="Map">
+		select
+		count(*) from martlist
+		where
+		mart_delloc like '%' ||#{gu}|| '%' and
+		martloc like '%' ||#{si}|| '%'
+
+
+
+	</select>
+
+	<select id="listDetail" parameterType="int"
+		resultType="MartList">
+		select * from martlist
+		where
+		num= #{num}
+
+
+
+	</select>
+
+	<select id="listname" parameterType="int" resultType="String">
+		select
+		martname from martlist
+		where
+		num= #{num}
+
+
+
+	</select>
+
+	<select id="listup2" parameterType="Map" resultType="MartList">
+		select * from martlist
+
+		<!-- <if test='martloc!=null'> where martloc LIKE '%#{martloc}%' </if> -->
+	</select>
+
+	<select id="listupcount2" resultType="int" parameterType="Map">
+		select
+		count(*) from martlist
+	</select>
 </mapper>

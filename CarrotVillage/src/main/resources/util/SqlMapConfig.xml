@@ -9,6 +9,7 @@
       <typeAlias alias="member"		    type="com.naver.myhome.main.domain.Member"/>
       <typeAlias alias="martList"		type="com.naver.myhome.sub.domain.MartList"/>
       <typeAlias alias="groups"		    type="com.naver.myhome.meetup.domain.Groups"/>
+       <typeAlias alias="martDetail"		type="com.naver.myhome.sub.domain.MartDetail"/>
    </typeAliases>
    
    <mappers>
@@ -16,6 +17,7 @@
       <mapper resource="sql/member.xml"/>
       <mapper resource="sql/sub.xml"/>
       <mapper resource="sql/groups.xml"/>
+      <mapper resource="sql/subD.xml"/>
    </mappers>
    
 </configuration>
