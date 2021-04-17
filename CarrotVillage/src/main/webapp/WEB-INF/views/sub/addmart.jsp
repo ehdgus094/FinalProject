@@ -87,8 +87,8 @@ width: 700px;
 					</p>
 
 					<p>
-						<label for="mart_delpri">배달 비용&emsp; :&emsp; <input
-							type="text" name="mart_delpri" required>
+						<label for="mart_delprice">배달 비용&emsp; :&emsp; <input
+							type="text" name="mart_delprice" required>
 						</label>
 					</p>
 

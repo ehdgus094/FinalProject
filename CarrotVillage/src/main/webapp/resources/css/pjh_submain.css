@@ -47,6 +47,11 @@ html, body {
 	width: 1200px;
 	display: flex;
 	justify-content: center;
+	position: relative;
+    z-index: 10;
+    bottom: 40px;
+    background-color:lightsteelblue;
+
 }
 
 #int_message {
@@ -54,13 +59,14 @@ html, body {
 }
 
 .local_mart {
-	display: flex;
-	border-bottom: 1px
+	display: inline-flex;
+	border-bottom: 1px;
+	padding-bottom: 20px;
 }
 
 #pmart {
 	font-size: 2.5em;
-	padding: 50px 100px 50px 400px
+	padding: 50px 0px 50px 300px;
 }
 
 #delinfo {
@@ -82,8 +88,10 @@ html, body {
 	padding: 0
 }
 
-img {
+#thumbnail > img {
 	display: block;
+	width: 273px;
+    height: 273px;
 }
 
 .mar_content li {
@@ -92,4 +100,8 @@ img {
 .range{
     text-align: right;
     margin-right:25px;
+}
+.marta{
+	color: white;
+    font-weight: bold
 }

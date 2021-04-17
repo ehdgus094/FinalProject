@@ -32,52 +32,51 @@
 
 			<div id="int_wrap">Carrot Mart</div>
 			<hr>
-			<div id="mart_list">
-				<ul class="mart_ul">
-					<li><a href="#">mart1</a></li>
-					<li><a href="#">mart2</a></li>
-					<li><a href="#">mart3</a></li>
-					<li><a href="#">mart4</a></li>
-					<li><a href="#">mart5</a></li>
-					<li><a href="#">mart6</a></li>
-				</ul>
-			</div>
+		<div class="user_loc">
+			위치:
+		</div>
 			<hr>
 			<div class="item_info">
 				<p id="thumbnail">
 					<img
-						src="<%=request.getContextPath()%>\resources\image\pjh_sum.JPG">
+						src="<%=request.getContextPath()%>/resources/upload/sub_image/${result[0].board_thumbnail}">
 					<!-- 썸내일 여러장올리고 다음버튼으로 볼수있도록 -->
 				</p>
 				<div class="item_detail">
-					<div class="main_subj">지훈네 반찬가게</div>
+					<div class="main_subj">${result[0].mart_subject}</div>
 					<table>
 						<tr>
 							<th>가게주소 :</th>
-							<td>서울 특별시 양천구 곰달래로 송화시장 24호</td>
+							<td>${result[0].mart_addr}</td>
 						</tr>
 						<tr>
 							<th>원산지 :</th>
-							<td>고춧가루:국내산,돼지고기:국내산,소고기:호주산..</td>
+							<td>${result[0].mart_ori}</td>
 						</tr>
 						<tr>
 							<th>배송정보 :</th>
-							<td>마켓배송, 택배배송(3000원)</td>
+							<td>${result[0].mart_del}</td>
 						</tr>
 						<tr>
 							<th>품목 :</th>
-							<td>(select창)</td>
+							<td>
+							<select id="item_select">
+							<option>----</option>
+							<option>${result[0].item_name1}</option>
+							</select>
+							
+							</td>
 						</tr>
 						<tr>
 							<th>수량 :</th>
 							<td><input type="button" id="plus" value="+">1개<input
 								type="button" id="minus" value="-"></td>
-						
+
 						</tr>
 
 						<tr>
 							<th>가격 :</th>
-							<td>7500원</td>
+							<td>${result[0].item_price1}원</td>
 						</tr>
 						<tr>
 							<td colspan="2"><strong>평점 </strong>
@@ -91,7 +90,6 @@
 										style="display: none">★</label>
 
 								</div>
-								
 						</tr>
 					</table>
 
@@ -130,40 +128,40 @@
 						<caption>상품 상세정보</caption>
 						<tr>
 							<th>상 호 명</th>
-							<td>지훈이네 반찬가게</td>
+							<td>${result[0].mart_subject}</td>
 						</tr>
 						<tr>
 							<th>수 량</th>
 							<td>품목별 상이</td>
 						</tr>
 						<tr>
-							<th> 대 표 </th>
-							<td>박 지훈 </td>
+							<th>대 표</th>
+							<td>${result[0].mart_prod}</td>
 						</tr>
 						<tr>
 							<th>유 통 기 한</th>
-							<td>제품별 상이</td>
+							<td>${result[0].item_exp}</td>
 						</tr>
 						<tr>
 							<th>원 산 지</th>
-							<td>국내산</td>
+							<td>${result[0].item_origin}</td>
 						</tr>
 						<tr>
 
 							<th>보 관 방 법</th>
-							<td>냉 장</td>
+							<td>${result[0].item_storage}</td>
 
 						</tr>
 
 					</table>
 				</div>
-				<img src="<%=request.getContextPath()%>\resources\image\pjh_sum.JPG">
-				<img src="<%=request.getContextPath()%>\resources\image\pjh_sum.JPG">
-				<img src="<%=request.getContextPath()%>\resources\image\pjh_sum.JPG">
-				<img src="<%=request.getContextPath()%>\resources\image\pjh_sum.JPG">
-				설명입니다~
+				<img src="<%=request.getContextPath()%>/resources/upload/sub_image/${result[0].upfile1}">
+				<img src="<%=request.getContextPath()%>/resources/upload/sub_image/${result[0].upfile2}">
+				<img src="<%=request.getContextPath()%>/resources/upload/sub_image/${result[0].upfile3}">
+				<img src="<%=request.getContextPath()%>/resources/upload/sub_image/${result[0].upfile4}">
+				${result[0].board_content}
 			</div>
-		
+
 
 
 		</div>
