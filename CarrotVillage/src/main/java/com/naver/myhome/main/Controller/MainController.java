@@ -2,7 +2,11 @@ package com.naver.myhome.main.Controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.naver.myhome.main.Service.MemberService;
 import com.naver.myhome.main.domain.Cart;
+import com.naver.myhome.main.domain.ChatMessage;
+import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
 
 @Controller
@@ -118,7 +124,7 @@ public class MainController {
 			lmember = memberService.memberInfo(member.getId());
 			
 			for (Cart cart : EchoHandler.sessionList) {
-				if (cart.getId().equals(lmember.getId())) {
+				if (cart.getMember().getId().equals(lmember.getId())) {
 					rattr.addFlashAttribute("result", "already");
 					return "redirect:login";
 				}
@@ -266,9 +272,6 @@ public class MainController {
 	@RequestMapping(value = "memberSearch")
 	public Map<String, Object> memberSearch(@RequestParam(value="search") String search,
 											@RequestParam(value="sessionId") String sessionId) {
-		if (search.equals("")) {
-			search = " ";
-		}
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("sessionId", sessionId);
 		map.put("search", search);
@@ -354,30 +357,63 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value = "chat")
-	public void chat(@RequestParam(value="chat_members[]") List<String> chatMembers) {
+	public Map<String, Object> chat(@RequestParam(value="chat_members[]") List<String> chatMembers) {
 		
-		int result = memberService.existRoom(chatMembers);
+		Map<String, Object> map = memberService.existRoom(chatMembers);
+		int result = (int)map.get("result");
 		logger.info("chat after existRoom chatMembers.size = " + chatMembers.size());
 		logger.info("chat result = " + result);
 		if (result == 0) {
-			memberService.insertRoom(chatMembers);
+			ChatRoom chatRoom = memberService.insertRoom(chatMembers);
+			map.put("ChatRoom", chatRoom);
 		}
 		
+		return map;
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "roomList")
-	public List<Map<String, Object>> roomList(@RequestParam(value="id") String id) {
-		logger.info("roomList id = " + id);
-		List<Map<String, Object>> list = memberService.roomList(id);
-		for(int i = 0; i < list.size(); i++) {
-			logger.info("roomList list.map(" + i + ").room_num = " + list.get(i).get("room_num"));
-			logger.info("roomList list.map(" + i + ").room_member = " + list.get(i).get("room_member"));
-		}
-		return list;
+	public List<Map<String, Object>> roomList(@RequestParam(value="id") String id) throws ParseException {
+		return memberService.roomList(id);
 	}
 	
+	@ResponseBody
+	@RequestMapping(value = "insertMessage")
+	public void insertMessage(@RequestParam(value="id") String id,
+							  @RequestParam(value="message") String message) {
+		String m = message.substring(0, message.lastIndexOf(" "));
+		int chat_room_num = Integer.parseInt(message.substring(message.lastIndexOf(" ")+1));
+		
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.setMessage(m);
+		chatMessage.setMember_id(id);
+		chatMessage.setChat_room_num(chat_room_num);
+		memberService.insertMessage(chatMessage);
+	}
 	
+	@ResponseBody
+	@RequestMapping(value = "messageList")
+	public List<Map<String, Object>> messageList(@RequestParam(value="room_num") int room_num) throws ParseException {
+		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+		
+		List<ChatMessage> list = memberService.messageList(room_num);
+		
+		for (int i = 0; i < list.size(); i++) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			String chatDate = list.get(i).getChat_date();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			Date date = simpleDateFormat.parse(chatDate);
+			String dateStr = date.getTime() + "";
+			list.get(i).setChat_date(dateStr);
+			
+			Member member = memberService.memberInfo(list.get(i).getMember_id());
+			map.put("member_info", member);
+			map.put("message_info", list.get(i));
+			resultList.add(map);
+		}
+		
+		return resultList;
+	}
 	
 	private String fileDBName(String fileName, String saveFolder) {
 		Calendar c = Calendar.getInstance();

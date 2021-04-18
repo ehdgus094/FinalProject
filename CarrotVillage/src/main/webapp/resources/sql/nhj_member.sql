@@ -18,9 +18,7 @@ create table member (
 	is_seller		varchar2(1)		default '0' check (is_seller in ('0', '1')),
 	login_type		varchar2(20)	default 'normal'
 );
-
 select * from member;
-delete from member;
 
 /*---------------------------------------------------------------------------------*/
 
@@ -49,36 +47,26 @@ drop table chat_message;
 create table chat_message (
 	num				number				primary key,
 	message 		varchar2(1000),
-	chat_date		date				default sysdate,
+	chat_date		timestamp			default systimestamp,
 	member_id		varchar2(20)		references member(id),
 	chat_room_num	number				references chat_room(num)
 );
+select * from chat_message;
+delete from chat_message;
 
 
-select *
-from CHAT_ROOM
-where num_of = 2
-and num in (
-	select aaaaa.chat_room_num
-	from chat_join aaaaa 
-	join chat_join naver99678673 
-	on aaaaa.chat_room_num = naver99678673.chat_room_num
-	and aaaaa.member_id = 'aaaaa'
-	and naver99678673.member_id = 'naver99678673'
-);
-					  						  
-select max(num) from CHAT_ROOM;
-
-insert into CHAT_JOIN
-values (chat_join_seq.nextval, 'naver99678673', 1);
-
-
-select chat_room_num
+select chat_join.*, message, chat_date
 from chat_join
-where member_id = 'naver99678673';
-
-select member_id
-from CHAT_JOIN
-where chat_room_num = 1;
-
+left join (
+	select chat_room_num, chat_date, message
+	from chat_message
+	where chat_date in (
+		select max(chat_date)
+		from chat_message
+		group by chat_room_num
+	)
+) b
+on chat_join.chat_room_num = b.chat_room_num
+where chat_join.member_id = 'aaaaa'
+order by nvl(chat_date, to_date('01/01/01')) desc, chat_join.num desc;
 

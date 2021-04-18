@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import com.naver.myhome.main.domain.Cart;
+import com.naver.myhome.main.domain.Member;
 
 @Controller
 @ServerEndpoint(value="/boot.do")  //클라이언트가 접속할 서버 주소
@@ -25,6 +26,7 @@ public class EchoHandler {
 	static final List<Cart> sessionList 
 							= Collections.synchronizedList(new ArrayList<Cart>());
 	private static final Logger logger = LoggerFactory.getLogger(EchoHandler.class);
+	
 	public EchoHandler() {
 		logger.info("웹소켓(서버) 객체생성");
 	}
@@ -39,19 +41,23 @@ public class EchoHandler {
 		logger.info("session 쿼리 스트링 : " + queryString);
 		
 		String id = queryString.substring(queryString.indexOf("id") + 3, queryString.indexOf("name") - 1);
-	    String name = queryString.substring(queryString.indexOf("name") + 5, queryString.indexOf("filename") - 1);
-	    String filename = queryString.substring(queryString.indexOf("filename") + 9, queryString.indexOf("login_type") - 1);
-	    String login_type = queryString.substring(queryString.indexOf("login_type") + 11);
+		String name = queryString.substring(queryString.indexOf("name") + 5, queryString.indexOf("profile_img") - 1);
+		String profile_img = queryString.substring(queryString.indexOf("profile_img") + 12, queryString.indexOf("login_type") - 1);
+		String login_type = queryString.substring(queryString.indexOf("login_type") + 11);
+	    
+		Member member = new Member();
+		member.setId(id);member.setName(name);
+		member.setProfile_img(profile_img);
+		member.setLogin_type(login_type);
+
 		Cart cart = new Cart();
 		cart.setSession(session);
-		cart.setId(id);
-		cart.setName(name);
-		cart.setFilename(filename);
-		cart.setLogin_type(login_type);
+		cart.setMember(member);
+
 		sessionList.add(cart);
-		
-		//String message = id + "님이 입장하셨습니다.in";
-		//sendAllSessionToMessage(session, message);
+
+		// String message = id + "님이 입장하셨습니다.in";
+		// sendAllSessionToMessage(session, message);
 	}
 	
 	//보낸 사람 정보(id와 파일이름) 구하기
@@ -61,7 +67,9 @@ public class EchoHandler {
 			for (Cart cart : EchoHandler.sessionList) {
 				Session s = cart.getSession();
 				if (self.getId().equals(s.getId())) {
-					information = cart.getName() + "&" + cart.getFilename() + "&" + cart.getLogin_type();
+					information = cart.getMember().getId() + "&" + cart.getMember().getName() 
+								+ "&" + cart.getMember().getProfile_img() 
+								+ "&" + cart.getMember().getLogin_type();
 					logger.info("보낸 사람의 정보 = " + information);
 					break;
 				}				
@@ -69,26 +77,29 @@ public class EchoHandler {
 		}
 		return information;
 	}
-	/*
-	 * 현재의 세션으로부터 도착한 메시지를 나를 제외한 모든 사용자에게 메시지를 전달합니다.
-	 */
-	private void sendAllSessionToMessage(Session self, String message) {
+	
+	
+	private void sendMessage(Session self, String message) {
 		String info = getInfo(self);
+		String message1 = message.substring(0, message.lastIndexOf(" "));
+		int roomNum = Integer.parseInt(message.substring(message.lastIndexOf(" ") + 1));
 		
 		synchronized (sessionList) {
 			try {
 				for (Cart cart : EchoHandler.sessionList) {
+					
 					Session s = cart.getSession();
 					if (!self.getId().equals(s.getId())) { // 나를 제외한 사람에게 보냅니다.
-						logger.info("나를 제외한 모든 사람에게 보내는 메시지 : " + info + "&" + message);
-						s.getBasicRemote().sendText(info + "&" + message);
+						logger.info("보내는 메시지 : " + info + "&" + roomNum + "&" + message1);
+						s.getBasicRemote().sendText(info + "&" + roomNum + "&" + message1);
 					}
 				}
 			} catch (Exception e) {
-				logger.info("sendAllSessionToMessage 오류 " + e.getMessage());
+				logger.info("sendMessage 오류 " + e.getMessage());
 			}
 		}
 	}
+
 	/*
 	 * @OnMessage 는 클라이언트에게 메시지가 들어왔을 때, 실행되는 메소드입니다.
 	 * String geMessage에는 jsp의 ws.send()로 보낸 내용이 저장되어 있습니다.
@@ -96,7 +107,7 @@ public class EchoHandler {
 	@OnMessage
 	public void onMessage(String message, Session session) {
 		logger.info("Message : " + message);
-		sendAllSessionToMessage(session, message);  //나를 제외한 모든 사람에게 보냅니다.
+		sendMessage(session, message);
 	}
 	
 	@OnError

@@ -228,7 +228,7 @@ $(function() {
 		$("#nav_home img").prop("src", "${pageContext.request.contextPath}/resources/image/nhj_home.png");
 	});
 	$("#nav_home").mouseout(function() {
-		$("#nav_home img").prop("src", "${pageContext.request.contextPath}/resources/image/kdh_default_image.png");
+		$("#nav_home img").prop("src", "${pageContext.request.contextPath}/resources/image/kdh_carrot.png");
 	});
 });
 </script>
@@ -256,7 +256,7 @@ $(function() {
 		
 		<div id="nav_home">
 			<a href="${pageContext.request.contextPath}/main/mainPage">
-				<img src="${pageContext.request.contextPath}/resources/image/kdh_default_image.png">
+				<img src="${pageContext.request.contextPath}/resources/image/kdh_carrot.png">
 			</a>
 		</div>
 

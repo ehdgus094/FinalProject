@@ -84,16 +84,37 @@
 		values (chat_join_seq.nextval, #{member_id}, #{chat_room_num})
 	</insert>
 	
-	<select id="roomList" parameterType="String" resultType="com.naver.myhome.main.domain.ChatJoin">
-		select chat_room_num
+	<select id="roomList" parameterType="String" resultType="com.naver.myhome.main.domain.ChatMessageJoin">
+		select chat_join.*, message, chat_date
 		from chat_join
-		where member_id = #{value}
-		order by chat_room_num desc
+		left join (
+			select chat_room_num, chat_date, message
+			from chat_message
+			where chat_date in (
+				select max(chat_date)
+				from chat_message
+				group by chat_room_num
+			)
+		) b
+		on chat_join.chat_room_num = b.chat_room_num
+		where chat_join.member_id = #{value}
+		order by nvl(chat_date, to_date('01/01/01')) desc, chat_join.num desc
 	</select>
 	
 	<select id="roomMember" parameterType="int" resultType="com.naver.myhome.main.domain.ChatJoin">
 		select member_id
 		from chat_join
+		where chat_room_num = #{value}
+	</select>
+	
+	<insert id="insertMessage" parameterType="com.naver.myhome.main.domain.ChatMessage">
+		insert into chat_message(num, message, member_id, chat_room_num)
+		values (chat_message_seq.nextval, #{message}, #{member_id}, #{chat_room_num})
+	</insert>
+	
+	<select id="messageList" parameterType="int" resultType="com.naver.myhome.main.domain.ChatMessage">
+		select *
+		from chat_message
 		where chat_room_num = #{value}
 	</select>
 	

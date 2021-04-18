@@ -12,7 +12,7 @@ public class Member {
 	private String phone_num;
 	private String birth;
 	private String gender;
-	private String profile_img = "${pageContext.request.contextPath}/resources/image/nhj_profile.png";
+	private String profile_img = "/nhj_profile.png";
 	private String profile_img_ori;
 	private int subscribe;
 	private String subscribe_name;

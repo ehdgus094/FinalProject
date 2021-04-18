@@ -1,6 +1,9 @@
 package com.naver.myhome.main.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.naver.myhome.main.dao.MemberDAO;
 import com.naver.myhome.main.domain.ChatJoin;
+import com.naver.myhome.main.domain.ChatMessage;
+import com.naver.myhome.main.domain.ChatMessageJoin;
 import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
  
@@ -74,22 +79,29 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public int existRoom(List<String> chatMembers) {
+	public Map<String, Object> existRoom(List<String> chatMembers) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		map.put("length", chatMembers.size());
 		map.put("myId", chatMembers.get(0));
 		chatMembers.remove(chatMembers.get(0));
 		map.put("chatMembers", chatMembers);
-		System.out.println("service myId = " + map.get("myId"));
-		System.out.println("service chatMembers = " + map.get("chatMembers"));
-		System.out.println("service length = " + map.get("length"));
 		ChatRoom cr = dao.existRoom(map);
 		chatMembers.add(0, (String) map.get("myId"));
-		return (cr == null) ? 0 : 1;
+		
+		if (cr == null) {
+			resultMap.put("result", 0);
+		} else  {
+			resultMap.put("result", 1);
+		}
+		
+		resultMap.put("ChatRoom", cr);
+		
+		return resultMap;
 	}
 
 	@Override
-	public int insertRoom(List<String> chatMembers) {
+	public ChatRoom insertRoom(List<String> chatMembers) {
 		for (int i = 0; i < chatMembers.size(); i++) {
 			System.out.println("service insertRoom chatMembers = " + chatMembers.get(i));
 		}
@@ -101,39 +113,77 @@ public class MemberServiceImpl implements MemberService {
 				ChatJoin cj = new ChatJoin();
 				cj.setMember_id(chatMembers.get(i));
 				cj.setChat_room_num(lastChatRoomNum);
-				result = dao.insertChatJoin(cj);
+				dao.insertChatJoin(cj);
 			}
+			
 		}
 		
-		return result;
+		return (ChatRoom) existRoom(chatMembers).get("ChatRoom");
 	}
 	
 	@Override
-	public List<Map<String, Object>> roomList(String id) {
+	public List<Map<String, Object>> roomList(String id) throws ParseException {
 		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-		List<ChatJoin> chatJoinList = dao.roomList(id);
+		List<ChatMessageJoin> chatJoinList = dao.roomList(id);
 		
 		for (int i = 0; i < chatJoinList.size(); i++) {
 			Map <String, Object> map = new HashMap<String, Object>();
 			int roomNum = chatJoinList.get(i).getChat_room_num();
 			map.put("room_num", roomNum);
+			map.put("last_message", chatJoinList.get(i).getMessage());
 			
+			String lastChatDate = chatJoinList.get(i).getChat_date();
+			if (lastChatDate != null) {
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				Date date = simpleDateFormat.parse(lastChatDate);
+				String dateStr = date.getTime() + "";
+				map.put("last_message_date", dateStr);
+			}
+			
+			String roomMemberAllName = "";
 			String roomMemberName = "";
+			String roomMemberImage = "";
 			List<ChatJoin> cjl = dao.roomMember(roomNum);
 			for (int j = 0; j < cjl.size(); j++) {
 				String roomMemberId = cjl.get(j).getMember_id();
+				
+				roomMemberAllName += ", " + dao.memberInfo(roomMemberId).getName();
+				
 				if (!roomMemberId.equals(id)) {
+					
 					String name = dao.memberInfo(roomMemberId).getName();
 					roomMemberName += "," + name;
+					
+					if (j < 5) {
+						String profile_img = dao.memberInfo(roomMemberId).getProfile_img();
+						roomMemberImage += "," + profile_img;
+					}
+					
 				}
+				
 			}
-			
+			roomMemberAllName = roomMemberAllName.substring(2);
 			roomMemberName = roomMemberName.substring(1);
+			roomMemberImage = roomMemberImage.substring(1);
+			map.put("room_all_member", roomMemberAllName);
 			map.put("room_member", roomMemberName);
+			map.put("room_img", roomMemberImage);
+			
 			resultList.add(map);
 		}
 		
 		return resultList;
 	}
+
+	@Override
+	public int insertMessage(ChatMessage chatMessage) {
+		return dao.insertMessage(chatMessage);
+	}
+
+	@Override
+	public List<ChatMessage> messageList(int room_num) {
+		return dao.messageList(room_num);
+	}
+	
 	
 }

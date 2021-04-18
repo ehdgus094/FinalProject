@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.naver.myhome.main.domain.ChatJoin;
+import com.naver.myhome.main.domain.ChatMessage;
+import com.naver.myhome.main.domain.ChatMessageJoin;
 import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
 
@@ -53,11 +55,19 @@ public class MemberDAO {
 		return sqlSession.insert("member.insertChatJoin", cj);
 	}
     
-	public List<ChatJoin> roomList(String id) {
+	public List<ChatMessageJoin> roomList(String id) {
 		return sqlSession.selectList("member.roomList", id);
 	}
 	
 	public List<ChatJoin> roomMember(int roomNum) {
 		return sqlSession.selectList("member.roomMember", roomNum);
+	}
+	
+	public int insertMessage(ChatMessage chatMessage) {
+		return sqlSession.insert("member.insertMessage", chatMessage);
+	}
+
+	public List<ChatMessage> messageList(int room_num) {
+		return sqlSession.selectList("member.messageList", room_num);
 	}
 }
