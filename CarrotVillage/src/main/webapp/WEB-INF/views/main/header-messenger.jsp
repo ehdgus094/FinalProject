@@ -345,7 +345,7 @@ button.chat_search_btn:first-child {
 #chat_room_list li {
 	border-bottom: #ffa50052 solid 1px;
 	cursor:pointer;
-	height:78px;
+	max-height:79px;
 }
 #chat_room_list li > div {
 	display:flex;
@@ -356,19 +356,20 @@ button.chat_search_btn:first-child {
 }
 #chat_room_list li > div:nth-child(2) {
 	z-index:9;
+	height:77px;
 }
 #chat_room_list li > div:nth-child(3) {
-	height: 77px;
 	flex-direction:column;
 	top:-77px;
 	z-index:10;
 	display:none;
 	background:white;
 	padding: 10px;
+	box-shadow: 0px 0px 10px 1px rgb(255 152 0 / 15%) inset;
+	cursor:auto;
 }
 #chat_room_list li > div:nth-child(3).show {
 	display: flex;
-    box-shadow: 0px 0px 10px 1px rgb(255 152 0 / 15%) inset;
 }
 #chat_room_list li > div > div:nth-child(1) {
 	width: 25%;
@@ -558,10 +559,60 @@ $(function() {
 					
 					currentRoomNum = rdata.ChatRoom.num;
 					getChatRoomList();
+					$("#msg_text_input").focus();
 				}
 			});
 		}
-		$("#msg_text_input").focus();
+	});
+	
+	//대화 초대 버튼
+	$(document).on("click", ".chat_invite_btn", function() {
+		if (chat_members.length <= 1) {
+			alert("대화를 초대할 상대를 고르세요.");
+		} else if (currentRoomNum == 0) {
+			alert("초대할 방을 선택하세요.");
+		} else {
+			
+			$.ajax({
+				type : "get",
+				url : "${pageContext.request.contextPath}/main/roomMember",
+				data : { "room_num" : currentRoomNum },
+				success : function(rdata) {
+					chat_members = chat_members.concat(rdata);
+					console.log(chat_members);
+					
+					$.ajax({
+						type : "post",
+						url : "${pageContext.request.contextPath}/main/chatInvite",
+						data : { "room_num" : currentRoomNum, "chat_members" : chat_members },
+						success : function(rdata) {
+							currentRoomNum = rdata.ChatRoom.num;
+							getChatRoomList();
+							$("#msg_text_input").focus();
+						}
+					});
+					
+				}
+			});
+			
+		}
+	});
+	
+	//채팅방 나가기 버튼
+	$(document).on("click", ".room_out_btn", function() {
+		if (currentRoomNum == 0) {
+			alert("나갈 방을 선택하세요.");
+		} else {
+			$.ajax({
+				type : "post",
+				url : "${pageContext.request.contextPath}/main/chatOut",
+				data : { "room_num" : currentRoomNum, "id" : "${user_info.id}" },
+				success : function(rdata) {
+					currentRoomNum = 0;
+					getChatRoomList();
+				}
+			});
+		}
 	});
 	
 	//채팅 상대 검색창 입력시
@@ -575,6 +626,15 @@ $(function() {
 		
 		$(this).find("div:nth-child(3)").addClass("show");
 		$("#chat_room_list li > div:nth-child(3)").not($(this).find("div:nth-child(3)")).removeClass("show");
+	});
+	
+	$(document).on("mouseover", "#chat_room_list li div:nth-child(3)", function() {
+		$(this).find("p").css("overflow", "auto");
+		$(this).find("p").css("height", "auto");
+	});
+	$(document).on("mouseout", "#chat_room_list li div:nth-child(3)", function() {
+		$(this).find("p").css("overflow", "hidden");
+		$(this).find("p").css("height", "20px");
 	});
 	
 	//메시지 전송
@@ -697,7 +757,10 @@ function getChatRoomList() {
 					output += "        </div>"
 							+ "    </div>"
 							+ "    <div>"
-							+ "        <span>대화 상대</span>"
+							+ "        <div style='display:flex;flex-direction:row;justify-content:space-between;width:100%;'>"
+							+ "            <span>대화 상대</span>"
+							+ "            <a style='font-size:12px;color:silver;cursor:pointer;' class='room_out_btn'>나가기</a>"
+							+ "        </div>"
 							+ "        <p>" + this.room_all_member + "</p>"
 							+ "    </div>"
 							+ "</li>";
@@ -764,7 +827,7 @@ function chatSearch() {
 				output += "</ul>"
 						+ "<div>"
 						+ "    <button class='chat_search_btn chat_btn'>대화 시작</button>"
-						+ "    <button class='chat_search_btn'>대화 초대</button>"
+						+ "    <button class='chat_search_btn chat_invite_btn'>대화 초대</button>"
 						+ "</div>";
 			}
 			

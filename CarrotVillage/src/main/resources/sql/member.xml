@@ -55,18 +55,13 @@
 	<select id="existRoom" parameterType="java.util.Map" resultType="com.naver.myhome.main.domain.ChatRoom">
 		select *
 		from chat_room
-		where num_of = #{length}
+		where num_of = 2
 		and num in (
-			select ${myId}.chat_room_num
-			from chat_join ${myId}
-			<foreach collection="chatMembers" item="item">
-				join chat_join ${item}
-				on ${myId}.chat_room_num = ${item}.chat_room_num
-			</foreach>
-				and ${myId}.member_id = #{myId}
-			<foreach collection="chatMembers" item="item">
-				and ${item}.member_id = #{item}
-			</foreach>
+			select a.chat_room_num
+			from chat_join a join chat_join b
+			on a.chat_room_num = b.chat_room_num
+			where a.member_id = #{id1}
+			and b.member_id = #{id2}
 		)
 	</select>
 	
@@ -75,6 +70,12 @@
 		values(chat_room_seq.nextval, #{num_of})
 	</insert>
 	
+	<select id="getChatRoomInfo" parameterType="int" resultType="com.naver.myhome.main.domain.ChatRoom">
+		select *
+		from chat_room
+		where num = #{value}
+	</select>
+	
 	<select id="getLastChatRoomNum" resultType="int">
 		select max(num) from chat_room
 	</select>
@@ -82,6 +83,11 @@
 	<insert id="insertChatJoin" parameterType="com.naver.myhome.main.domain.ChatJoin">
 		insert into chat_join
 		values (chat_join_seq.nextval, #{member_id}, #{chat_room_num})
+	</insert>
+	
+	<insert id="deleteChatJoin" parameterType="com.naver.myhome.main.domain.ChatJoin">
+		delete from chat_join
+		where member_id = #{member_id} and chat_room_num = #{chat_room_num}
 	</insert>
 	
 	<select id="roomList" parameterType="String" resultType="com.naver.myhome.main.domain.ChatMessageJoin">
@@ -98,6 +104,11 @@
 		) b
 		on chat_join.chat_room_num = b.chat_room_num
 		where chat_join.member_id = #{value}
+		and chat_join.chat_room_num not in (
+			select chat_room_num
+			from chat_invisible
+			where member_id = #{value}
+		)
 		order by nvl(chat_date, to_date('01/01/01')) desc, chat_join.num desc
 	</select>
 	
@@ -117,5 +128,27 @@
 		from chat_message
 		where chat_room_num = #{value}
 	</select>
+	
+	<update id="updateRoom" parameterType="java.util.Map">
+		update chat_room
+		set num_of = num_of + #{length}
+		where num = #{roomNum}
+	</update>
+	
+	<update id="updateRoomOut" parameterType="int">
+		update chat_room
+		set num_of = num_of - 1
+		where num = #{roomNum}
+	</update>
+	
+	<insert id="insertChatInvisible" parameterType="com.naver.myhome.main.domain.ChatInvisible">
+		insert into chat_invisible
+		values (#{member_id}, #{chat_room_num})
+	</insert>
+	
+	<insert id="deleteChatInvisible" parameterType="com.naver.myhome.main.domain.ChatInvisible">
+		delete from chat_invisible
+		where member_id = #{member_id} and chat_room_num = #{chat_room_num}
+	</insert>
 	
 </mapper>

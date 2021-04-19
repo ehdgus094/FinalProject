@@ -16,6 +16,10 @@
 		width : 100%;
 		background: #f6fcf1; 
 	}
+	#content_wrap {
+		width:100%;
+		min-width:1200px;
+	}
 	.container {
 		width: 100%;
 		height:100%;

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -358,17 +359,80 @@ public class MainController {
 	@ResponseBody
 	@RequestMapping(value = "chat")
 	public Map<String, Object> chat(@RequestParam(value="chat_members[]") List<String> chatMembers) {
+		List<String> list = new ArrayList<String>(new HashSet<String>(chatMembers));
+		Map<String, Object> map = new HashMap<String, Object>();
+		int listCount = list.size();
+		ChatRoom chatRoom = new ChatRoom();
+		int result = -1;
 		
-		Map<String, Object> map = memberService.existRoom(chatMembers);
-		int result = (int)map.get("result");
-		logger.info("chat after existRoom chatMembers.size = " + chatMembers.size());
-		logger.info("chat result = " + result);
-		if (result == 0) {
-			ChatRoom chatRoom = memberService.insertRoom(chatMembers);
-			map.put("ChatRoom", chatRoom);
+		if (listCount == 2) {
+			
+			chatRoom = memberService.existRoom(list);
+			
+			if (chatRoom == null) {
+				result = 0;
+				map.put("ChatRoom", memberService.insertRoom(list));
+			} else {
+				
+				List<String> roomMember = memberService.roomMember(chatRoom.getNum());
+				for (int i = 0; i < roomMember.size(); i++) {
+					memberService.deleteChatInvisible(roomMember.get(i), chatRoom.getNum());
+				}
+				
+				result = 1;
+				map.put("ChatRoom", chatRoom);
+				
+			}
+		} else {
+			map.put("ChatRoom", memberService.insertRoom(list));
 		}
 		
+		map.put("result", result);
 		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "chatInvite")
+	public Map<String, Object> chatInvite(@RequestParam(value="room_num") int room_num,
+						   				  @RequestParam(value="chat_members[]") List<String> chat_members) {
+		List<String> list = new ArrayList<String>(new HashSet<String>(chat_members));
+		ChatRoom chatRoom = new ChatRoom();
+		
+		if (list.size() == 3) {
+			chatRoom = memberService.insertRoom(list);
+		} else {
+			List<String> roomMember = memberService.roomMember(room_num);
+			list.removeAll(roomMember);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("roomNum", room_num);
+			map.put("newMembers", list);
+			map.put("length", list.size());
+			chatRoom = memberService.updateRoom(map);
+		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("ChatRoom", chatRoom);
+		return resultMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "chatOut")
+	public void chatOut(@RequestParam(value="room_num") int room_num, 
+						@RequestParam(value="id") String id) {
+		List<String> list = memberService.roomMember(room_num);
+		
+		if (list.size() == 2) {
+			memberService.insertChatInvisible(id, room_num);
+		} else {
+			memberService.updateRoomOut(id, room_num);
+		}
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "roomMember")
+	public List<String> roomMember(@RequestParam(value="room_num") int room_num) {
+		return memberService.roomMember(room_num);
 	}
 	
 	@ResponseBody
@@ -383,6 +447,11 @@ public class MainController {
 							  @RequestParam(value="message") String message) {
 		String m = message.substring(0, message.lastIndexOf(" "));
 		int chat_room_num = Integer.parseInt(message.substring(message.lastIndexOf(" ")+1));
+		
+		List<String> roomMember = memberService.roomMember(chat_room_num);
+		for (int i = 0; i < roomMember.size(); i++) {
+			memberService.deleteChatInvisible(roomMember.get(i), chat_room_num);
+		}
 		
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.setMessage(m);

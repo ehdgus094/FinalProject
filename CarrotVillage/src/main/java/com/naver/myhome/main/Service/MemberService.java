@@ -17,9 +17,14 @@ public interface MemberService {
 	public Member memberInfo(String field, String value, String login_type);
 	public int memberUpdate(Member member);
 	public List<Member> memberSearch(Map<String, String> map);
-	public Map<String, Object> existRoom(List<String> chatMembers);
+	public ChatRoom existRoom(List<String> chatMembers);
 	public ChatRoom insertRoom(List<String> chatMembers);
 	public List<Map<String, Object>> roomList(String id) throws ParseException;
 	public int insertMessage(ChatMessage chatMessage);
 	public List<ChatMessage> messageList(int room_num);
+	public List<String> roomMember(int room_num);
+	public ChatRoom updateRoom(Map<String, Object> map);
+	public int updateRoomOut(String id, int room_num);
+	public int insertChatInvisible(String id, int room_num);
+	public int deleteChatInvisible(String id, int room_num);
 }
