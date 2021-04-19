@@ -41,4 +41,12 @@ public class UsedItemService {
 	public void updateSold(Map<String, Object> map) {
 		dao.updateSold(map);
 	}
+	
+	public void setWinner(String winner, int num) {
+		dao.setWinner(winner, num);
+	}
+	
+	public UsedItem getWinner(Map<String, Object> map) {
+		return dao.getWinner(map);
+	}
 }

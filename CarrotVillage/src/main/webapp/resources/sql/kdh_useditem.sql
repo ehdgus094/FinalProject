@@ -13,7 +13,8 @@ create table useditem (
 	viewcount number,
 	latitude number,
 	longitude number,
-	deadline varchar2(19)
+	deadline varchar2(19),
+	winner varchar2(20)
 )
 /*
  * id 외래키로 바꾸기
