@@ -121,10 +121,11 @@
 #nav_wrap {
     position: absolute;
     z-index: 10;
-    width: 100%;
     box-shadow: 0 6px 10px -6px rgb(0 0 0 / 20%);
     background: rgba(255,255,255,0.9);
     top: 114px;
+    width: 100%;
+    min-width: 1200px;
 }
 
 #nav_bar {

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.naver.myhome.main.dao.MemberDAO;
+import com.naver.myhome.main.domain.ChatInvisible;
 import com.naver.myhome.main.domain.ChatJoin;
 import com.naver.myhome.main.domain.ChatMessage;
 import com.naver.myhome.main.domain.ChatMessageJoin;
@@ -79,25 +80,14 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Map<String, Object> existRoom(List<String> chatMembers) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		map.put("length", chatMembers.size());
-		map.put("myId", chatMembers.get(0));
-		chatMembers.remove(chatMembers.get(0));
-		map.put("chatMembers", chatMembers);
+	public ChatRoom existRoom(List<String> chatMembers) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("id1", chatMembers.get(0));
+		map.put("id2", chatMembers.get(1));
+		
 		ChatRoom cr = dao.existRoom(map);
-		chatMembers.add(0, (String) map.get("myId"));
 		
-		if (cr == null) {
-			resultMap.put("result", 0);
-		} else  {
-			resultMap.put("result", 1);
-		}
-		
-		resultMap.put("ChatRoom", cr);
-		
-		return resultMap;
+		return cr;
 	}
 
 	@Override
@@ -106,9 +96,11 @@ public class MemberServiceImpl implements MemberService {
 			System.out.println("service insertRoom chatMembers = " + chatMembers.get(i));
 		}
 		int result = dao.insertChatRoom(chatMembers.size());
+		ChatRoom chatRoom = new ChatRoom();
 		
 		if (result == 1) {
 			int lastChatRoomNum = dao.getLastChatRoomNum();
+			chatRoom = dao.getChatRoomInfo(lastChatRoomNum);
 			for (int i = 0; i < chatMembers.size(); i++) {
 				ChatJoin cj = new ChatJoin();
 				cj.setMember_id(chatMembers.get(i));
@@ -118,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
 			
 		}
 		
-		return (ChatRoom) existRoom(chatMembers).get("ChatRoom");
+		return chatRoom;
 	}
 	
 	@Override
@@ -184,6 +176,56 @@ public class MemberServiceImpl implements MemberService {
 	public List<ChatMessage> messageList(int room_num) {
 		return dao.messageList(room_num);
 	}
+
+	@Override
+	public List<String> roomMember(int room_num) {
+		List<String> resultList = new ArrayList<String>();
+		List<ChatJoin> chatJoinList = dao.roomMember(room_num);
+		for (int i = 0; i < chatJoinList.size(); i++) {
+			resultList.add(chatJoinList.get(i).getMember_id());
+		}
+		return resultList;
+	}
 	
+	public ChatRoom updateRoom(Map<String, Object> map) {
+		dao.updateRoom(map);
+		int roomNum = (int)map.get("roomNum");
+		
+		@SuppressWarnings("unchecked")
+		List<String> list = (List<String>) map.get("newMembers");
+		for (int i = 0; i < list.size(); i++) {
+			ChatJoin chatJoin = new ChatJoin();
+			chatJoin.setChat_room_num(roomNum);
+			chatJoin.setMember_id(list.get(i));
+			dao.insertChatJoin(chatJoin);
+		}
+		
+		return dao.getChatRoomInfo(roomNum);
+	}
+	
+	public int updateRoomOut(String id, int room_num) {
+		ChatJoin chatJoin = new ChatJoin();
+		chatJoin.setChat_room_num(room_num);
+		chatJoin.setMember_id(id);
+		dao.deleteChatJoin(chatJoin);
+		
+		return dao.updateRoomOut(room_num);
+	}
+
+	@Override
+	public int insertChatInvisible(String id, int room_num) {
+		ChatInvisible ci = new ChatInvisible();
+		ci.setChat_room_num(room_num);
+		ci.setMember_id(id);
+		return dao.insertChatInvisible(ci);
+	}
+
+	@Override
+	public int deleteChatInvisible(String id, int room_num) {
+		ChatInvisible ci = new ChatInvisible();
+		ci.setChat_room_num(room_num);
+		ci.setMember_id(id);
+		return dao.deleteChatInvisible(ci);
+	}
 	
 }

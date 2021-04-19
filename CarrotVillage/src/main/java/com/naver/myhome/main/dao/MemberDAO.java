@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.naver.myhome.main.domain.ChatInvisible;
 import com.naver.myhome.main.domain.ChatJoin;
 import com.naver.myhome.main.domain.ChatMessage;
 import com.naver.myhome.main.domain.ChatMessageJoin;
@@ -39,12 +40,16 @@ public class MemberDAO {
 		return sqlSession.selectList("member.search", map);
 	}
 
-	public ChatRoom existRoom(Map<String, Object> map) {
+	public ChatRoom existRoom(Map<String, String> map) {
 		return sqlSession.selectOne("member.existRoom", map);
 	}
 	
 	public int insertChatRoom(int numOf) {
 		return sqlSession.insert("member.insertChatRoom", numOf);
+	}
+	
+	public ChatRoom getChatRoomInfo(int num) {
+		return sqlSession.selectOne("member.getChatRoomInfo", num);
 	}
 	
 	public int getLastChatRoomNum() {
@@ -53,6 +58,10 @@ public class MemberDAO {
 	
 	public int insertChatJoin(ChatJoin cj) {
 		return sqlSession.insert("member.insertChatJoin", cj);
+	}
+	
+	public int deleteChatJoin(ChatJoin cj) {
+		return sqlSession.insert("member.deleteChatJoin", cj);
 	}
     
 	public List<ChatMessageJoin> roomList(String id) {
@@ -69,5 +78,21 @@ public class MemberDAO {
 
 	public List<ChatMessage> messageList(int room_num) {
 		return sqlSession.selectList("member.messageList", room_num);
+	}
+
+	public int updateRoom(Map<String, Object> map) {
+		return sqlSession.update("member.updateRoom", map);
+	}
+	
+	public int updateRoomOut(int room_num) {
+		return sqlSession.update("member.updateRoomOut", room_num);
+	}
+
+	public int insertChatInvisible(ChatInvisible ci) {
+		return sqlSession.insert("member.insertChatInvisible", ci);
+	}
+	
+	public int deleteChatInvisible(ChatInvisible ci) {
+		return sqlSession.insert("member.deleteChatInvisible", ci);
 	}
 }
