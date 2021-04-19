@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Candidate">
+	<select id="select" resultType="candidate" parameterType="java.util.Map">
+		select * from candidate
+		where id = #{id}
+		and item_num = #{num}
+	</select>
+	
+	<insert id="insert" parameterType="java.util.Map">
+		insert into candidate
+		values(candidate_seq.nextval, #{id}, #{num})
+	</insert>
+	
+	<select id="selectList" resultType="candidate">
+		select * from candidate
+		where item_num = #{num}
+	</select>
+	
+	<delete id="delete">
+		delete candidate
+		where item_num = #{num}
+	</delete>
+</mapper>

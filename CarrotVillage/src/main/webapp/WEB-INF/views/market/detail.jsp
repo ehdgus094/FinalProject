@@ -187,9 +187,14 @@ $(document).ready(function() {
 		$('#curr_img').append('<b> ● </b>');
 	}
 	
-	//가격 , 추가
-	var price = '${usedItem.price}'.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-	$('#detail>div').eq(3).find('p').html(price+'원');
+	//가격 , 추가 or 마감기간 추가
+	if(${usedItem.price} == 0) {
+		var deadline = '${usedItem.deadline}'.substring(0,16);
+		$('#detail>div').eq(3).find('p').html(deadline + ' 까지');	
+	} else {
+		var price = '${usedItem.price}'.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+		$('#detail>div').eq(3).find('p').html(price+'원');		
+	}
 	
 	//날짜 추가
 	var register_date = '${usedItem.register_date}'.substring(0,10);
@@ -228,6 +233,69 @@ $(document).ready(function() {
 			$('#image_area>div').eq(${status.index}).children().attr('src', src);
 		</c:forEach>
 	}
+	
+	//무료나눔 게시글 일시 무료 신청 버튼 보이기(마감시간 전까지)
+	if('${usedItem.deadline}' != '' && '${member.id}' != '${usedItem.id}') {
+		var d = new Date('${usedItem.deadline}');
+		if(Date.now() < d.getTime()) {
+			$('#detail>div:last-child').append('<button id=request_free>무료 신청</button>');
+		} else {
+			$('#detail>div:last-child').append('<button id=check_winner>당첨 확인</button>');
+		}
+	}
+	
+	//무료 신청 버튼 클릭 시
+	$('#detail').on('click', '#request_free', function() {
+		if('${member.id}' == '') {
+			alert('로그인 후 이용해주시기 바랍니다.');
+			return false;
+		}
+		var d = new Date('${usedItem.deadline}');
+		if(Date.now() < d.getTime()) {
+			$.ajax({
+				url		: "${pageContext.request.contextPath}/market/addCandidate?num=${usedItem.num}&id=${member.id}",
+				type	: "get",
+				success	: function(data) {
+					// 0 : 입력 실패, 1 : 입력 성공, -1 : 이미 입력된 데이터 있음
+					if(data == -1) {
+						alert('이미 신청이 접수되었습니다.');
+					} else if (data == 0) {
+						alert('신청 실패하였습니다.');
+					} else {
+						alert('신청되었습니다.');
+					}
+				},
+				error	: function() {
+					//에러 처리
+				}
+			})
+		} else {
+			alert('신청 마감되었습니다.');
+		}
+	});
+	
+	//당첨 확인 버튼 클릭 시
+	$('#detail').on('click', '#check_winner', function() {
+		if('${member.id}' == '') {
+			alert('로그인 후 이용해주시기 바랍니다.');
+			return false;
+		}
+		$.ajax({
+			url		: "${pageContext.request.contextPath}/market/checkWinner?num=${usedItem.num}&id=${member.id}",
+			type	: "get",
+			success	: function(data) {
+				// 0 : 미당첨, 1 : 당첨
+				if(data == 1) {
+					alert('당첨되었습니다.');
+				} else {
+					alert('당첨되지 않았습니다.');
+				}
+			},
+			error	: function() {
+				//에러 처리
+			}
+		})
+	});
 	
 //지도 관련 =========================================================================
 	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
@@ -308,15 +376,28 @@ $(document).ready(function() {
 					<div><b></b><p>No. ${usedItem.num}</p></div>
 					<div>
 						<b></b>
-						<c:if test="${usedItem.sold == 'n'}">
-							<span class="badge badge-warning">판매중</span>
-						</c:if>
-						<c:if test="${usedItem.sold == 'y'}">
-							<span class="badge badge-success">판매완료</span>
-						</c:if>
+						<div>
+							<c:if test="${!empty usedItem.deadline}">
+								<span class="badge badge-info">무료나눔</span>
+							</c:if>
+							<c:if test="${usedItem.sold == 'n'}">
+								<span class="badge badge-warning">판매중</span>
+							</c:if>
+							<c:if test="${usedItem.sold == 'y'}">
+								<span class="badge badge-success">판매완료</span>
+							</c:if>
+						</div>
 					</div>
 					<div><b>판매자</b><p>${usedItem.id}</p></div>
-					<div><b>가격</b><p></p></div>
+					<div>
+						<b>
+							<c:if test="${!empty usedItem.deadline}">
+								마감 기간
+							</c:if>
+							<c:if test="${empty usedItem.deadline}">
+								가격
+							</c:if>
+						</b><p></p></div>
 					<div><b>등록일</b><p></p></div>
 					<div><b>지역</b><p>${usedItem.location}</p></div>
 					<div>

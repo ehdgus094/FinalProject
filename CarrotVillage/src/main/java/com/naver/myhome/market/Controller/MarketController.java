@@ -5,8 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +31,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.naver.myhome.main.domain.Member;
+import com.naver.myhome.market.Service.CandidateService;
 import com.naver.myhome.market.Service.UsedItemService;
+import com.naver.myhome.market.domain.Candidate;
 import com.naver.myhome.market.domain.UsedItem;
 
 @Controller
@@ -38,6 +43,12 @@ public class MarketController {
 	
 	@Autowired
 	private UsedItemService usedItemService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private FreeItemThread freeItemThread;
 	
 	@GetMapping(value = "/list")
 	public ModelAndView list(String search, ModelAndView mv) {
@@ -85,6 +96,7 @@ public class MarketController {
 		usedItem.setImagefolder("");
 		usedItem.setThumbnail("");
 		usedItem.setDeadline("");
+
 		if(date != null) {
 			usedItem.setDeadline(date + " " + time + ":00");
 		}
@@ -144,8 +156,27 @@ public class MarketController {
 				}
 			}
 		}
-		usedItemService.insert(usedItem);
+		int item_num = usedItemService.insert(usedItem);
+		if(date != null) {
+			//추첨 마감시간 되면 마감하는 쓰레드 생성
+			freeItemThread.setMilliSecond(getDeadline(date + " " + time + ":00"));
+			freeItemThread.setNum(item_num);
+			freeItemThread.start();		
+		}
 		return "redirect:list";
+	}
+	
+	private long getDeadline(String date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		long milliSeconds = 0;
+		try {
+			Date end_date = format.parse(date);
+			Date today = new Date();
+			milliSeconds = end_date.getTime() - today.getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return milliSeconds;
 	}
 	
 	@GetMapping("/detail")
@@ -171,6 +202,35 @@ public class MarketController {
 		mv.addObject("imglist", imglist);
 		mv.setViewName("market/detail");
 		return mv;
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/addCandidate")
+	public int addCandidate(String num, String id) {
+		int result = 0;
+		Candidate candidate = candidateService.select(Integer.parseInt(num), id);
+		if(candidate == null) {
+			System.out.println("신청자 조회 없음");
+			result = candidateService.insert(Integer.parseInt(num), id);
+		} else {
+			System.out.println("신청자 조회 있음");
+			result = -1;
+		}
+		return result;
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/checkWinner")
+	public int checkWinner(String num, String id) {
+		int result = 0;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("num", Integer.parseInt(num));
+		map.put("id", id);
+		UsedItem usedItem = usedItemService.getWinner(map);
+		if(usedItem != null) {
+			result = 1;
+		}
+		return result;
 	}
 	
 	@GetMapping("/change_loc")
