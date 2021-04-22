@@ -80,24 +80,41 @@ public class EchoHandler {
 	
 	
 	private void sendMessage(Session self, String message) {
-		String info = getInfo(self);
-		String message1 = message.substring(0, message.lastIndexOf(" "));
-		int roomNum = Integer.parseInt(message.substring(message.lastIndexOf(" ") + 1));
-		
-		synchronized (sessionList) {
-			try {
-				for (Cart cart : EchoHandler.sessionList) {
-					
-					Session s = cart.getSession();
-					if (!self.getId().equals(s.getId())) { // 나를 제외한 사람에게 보냅니다.
-						logger.info("보내는 메시지 : " + info + "&" + roomNum + "&" + message1);
-						s.getBasicRemote().sendText(info + "&" + roomNum + "&" + message1);
+		if (message.equals("")) {
+			synchronized (sessionList) {
+				try {
+					for (Cart cart : EchoHandler.sessionList) {
+						
+						Session s = cart.getSession();
+						if (!self.getId().equals(s.getId())) { // 나를 제외한 사람에게 보냅니다.
+							s.getBasicRemote().sendText("");
+						}
 					}
+				} catch (Exception e) {
+					logger.info("sendMessage 오류 " + e.getMessage());
 				}
-			} catch (Exception e) {
-				logger.info("sendMessage 오류 " + e.getMessage());
+			}
+		} else {
+			String info = getInfo(self);
+			String message1 = message.substring(0, message.lastIndexOf(" "));
+			int roomNum = Integer.parseInt(message.substring(message.lastIndexOf(" ") + 1));
+			
+			synchronized (sessionList) {
+				try {
+					for (Cart cart : EchoHandler.sessionList) {
+						
+						Session s = cart.getSession();
+						if (!self.getId().equals(s.getId())) { // 나를 제외한 사람에게 보냅니다.
+							logger.info("보내는 메시지 : " + info + "&" + roomNum + "&" + message1);
+							s.getBasicRemote().sendText(info + "&" + roomNum + "&" + message1);
+						}
+					}
+				} catch (Exception e) {
+					logger.info("sendMessage 오류 " + e.getMessage());
+				}
 			}
 		}
+		
 	}
 
 	/*

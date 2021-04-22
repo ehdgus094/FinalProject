@@ -18,6 +18,8 @@
 	}
 	#content_wrap {
 		width:100%;
+		position:absolute;
+		top:0;
 		min-width:1200px;
 	}
 	.container {

@@ -358,61 +358,63 @@ public class MainController {
 	
 	@ResponseBody
 	@RequestMapping(value = "chat")
-	public Map<String, Object> chat(@RequestParam(value="chat_members[]") List<String> chatMembers) {
-		List<String> list = new ArrayList<String>(new HashSet<String>(chatMembers));
+	public Map<String, Object> chat(@RequestParam(value="room_num") int room_num,
+									@RequestParam(value="chat_members[]") List<String> chatMembers) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		int listCount = list.size();
+		int listCount = chatMembers.size();
 		ChatRoom chatRoom = new ChatRoom();
-		int result = -1;
+		String myId = chatMembers.get(0);
 		
-		if (listCount == 2) {
+		if (room_num == 0) {  //방번호가 선택되어있지 않은 경우
 			
-			chatRoom = memberService.existRoom(list);
 			
-			if (chatRoom == null) {
-				result = 0;
-				map.put("ChatRoom", memberService.insertRoom(list));
-			} else {
+				if (listCount == 2) {  //1대1방인 경우
 				
-				List<String> roomMember = memberService.roomMember(chatRoom.getNum());
-				for (int i = 0; i < roomMember.size(); i++) {
-					memberService.deleteChatInvisible(roomMember.get(i), chatRoom.getNum());
+					chatRoom = memberService.existRoom(chatMembers);
+				
+					if (chatRoom == null) {  //1대1방이 기존에 없는경우
+						map.put("ChatRoom", memberService.insertRoom(chatMembers));
+					} else {  //1대1방이 이미 있는경우
+					
+						List<String> roomMember = memberService.roomMember(chatRoom.getNum());
+						for (int i = 0; i < roomMember.size(); i++) {
+							memberService.deleteChatInvisible(roomMember.get(i), chatRoom.getNum());
+						}
+						map.put("ChatRoom", chatRoom);
+						
+					}
+					
+				} else {  //3인 이상인 경우
+					map.put("ChatRoom", memberService.insertRoom(chatMembers));
 				}
-				
-				result = 1;
-				map.put("ChatRoom", chatRoom);
-				
-			}
-		} else {
-			map.put("ChatRoom", memberService.insertRoom(list));
+			
+			
+		} else {  //방번호가 선택되어 있는 경우
+			
+				List<String> roomMember = memberService.roomMember(room_num);
+				int roomMemberCount = roomMember.size();
+				roomMember.addAll(chatMembers);
+				List<String> newRoomMember = new ArrayList<String>(new HashSet<String>(roomMember));
+				newRoomMember.remove(myId);
+				newRoomMember.add(0, myId);
+			
+				if (newRoomMember.size() == 2) {  //1대1방을 중복 생성하려고 한 경우
+					map.put("ChatRoom", memberService.existRoom(newRoomMember));
+					
+				} else if (roomMemberCount == 2) {  //기존의 방이 1대1방인 경우
+					map.put("ChatRoom", memberService.insertRoom(newRoomMember));
+					
+				} else {  //기존의 방의 3인 이상의 방인 경우
+					Map<String, Object> m = new HashMap<String, Object>();
+					m.put("myId", myId);
+					m.put("roomNum", room_num);
+					m.put("newMembers", newRoomMember);
+					map.put("ChatRoom", memberService.updateRoom(m));
+				}
+			
 		}
 		
-		map.put("result", result);
 		return map;
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "chatInvite")
-	public Map<String, Object> chatInvite(@RequestParam(value="room_num") int room_num,
-						   				  @RequestParam(value="chat_members[]") List<String> chat_members) {
-		List<String> list = new ArrayList<String>(new HashSet<String>(chat_members));
-		ChatRoom chatRoom = new ChatRoom();
-		
-		if (list.size() == 3) {
-			chatRoom = memberService.insertRoom(list);
-		} else {
-			List<String> roomMember = memberService.roomMember(room_num);
-			list.removeAll(roomMember);
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("roomNum", room_num);
-			map.put("newMembers", list);
-			map.put("length", list.size());
-			chatRoom = memberService.updateRoom(map);
-		}
-		
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("ChatRoom", chatRoom);
-		return resultMap;
 	}
 	
 	@ResponseBody
@@ -482,6 +484,97 @@ public class MainController {
 		}
 		
 		return resultList;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "memberModifyPasswordChk")
+	public int memberModifyPasswordChk(@RequestParam(value="id") String id,
+									   @RequestParam(value="password") String password) {
+		return memberService.passwordChk(id, password);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "memberModify")
+	public int memberModify(@RequestParam(value="field") String field,
+							@RequestParam(value="id") String id,
+							@RequestParam(value="password", required=false) String password,
+							@RequestParam(value="post", required=false) String post,
+							@RequestParam(value="address", required=false) String address,
+							@RequestParam(value="phone_num", required=false) String phone_num,
+							@RequestParam(value="birth", required=false) String birth,
+							HttpSession session) {
+		
+		Member member = memberService.memberInfo(id);
+		
+		switch (field) {
+		case "password":
+			String encPassword = passwordEncoder.encode(password);
+			member.setPassword(encPassword);
+			break;
+		case "address":
+			member.setPost(post);
+			member.setAddress(address);
+			break;
+		case "phone_num":
+			member.setPhone_num(phone_num);
+			break;
+		case "birth":
+			member.setBirth(birth);
+			break;
+		}
+		
+		int result = memberService.memberUpdate(member);
+		if (result == 1) {
+			session.setAttribute("user_info", member);			
+		}
+
+		return result;
+	}
+	
+	@RequestMapping(value="profileImageModify")
+	public String profileImageModify(Member member,
+									 HttpServletRequest request,
+									 HttpSession session,
+									 RedirectAttributes rattr) throws IllegalStateException, IOException {
+		
+		Member m = memberService.memberInfo(member.getId());
+		MultipartFile uploadfile = member.getUploadfile();
+		
+		if (!uploadfile.isEmpty()) {
+			String fileName = uploadfile.getOriginalFilename();
+			m.setProfile_img_ori(fileName);
+			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "\\upload\\member_image\\";
+			String fileDBName = fileDBName(fileName, saveFolder);
+			logger.info("fileDBName = " + fileDBName);
+
+			uploadfile.transferTo(new File(saveFolder + fileDBName));
+			m.setProfile_img(fileDBName);
+		}
+		int result = memberService.memberUpdate(m);
+		if (result == 1) {
+			rattr.addFlashAttribute("message", result);
+			session.setAttribute("user_info", m);
+		}
+		
+		return "redirect:myPage";
+
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="memberWithdrawal")
+	public void memberWithdrawal(@RequestParam(value="id") String id, 
+								 @CookieValue(value="saveLogin", required=false) Cookie readCookie,
+								 HttpSession session,
+								 HttpServletResponse response) {
+		int result = memberService.memberDelete(id);
+		if (result == 1) {
+			session.invalidate();
+			if (readCookie != null) {
+				readCookie.setPath("/myhome");
+				readCookie.setMaxAge(0);
+				response.addCookie(readCookie);
+			}
+		}
 	}
 	
 	private String fileDBName(String fileName, String saveFolder) {

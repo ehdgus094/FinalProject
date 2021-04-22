@@ -5,13 +5,15 @@
 <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/image/favicon.ico" type="image/x-icon">
 <link rel="icon" href="${pageContext.request.contextPath}/resources/image/favicon.ico" type="image/x-icon">
 <style>
+#wrap {
+	min-width:1200px;
+}
 #top_wrap {
-	position: fixed;
+	position: relative;
     z-index: 999;
     height: 24px;
     background: rgba(255,255,255,0.9);
     width: 100%;
-    min-width: 1200px;
 }
 
 #top_bar {
@@ -39,6 +41,7 @@
 
 #top_bar .top_right {
     float: right;
+    width:270px;
     height: auto;
     font-size: 13px;
     margin: 3px 0;
@@ -74,13 +77,11 @@
     z-index: 10;
     height: 90px;
     text-align: center;
-    position: absolute;
-    top: 24px;
+    position: relative;
     border-bottom: 1px solid #dcdcdc;
     border-top: 1px solid #dcdcdc;
     background: rgba(255,255,255,0.9);
     width: 100%;
-    min-width: 1200px;
 }
 
 #logo_bar {
@@ -234,11 +235,6 @@
     		geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
         });
 		
-		//메신저 창 보이기/숨김 토글 상태값
-		var msg_state = sessionStorage.getItem('msg_state');
-		if (msg_state == 1) {
-			$("#msg_wrap").addClass("show");
-		}
 		
 		//자동 로그인
 		var keepLoginState = sessionStorage.getItem("keepLoginState");
@@ -274,6 +270,7 @@
 				$("#logo_wrap").css("display", "none");
 				$("#msg_btn").css("bottom", "75px");
 				$("#nav_home").css("visibility", "visible");
+				$("#top_wrap").css("position", "fixed");
 
 			} else if (height < 90) {
 				$('#nav_wrap').removeClass('fixed');
@@ -281,6 +278,7 @@
 				$("#logo_wrap").css("display", "block");
 				$("#msg_btn").css("bottom", "20px");
 				$("#nav_home").css("visibility", "hidden");
+				$("#top_wrap").css("position", "relative");
 			}
 		});
 		
@@ -297,16 +295,7 @@
 		//위에서 선언한 로그인창띄우기 함수 호출
 		$("#login_btn").click(loginFn);
 		
-		//메신저 창 보이기/숨김 토글 상태값 세션에 저장
-		$("#msg_btn").click(function() {
-			$("#msg_wrap").toggleClass("show");
-			
-			if (msg_state == 0 || msg_state == null) {
-				sessionStorage.setItem('msg_state', 1);
-			} else if (msg_state == 1) {
-				sessionStorage.setItem('msg_state', 0);
-			}
-		});
+		
 		
 		//내정보탭 토글
 		$("#user_btn").click(function() {
@@ -328,10 +317,6 @@
 <input type="hidden" id="cookie" value="${cookie.saveLogin.value}">
 
 <c:if test="${!empty user_info}">
-	<a id="msg_btn"> 
-		<img src="${pageContext.request.contextPath}/resources/image/nhj_msg.png">
-	</a>
-	
 	<jsp:include page = "/WEB-INF/views/main/header-messenger.jsp" />
 </c:if>
 
