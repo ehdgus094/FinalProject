@@ -9,9 +9,10 @@
     background:#f5f5f5;
     float: right;
     z-index:99;
-    margin-top:3px;
+    margin-top:22px;
     display:none;
     box-shadow: 1px 2px 7px -3px #656565;
+    position:absolute;
 }
 #user_info_tab.show {
 	display:block;

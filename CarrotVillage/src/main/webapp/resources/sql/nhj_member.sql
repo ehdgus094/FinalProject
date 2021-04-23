@@ -3,11 +3,11 @@ create table member (
 	id				varchar2(20)	primary key,
 	password		varchar2(60),
 	email			varchar2(50) 	not null,
-	name			varchar2(30)	not null,
+	name			varchar2(50)	not null,
 	post			varchar2(10),
-	address			varchar2(100),
+	address			varchar2(150),
 	phone_num		varchar2(20),
-	birth			varchar2(8),
+	birth			varchar2(20),
 	gender			varchar2(5)		check (gender in ('m', 'f', 'x')),
 	profile_img		varchar2(200),
 	profile_img_ori	varchar2(200),
@@ -18,7 +18,8 @@ create table member (
 	is_seller		varchar2(1)		default '0' check (is_seller in ('0', '1')),
 	login_type		varchar2(20)	default 'normal'
 );
-
+insert into member(id, email, name) values('system', 'system', 'system');
+insert into member(id, email, name, auth_lev) values('admin', 'admin', 'admin', 'admin');
 /*---------------------------------------------------------------------------------*/
 
 drop sequence chat_room_seq;
@@ -26,7 +27,7 @@ create sequence chat_room_seq;
 drop table chat_room cascade constraints;
 create table chat_room (
 	num    	number    	primary key,
-	num_of  number(20) 
+	num_of  number 
 );
 
 drop sequence chat_join_seq;
@@ -57,7 +58,9 @@ create table chat_invisible (
 	chat_room_num	number			references chat_room(num)
 );
 
+select * from chat_room;
 select * from chat_invisible;
 select * from chat_join;
-
+select * from chat_message;
+select * from member;
 

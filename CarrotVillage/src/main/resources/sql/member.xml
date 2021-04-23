@@ -43,10 +43,16 @@
 		where id = #{id}
 	</update>
 	
+	<delete id="delete" parameterType="String">
+		delete from member where id = #{value}
+	</delete>
+	
 	<select id="search" parameterType="java.util.Map" resultType="member">
 		select *
 		from member
 		where id != #{sessionId}
+		and id != 'system'
+		and auth_lev != 'admin'
 		and (id like '%${search}%'
 		or name like '%${search}%')
 		order by name

@@ -403,13 +403,22 @@ $(function() {
 			$("#birth_wrap").css('border-color', 'red');
 			checkBirth = false;
 		} else {
-			checkBirth = true;
+			if (birth.length == 6) {
+				$("#birth_wrap").css('border-color', 'silver');
+				$("#birth_msg").empty()
+				checkBirth = true;
+			} else {
+				$("#birth_msg").css('color', 'red').html("6자리의 숫자로 입력하세요.");
+				$("#birth_wrap").css('border-color', 'red');
+				checkBirth = false;
+			}
 		}
 		
 		if (!birth) {
-			$("#birth_msg").prev().css('border-color', 'silver');
-			$("#birth_msg").empty()
 			$("#birthx").css("visibility", "hidden");
+			$("#birth_wrap").css('border-color', 'silver');
+			$("#birth_msg").empty()
+			checkBirth = true;
 		} else {
 			$("#birthx").css("visibility", "visible");
 		}
@@ -516,7 +525,7 @@ function imgAreaError(){
 					
 					<div class="join_item_wrap" style="flex-direction:row;justify-content: space-between;border:none;">
 						<div style="flex-direction:row;" id="birth_wrap">
-							<input type="text" placeholder="생년월일(8자리)" name="birth" id="birth" class="join" style="margin-top:10px;width:150px">
+							<input type="text" placeholder="생년월일(6자리)" name="birth" id="birth" class="join" style="margin-top:10px;width:150px">
 							<div>
 								<span id="birthx" class="x" style="margin-top:23px;"></span>
 							</div>

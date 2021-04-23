@@ -36,6 +36,10 @@ public class MemberDAO {
 		return sqlSession.update("member.update", member);
 	}
 
+	public int memberDelete(String id) {
+		return sqlSession.update("member.delete", id);
+	}
+	
 	public List<Member> memberSearch(Map<String, String> map) {
 		return sqlSession.selectList("member.search", map);
 	}
@@ -95,4 +99,5 @@ public class MemberDAO {
 	public int deleteChatInvisible(ChatInvisible ci) {
 		return sqlSession.insert("member.deleteChatInvisible", ci);
 	}
+
 }

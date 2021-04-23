@@ -37,37 +37,55 @@ button:focus { outline:none; }
 	border-right:1px solid #dedede;
 }
 #msg_right {
-	width:60%;
-	border-top-right-radius: 5px;
-	padding:10px;
+	width: 60%;
+    padding: 10px 10px 0 10px;
+    display: grid;
+    grid-template-rows: 82%;
 }
-#msg_left > div:first-child {
+#msg_wrap > div:first-child {
 	width:100%;
 	height:35px;
 	background:#ffb52c;
 	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	box-shadow: 1px 3px 8px -1px rgb(0 0 0 / 20%);
+    display: flex;
+    justify-content: space-between;
 }
-#msg_left > div:first-child > img {
+#msg_wrap > div:nth-child(1) > img {
 	width:20px;
 	height:15px;
 	margin:10px;
 	cursor:pointer;
 }
+#room_title {
+	padding-top: 5px;
+    display: flex;
+    padding-bottom: 5px;
+}
+#room_title  > div:last-child > span:first-child {
+	color:white;
+	font-size:14px;
+}
+#room_title  > div:last-child > span:last-child {
+	margin-left: 2px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #006500;
+}
 #msg_input_wrap {
-	width:100%;
-	height:10%;
 	display:flex;
 }
 #msg_text_input {
 	width: 85%;
-    height: 73%;
+	height:30px;
     margin: 8px 0 0px 3px;
     border-radius: 5px 0 0 5px;
     border: solid 1px silver;
     border-right:none;
 }
 #msg_send_btn {
-	height: 32px;
+	height: 30px;
     border: solid 1px silver;
     display: block;
     margin-top: 8px;
@@ -85,6 +103,7 @@ button:focus { outline:none; }
 	margin:14px 15px 0 0;
 	border:none; 
 	height: 8px;
+	width:100px;
 }
 #msg_slider span {
 	background: #006500;
@@ -100,7 +119,7 @@ button:focus { outline:none; }
 }
 
 .messages ul {
-	max-height:390px;
+	max-height:97%;
 	overflow:auto;
 }
 #msg_wrap ul {
@@ -174,7 +193,7 @@ button:focus { outline:none; }
 	max-width:60%;
 }
 .sent p {
-	margin: 5px 10px 10px 10px;
+	margin: 7px 10px;
 }
 .replies > div > span {
 	font-size:11px;
@@ -200,17 +219,41 @@ button:focus { outline:none; }
 #chat_menu {
 	background: white;
     position: fixed;
-    max-width:0;
-    -webkit-transition: max-width .5s;
-    display:flex;
+    max-height: 0;
+    -webkit-transition: max-height .3s;
+    display: flex;
     flex-direction: column;
-    box-shadow: 1px 1px 4px 1px rgb(0 0 0 / 10%);
-    overflow:hidden;
-    height:48px;
-    z-index:999;
+    overflow: hidden;
+    width: 102px;
+    z-index: 999;
+    margin-top: 35px;
 }
 #chat_menu.show {
-	max-width:100px;
+	max-height: 48px;
+}
+#room_list_top {
+	background:white;
+    position: fixed;
+    max-height:250px;
+    display: none;
+    flex-direction: column;
+    width: 200px;
+    z-index: 999;
+    margin-top: 35px;
+    margin-left: 219px;
+}
+#room_list_top.show {
+	display:flex;
+}
+#room_list_top ul {
+	overflow:auto;
+    box-shadow: 1px 2px 3px 1px rgb(0 0 0 / 20%);
+}
+#room_list_top li {
+	display:block;
+}
+#room_list_top li.hide {
+	display:none;
 }
 #chat_menu > a {
 	width: 100%;
@@ -248,11 +291,7 @@ button:focus { outline:none; }
 	width: 100%;
     height: 365px;
     display: grid;
-    grid-template-rows: 87%;
-}
-#chat_search_result > div {
-	display: flex;
-    flex-direction: row;
+    grid-template-rows: 88%;
 }
 #chat_search_result ul {
 	list-style: none;
@@ -331,12 +370,9 @@ button.chat_search_btn {
 	border: none;
     background: #ffb52c;
     font-size: 15px;
-    height: 50px;
-    width: 50%;
+    height: 45px;
+    width:100%;
     color:white;
-}
-button.chat_search_btn:first-child {
-	border-right: white solid 1px;
 }
 #chat_room_list ul {
 	overflow: auto;
@@ -448,7 +484,48 @@ div.img_count_3 img:nth-child(1) {
 	display:block;
 	margin:0 auto;
 }
-
+li.system_message {
+    margin: 2px 10px 10px 10px;
+}
+li.system_message div {
+    width: max-content;
+    margin: 0 auto;
+    background: #f3f3f3;
+    border-radius: 5px;
+    max-width:82%;
+}
+li.system_message p {
+    font-size: 12px;
+    color: #7d7d7d;
+    margin: 7px 12px;
+}
+#room_list_top ul {
+	margin:0;
+	font-size: 14px;
+}
+#room_list_top li {
+	cursor:pointer;
+    padding: 5px 0;
+}
+#room_list_top li:not(:last-child) {
+    border-bottom: #e6e6e6 solid 1px;
+}
+#room_list_top li:hover {
+	background:#e4e4e4;
+	text-decoration:none;
+}
+#room_list_top li > div {
+	width: fit-content;
+	margin:0 auto;
+}
+#room_list_top a {
+	color: #7d7d7d;
+	text-decoration:none;
+}
+#room_list_top span {
+	font-weight: 600;
+    color: #006500;
+}
 </style>
 
 <script>
@@ -457,6 +534,12 @@ var chat_members = ["${user_info.id}"];
 var beforeId = "";
 
 $(function() {
+	
+	//메신저 창 보이기/숨김 토글 상태값
+	var msg_state = sessionStorage.getItem('msg_state');
+	if (msg_state == 1) {
+		$("#msg_wrap").addClass("show");
+	}
 	
 	var slider_value = 100;
 	
@@ -474,32 +557,38 @@ $(function() {
     	slide : function(e,ui){
 			$("#msg_wrap").css("opacity", ui.value/100);
        		sessionStorage.setItem("slider_value", ui.value);
-       		console.log(ui.value);
         }
 	});
 	
 	//세션에 메신저창의 상태를 가져오기
-	if (sessionStorage.getItem("chat_menu_state") != null) {
+	if (sessionStorage.getItem("currentRoomNum")) {
+		currentRoomNum = sessionStorage.getItem("currentRoomNum");
+	}
+	
+	if (sessionStorage.getItem("chat_menu_state")) {
 		if (sessionStorage.getItem("chat_menu_state") == "chat_room") {
-			
-			if (sessionStorage.getItem("currentRoomNum") != null) {
-				currentRoomNum = sessionStorage.getItem("currentRoomNum");
-			}
 			getChatRoomList();
+			getRoomListTop();
 			
 		} else if (sessionStorage.getItem("chat_menu_state") == "chat_search") {
-			if (currentRoomNum = sessionStorage.getItem("currentRoomNum") != null) {
-				currentRoomNum = sessionStorage.getItem("currentRoomNum");
-				getMessageList(currentRoomNum);
-			}
 			getChatSearchList();
+			getRoomListTop();
 		} 
-	} else {
-		if (sessionStorage.getItem("currentRoomNum") != null) {
-			currentRoomNum = sessionStorage.getItem("currentRoomNum");
-		}
-		getChatRoomList();
 	}
+	
+	//메신저 창 보이기/숨김 토글 상태값 세션에 저장
+	$("#msg_btn").click(function() {
+		$("#msg_wrap").toggleClass("show");
+		
+		if (msg_state == 0 || msg_state == null) {
+			sessionStorage.setItem('msg_state', 1);
+			sessionStorage.setItem("chat_menu_state", "chat_room");
+			getChatRoomList();
+			getRoomListTop();
+		} else if (msg_state == 1) {
+			sessionStorage.setItem('msg_state', 0);
+		}
+	});
 	
 	//메신저창에 마우스를 올리고 있을때 바깥부분 스크롤x
 	/*
@@ -516,20 +605,23 @@ $(function() {
 		$("#chat_menu").toggleClass("show");
 	});
 	
+	//상단의 방목록
+	$("#room_title").click(function() {
+		$("#room_list_top").toggleClass("show");
+	});
+	
 	//햄버거버튼을 클릭 했을때 나오는 메뉴들 클릭
 	$("#chat_room_btn").click(function() {
 		currentRoomNum = 0;
-		sessionStorage.setItem("currentRoomNum", 0);
-		$(".messages > ul").empty();
 		getChatRoomList();
+		getRoomListTop();
 		$("#chat_menu").removeClass("show");
-		sessionStorage.setItem("chat_menu_state", "chat_room");
 	});
 	$("#chat_search_btn").click(function() {
 		console.log(currentRoomNum);
 		getChatSearchList();
+		getRoomListTop();
 		$("#chat_menu").removeClass("show");
-		sessionStorage.setItem("chat_menu_state", "chat_search");
 	});
 	
 	//대화상대 검색에서 체크박스 선택/해제시 배열에 추가/삭제
@@ -543,59 +635,24 @@ $(function() {
 		console.log(chat_members);
 	});
 	
-	//대화 시작 버튼
+	//초대하기 버튼
 	$(document).on("click", ".chat_btn", function() {
 		if (chat_members.length <= 1) {
-			alert("대화를 시작할 상대를 고르세요.");
+			alert("초대할 상대를 고르세요.");
 		} else {
+			
 			$.ajax({
 				type : "post",
 				url : "${pageContext.request.contextPath}/main/chat",
-				data : { "chat_members" : chat_members },
+				data : { "room_num" : currentRoomNum, "chat_members" : chat_members },
 				success : function(rdata) {
-					if (rdata.result == 1) {
-						alert("채팅방이 이미 존재합니다.");
-					}
-					
 					currentRoomNum = rdata.ChatRoom.num;
-					getChatRoomList();
+					send("");
 					$("#msg_text_input").focus();
 				}
 			});
 		}
-	});
-	
-	//대화 초대 버튼
-	$(document).on("click", ".chat_invite_btn", function() {
-		if (chat_members.length <= 1) {
-			alert("대화를 초대할 상대를 고르세요.");
-		} else if (currentRoomNum == 0) {
-			alert("초대할 방을 선택하세요.");
-		} else {
-			
-			$.ajax({
-				type : "get",
-				url : "${pageContext.request.contextPath}/main/roomMember",
-				data : { "room_num" : currentRoomNum },
-				success : function(rdata) {
-					chat_members = chat_members.concat(rdata);
-					console.log(chat_members);
-					
-					$.ajax({
-						type : "post",
-						url : "${pageContext.request.contextPath}/main/chatInvite",
-						data : { "room_num" : currentRoomNum, "chat_members" : chat_members },
-						success : function(rdata) {
-							currentRoomNum = rdata.ChatRoom.num;
-							getChatRoomList();
-							$("#msg_text_input").focus();
-						}
-					});
-					
-				}
-			});
-			
-		}
+		
 	});
 	
 	//채팅방 나가기 버튼
@@ -609,7 +666,7 @@ $(function() {
 				data : { "room_num" : currentRoomNum, "id" : "${user_info.id}" },
 				success : function(rdata) {
 					currentRoomNum = 0;
-					getChatRoomList();
+					send("");
 				}
 			});
 		}
@@ -624,9 +681,34 @@ $(function() {
 	$(document).on("click", "#chat_room_list li", function() {
 		getMessageList($(this).find("input[type='hidden']").val());
 		
+		$("#chat_room_list li > div:nth-child(3)")/*.not($(this).find("div:nth-child(3)"))*/.removeClass("show");
 		$(this).find("div:nth-child(3)").addClass("show");
-		$("#chat_room_list li > div:nth-child(3)").not($(this).find("div:nth-child(3)")).removeClass("show");
+		
+		var top_li = $("#room_list_top").find("input[value='" + currentRoomNum + "']").parent("li");
+		roomListTop(top_li);
+		console.log(currentRoomNum);
 	});
+	
+	//위쪽 채팅리스트
+	$(document).on("click", "#room_list_top li", function() {
+		var roomNum = $(this).find("input[type='hidden']").val();
+		if (sessionStorage.getItem("chat_menu_state") == "chat_search") {
+			getMessageList(roomNum);
+			roomListTop($(this));
+		}
+		if (sessionStorage.getItem("chat_menu_state") == "chat_room") {
+			if (roomNum != 0) {
+				$("#chat_room_list").find("input[value='" + roomNum + "']").parent("li").trigger("click");
+			} else {
+				getMessageList(0);
+				roomListTop($(this));
+				$("#chat_room_list li > div:nth-child(3)").removeClass("show");
+			}
+		}
+		console.log(sessionStorage.getItem("chat_menu_state"));
+		console.log(currentRoomNum);
+	});
+	
 	
 	$(document).on("mouseover", "#chat_room_list li div:nth-child(3)", function() {
 		$(this).find("p").css("overflow", "auto");
@@ -657,8 +739,66 @@ $(function() {
 	
 });
 
+
+
+function roomListTop(top_li) {
+	top_li.addClass("hide");
+	$("#room_list_top li").not(top_li).removeClass("hide");
+	$("#room_title > div:nth-child(2) > span:nth-child(1)").text(top_li.find("a").text());
+	$("#room_title > div:nth-child(2) > span:nth-child(2)").text(top_li.find("span").text());
+	$("#room_list_top").removeClass("show");
+}
+
+
+function getRoomListTop() {
+	$.ajax({
+		type : "get",
+		url : "${pageContext.request.contextPath}/main/roomList",
+		data : { "id" : "${user_info.id}" },
+		success : function(rdata) {
+			var output = "<ul>"
+					   + "<li>"
+					   + "    <input type='hidden' value='0'>"
+				   	   + "    <div>"
+	  	 	  	   	   + "        <a class='hide'>새로운 대화</a>"
+				   	   + "    </div>"
+					   + "</li>";
+			if (rdata.length > 0) {
+				$(rdata).each(function(index, item) {
+					
+					var roomMemberAllArr = this.room_all_member.split(", ");
+					var roomMemberAllCount = roomMemberAllArr.length;
+					
+					if (roomMemberAllCount > 2) {
+						output += "<li>"
+								+ "    <input type='hidden' value='" + this.room_num + "'>"				   
+								+ "    <div>"
+					  	 	 	+ "        <a>" + this.room_member.substring(0, 22) + "... </a>"
+					  	 	 	+ "        <span>" + roomMemberAllCount + "</span>"
+								+ "    </div>"
+					  	  	  	+ "</li>";
+					} else {
+						output += "<li>"
+								+ "    <input type='hidden' value='" + this.room_num + "'>"
+								+ "    <div>"
+					  	 	  	+ "        <a>" + this.room_member.substring(0, 21) + "</a>"
+								+ "    </div>"
+					  	  	 	+ "</li>";
+					}	
+					
+				});
+				
+			}
+			output += "</ul>";
+			$("#room_list_top").html(output);
+			$("#room_list_top").find("input[value='" + currentRoomNum + "']").parent("li").trigger("click");
+		}
+	});
+}
+
 //채팅방 목록을 가져와서 출력하는 함수
 function getChatRoomList() {
+	sessionStorage.setItem("chat_menu_state", "chat_room");
 	$.ajax({
 		type : "get",
 		url : "${pageContext.request.contextPath}/main/roomList",
@@ -667,7 +807,7 @@ function getChatRoomList() {
 			var output = "<div id='chat_room_list'><ul style='list-style:none;padding:0;'>";
 			if (rdata.length > 0) {
 				$(rdata).each(function(index, item) {
-				
+					
 					var roomImgArr = this.room_img.split(",");
 					var roomMemberCount = roomImgArr.length;
 					var roomMemberAllArr = this.room_all_member.split(", ");
@@ -739,9 +879,9 @@ function getChatRoomList() {
 							+ "            <div>";
 					
 					if (roomMemberAllCount > 2) {
-						output += "                <span>" + this.room_member.substring(0, 9) + " ..." + roomMemberAllCount + "</span>";
+						output += "                <span>" + this.room_member.substring(0, 8) + "... " + roomMemberAllCount + "</span>";
 					} else {
-						output += "                <span>" + this.room_member.substring(0, 9) + "</span>";
+						output += "                <span>" + this.room_member.substring(0, 10) + "</span>";
 					}
 							
 					if (this.last_message_date != null) {
@@ -764,15 +904,16 @@ function getChatRoomList() {
 							+ "        <p>" + this.room_all_member + "</p>"
 							+ "    </div>"
 							+ "</li>";
+							
 				});
 				output += "</ul>";
+				
 			} else {
 				output += "<span style='margin:20px;display:block;text-align:center;color:dimgrey;'>채팅 목록이 없습니다.</span>";
 			}
 			output += "</div>";
 			
 			$("#msg_left_list").html(output);
-			$("#msg_left_list").find("input[value='" + currentRoomNum + "']").parent("li").trigger("click");
 		}
 	});
 	
@@ -792,6 +933,7 @@ function getChatSearchList() {
 	chatSearch();
 }
 function chatSearch() {
+	sessionStorage.setItem("chat_menu_state", "chat_search");
 	$.ajax({
 		type : "get",
 		url : "${pageContext.request.contextPath}/main/memberSearch",
@@ -826,8 +968,7 @@ function chatSearch() {
 				});
 				output += "</ul>"
 						+ "<div>"
-						+ "    <button class='chat_search_btn chat_btn'>대화 시작</button>"
-						+ "    <button class='chat_search_btn chat_invite_btn'>대화 초대</button>"
+						+ "    <button class='chat_search_btn chat_btn'>초대하기</button>"
 						+ "</div>";
 			}
 			
@@ -853,7 +994,13 @@ function getMessageList(roomNum) {
 				$(rdata).each(function(index, item) {
 					var time = parseInt(this.message_info.chat_date);
 					
-					if (this.message_info.member_id == "${user_info.id}") {
+					if (this.message_info.member_id == "system") {
+						output = "<li class='system_message'>"
+							   + "    <div>"
+							   + "        <p>" + this.message_info.message + "</p>"
+							   + "    </div>"
+							   + "</li>";
+					} else if (this.message_info.member_id == "${user_info.id}") {
 						output = '<li class="sent">';
 						
 						output += isFirstMessage(time);
@@ -965,6 +1112,24 @@ function newMessage() {
 	}
 };
 
+
+var url = "ws://${url}/boot.do?id=${user_info.id}"
+		+	 				  "&name=${user_info.name}"
+		+ 					  "&profile_img=${user_info.profile_img}"
+		+ 					  "&login_type=${user_info.login_type}";	
+
+ws = new WebSocket(url);
+	
+//서버에서 전송하는 데이터를 받으려면 message이벤트를 구현하면 됩니다.
+//웹 소켓에서 메시지가 날라왔을 때 호출되는 이벤트입니다.
+ws.onmessage = function(event) {
+	console.log("받은 데이터" + event.data);
+	console.log(currentRoomNum);
+	response(event.data);
+	getChatRoomList();
+	getRoomListTop();
+};
+	
 /*
 $('.exit').click(function() {
 	if (confirm("정말로 나가시겠습니까?")) {
@@ -973,42 +1138,37 @@ $('.exit').click(function() {
 	}
 });
 */
-var url = "ws://${url}/boot.do?id=${user_info.id}"
-		+	 				  "&name=${user_info.name}"
-		+ 					  "&profile_img=${user_info.profile_img}"
-		+ 					  "&login_type=${user_info.login_type}";
-ws = new WebSocket(url);
-
-//웹 소켓이 연결되었을 때 호출되는 이벤트
-ws.onopen = function(event) {
-
-};
-
-//서버에서 전송하는 데이터를 받으려면 message이벤트를 구현하면 됩니다.
-//웹 소켓에서 메시지가 날라왔을 때 호출되는 이벤트입니다.
-ws.onmessage = function(event) {
-	console.log("받은 데이터" + event.data);
-	//java&/2019-7-4/bbs20197499521032.png&님이 퇴장하셨습니다.out
-	response(event.data);
-	getChatRoomList();
-};
 
 //웹 소켓이 닫혔을 때 호출되는 이벤트입니다.
 //ws.onclose = function(event) {
 //	location.href = "logout";
 //}
 
+//웹 소켓이 연결되었을 때 호출되는 이벤트
+/*
+ws.onopen = function(event) {
+
+};
+*/
+
 function send(message) {
 	
-	$.ajax({
-		type : "post",
-		url : "${pageContext.request.contextPath}/main/insertMessage",
-		data : { "id" : "${user_info.id}", "message" : message },
-		success : function() {
-			ws.send(message);//웹 소켓으로 message를 보냅니다.
-			getChatRoomList();
-		}
-	});
+	if (message != "") {
+		$.ajax({
+			type : "post",
+			url : "${pageContext.request.contextPath}/main/insertMessage",
+			data : { "id" : "${user_info.id}", "message" : message },
+			success : function() {
+				ws.send(message);//웹 소켓으로 message를 보냅니다.
+				getChatRoomList();
+				getRoomListTop();
+			}
+		});
+	} else if (message == "") {
+		ws.send(message);
+		getChatRoomList();
+		getRoomListTop();
+	}
 	
 }
 
@@ -1142,23 +1302,36 @@ function timeStamp(isSent, time) {
 
 </script>
 
+<a id="msg_btn"> 
+		<img src="${pageContext.request.contextPath}/resources/image/nhj_msg.png">
+</a>
+
 <div id="msg_wrap">
-	
-	<div id="msg_left" style="">
-		<div>
-			<img src="${pageContext.request.contextPath}/resources/image/nhj_white_hamburger.png" id="chat_menu_btn">
-			<div id="msg_slider" style="float:right;width:100px;"></div>
-			<div id="chat_menu">
-				<a id="chat_room_btn">내 채팅방 보기</a>
-				<a id="chat_search_btn">대화상대 검색</a>
+	<div>
+		<img src="${pageContext.request.contextPath}/resources/image/nhj_white_hamburger.png" id="chat_menu_btn">
+		<div id="room_title">
+			<div style="width:60px;"></div>
+			<div style="cursor:pointer;">
+				<span>새로운 대화</span>
+				<span></span>
 			</div>
 		</div>
+		<div id="msg_slider" style="float:right;width:100px;"></div>
+		<div id="chat_menu">
+			<a id="chat_room_btn">내 채팅방 보기</a>
+			<a id="chat_search_btn">대화상대 검색</a>
+		</div>
+		<div id="room_list_top">
+		</div>
+	</div>
+	
+	<div id="msg_left">
 		<div id="msg_left_list"></div>
 	</div>
 	
-	<div id="msg_right" style="display:flex;flex-direction:column">
+	<div id="msg_right">
 	
-		<div style="width:100%;height:90%;" class="messages">
+		<div class="messages">
 			<ul>
 
 			</ul>

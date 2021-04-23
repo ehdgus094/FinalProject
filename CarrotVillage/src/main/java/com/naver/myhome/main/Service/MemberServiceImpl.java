@@ -73,6 +73,11 @@ public class MemberServiceImpl implements MemberService {
 	public int memberUpdate(Member member) {
 		return dao.memberUpdate(member);
 	}
+	
+	@Override
+	public int memberDelete(String id) {
+		return dao.memberDelete(id);
+	}
 
 	@Override
 	public List<Member> memberSearch(Map<String, String> map) {
@@ -92,9 +97,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public ChatRoom insertRoom(List<String> chatMembers) {
-		for (int i = 0; i < chatMembers.size(); i++) {
-			System.out.println("service insertRoom chatMembers = " + chatMembers.get(i));
-		}
 		int result = dao.insertChatRoom(chatMembers.size());
 		ChatRoom chatRoom = new ChatRoom();
 		
@@ -108,6 +110,11 @@ public class MemberServiceImpl implements MemberService {
 				dao.insertChatJoin(cj);
 			}
 			
+			ChatMessage cm = new ChatMessage();
+			cm.setMessage(inviteMessage(chatMembers));
+			cm.setMember_id("system");
+			cm.setChat_room_num(lastChatRoomNum);
+			dao.insertMessage(cm);
 		}
 		
 		return chatRoom;
@@ -188,18 +195,31 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	public ChatRoom updateRoom(Map<String, Object> map) {
-		dao.updateRoom(map);
-		int roomNum = (int)map.get("roomNum");
-		
 		@SuppressWarnings("unchecked")
 		List<String> list = (List<String>) map.get("newMembers");
-		for (int i = 0; i < list.size(); i++) {
-			ChatJoin chatJoin = new ChatJoin();
-			chatJoin.setChat_room_num(roomNum);
-			chatJoin.setMember_id(list.get(i));
-			dao.insertChatJoin(chatJoin);
+		int roomNum = (int)map.get("roomNum");
+		
+		list.removeAll(roomMember(roomNum));
+		map.put("length", list.size());
+		if (list.size() > 0) {
+			dao.updateRoom(map);
+			
+			for (int i = 0; i < list.size(); i++) {
+				ChatJoin chatJoin = new ChatJoin();
+				chatJoin.setChat_room_num(roomNum);
+				chatJoin.setMember_id(list.get(i));
+				dao.insertChatJoin(chatJoin);
+			}
+			
+			ChatMessage cm = new ChatMessage();
+			list.add(0, (String) map.get("myId"));
+			cm.setMessage(inviteMessage(list));
+			cm.setMember_id("system");
+			cm.setChat_room_num(roomNum);
+			dao.insertMessage(cm);
 		}
 		
+			
 		return dao.getChatRoomInfo(roomNum);
 	}
 	
@@ -208,6 +228,12 @@ public class MemberServiceImpl implements MemberService {
 		chatJoin.setChat_room_num(room_num);
 		chatJoin.setMember_id(id);
 		dao.deleteChatJoin(chatJoin);
+		
+		ChatMessage cm = new ChatMessage();
+		cm.setMessage(dao.memberInfo(id).getName() + "님이 나가셨습니다.");
+		cm.setMember_id("system");
+		cm.setChat_room_num(room_num);
+		dao.insertMessage(cm);
 		
 		return dao.updateRoomOut(room_num);
 	}
@@ -226,6 +252,24 @@ public class MemberServiceImpl implements MemberService {
 		ci.setChat_room_num(room_num);
 		ci.setMember_id(id);
 		return dao.deleteChatInvisible(ci);
+	}
+	
+	private String inviteMessage(List<String> list) {
+		String systemMessage = "";
+		
+		for (int i = 0; i < list.size(); i++) {
+			String name = dao.memberInfo(list.get(i)).getName();
+			if (i == 0) {
+				systemMessage += name + "님이 ";
+			} else if (i > 0 && i < list.size()-1) {
+				systemMessage += name + ", ";
+			} else if (i == list.size()-1) {
+				systemMessage += name + "님을 초대했습니다.";
+			}
+
+		}
+		
+		return systemMessage;
 	}
 	
 }

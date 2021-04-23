@@ -119,13 +119,11 @@
 
 
 #nav_wrap {
-    position: absolute;
+    position: relative;
     z-index: 10;
     box-shadow: 0 6px 10px -6px rgb(0 0 0 / 20%);
     background: rgba(255,255,255,0.9);
-    top: 114px;
     width: 100%;
-    min-width: 1200px;
 }
 
 #nav_bar {
@@ -172,7 +170,7 @@
 	margin:0 auto;
     max-height: 0;
     overflow: hidden;
-    -webkit-transition: max-height .6s;
+    -webkit-transition: max-height .7s;
 }
 
 #nav_all.show {
@@ -181,7 +179,7 @@
 
 #nav_all a {
 	color:#6f6f6f;
-	font-size:13px;
+	font-size:15px;
 	font-weight:100;
 	cursor:pointer;
 }
@@ -189,6 +187,7 @@
 #nav_all a:hover {
 	color:black;
 	border-bottom:1px solid orange;
+	text-decoration:none;
 }
 
 #nav_all > div {
@@ -251,7 +250,7 @@ $(function() {
 				<li><a href="${pageContext.request.contextPath}/market/list">FLEA MARKET</a></li>
 				<li><a href="${pageContext.request.contextPath}/meetup/list">MEETUP</a></li>
 				<li><a href="${pageContext.request.contextPath}/sub/submarket">CARROT MART</a></li>
-				<li><a href="#">navi4</a></li>
+				<li><a href="${pageContext.request.contextPath}/board/board">COMMUNITY</a></li>
 			</ul>
 		</div>
 		
@@ -267,34 +266,17 @@ $(function() {
 	<div id="nav_all">
 		<div>
 			<ul>
-				<li><a>nav1-1</a></li>
-				<li><a>nav1-2</a></li>
-				<li><a>nav1-3</a></li>
-				<li><a>nav1-4</a></li>
-				<li><a>nav1-5</a></li>
+				<li></li>
 			</ul>
 			<ul>
-				<li><a>nav2-1</a></li>
-				<li><a>nav2-2</a></li>
-				<li><a>nav2-3</a></li>
-				<li><a>nav2-4</a></li>
-				<li><a>nav2-5</a></li>
-				<li><a>nav2-6</a></li>
-				<li><a>nav2-7</a></li>
+				<li></li>
 			</ul>
 			<ul>
-				<li><a>nav3-1</a></li>
-				<li><a>nav3-2</a></li>
-				<li><a>nav3-3</a></li>
-				<li><a>nav3-4</a></li>
+				<li><a href="${pageContext.request.contextPath}/sub/wishlist">wish list</a></li>
+				<li><a href="${pageContext.request.contextPath}/sub/my-order">my order</a></li>
 			</ul>
 			<ul>
-				<li><a>nav4-1</a></li>
-				<li><a>nav4-2</a></li>
-				<li><a>nav4-3</a></li>
-				<li><a>nav4-4</a></li>
-				<li><a>nav4-5</a></li>
-				<li><a>nav4-6</a></li>
+				<li></li>
 			</ul>
 		</div>
 	</div>

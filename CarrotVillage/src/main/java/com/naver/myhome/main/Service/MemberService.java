@@ -16,6 +16,7 @@ public interface MemberService {
     public Member memberInfo(String id);
 	public Member memberInfo(String field, String value, String login_type);
 	public int memberUpdate(Member member);
+	public int memberDelete(String id);
 	public List<Member> memberSearch(Map<String, String> map);
 	public ChatRoom existRoom(List<String> chatMembers);
 	public ChatRoom insertRoom(List<String> chatMembers);
