@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="board">
+
+	<insert id="insert" parameterType="board">
+		insert into board(num, member_id, subject, content)
+		values (board_seq.nextval, #{member_id}, #{subject}, #{content})
+	</insert>
+	
+	<select id="getListCount" parameterType="String" resultType="int">
+		select count(*)
+		from board join member
+		on member_id = id
+		where member_id like '%${value}%'
+		or name like '%${value}%'
+		or subject like '%${value}%'
+		or content like '%${value}%'
+	</select>
+	
+	<select id="getList" parameterType="java.util.Map" resultType="board">
+		select *
+		from (
+			  select rownum rnum, b.*
+			  from (
+			  		select *
+					from board join member
+					on member_id = id
+					where member_id like '%${search}%'
+					or name like '%${search}%'
+					or subject like '%${search}%'
+					or content like '%${search}%'
+					order by ${orderBy} desc
+			  	   ) b
+			 )
+		where rnum &gt;= #{start} and rnum &lt;= #{end}
+	</select>
+	
+	<select id="getDetail" parameterType="int" resultType="board">
+		select *
+		from board join member
+		on member_id = id
+		where num = #{value}
+	</select>
+	
+	<update id="readCount" parameterType="int">
+		update board
+		set readcount = readcount + 1
+		where num = #{value}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from board
+		where num = #{value}
+	</delete>
+	
+	<insert id="commentInsert" parameterType="com.naver.myhome.main.domain.BoardComment">
+		insert into board_comment(num, member_id, board_num, content)
+		values (board_comment_seq.nextval, #{member_id}, #{board_num}, #{content})
+	</insert>
+	
+	<select id="getCommentListCount" parameterType="int" resultType="int">
+		select count(*)
+		from board_comment
+		where board_num = #{value}
+	</select>
+	
+	<select id="getCommentList" parameterType="java.util.Map" resultType="com.naver.myhome.main.domain.BoardComment">
+		select *
+		from (
+			  select rownum rnum, b.*
+			  from (
+			  		select *
+					from board_comment join member
+					on member_id = id
+					where board_num = #{boardNum}
+					order by ${sort}
+			  	   ) b
+			 )
+		where rnum &gt;= #{start} and rnum &lt;= #{end}
+	</select>
+	
+	<delete id="commentDelete" parameterType="int">
+		delete from board_comment
+		where num = #{value}
+	</delete>
+	
+	<insert id="replyInsert" parameterType="com.naver.myhome.main.domain.BoardReply">
+		insert into board_reply(num, member_id, comment_num, content)
+		values (board_comment_seq.nextval, #{member_id}, #{comment_num}, #{content})
+	</insert>
+	
+	<select id="getReplyListCount" parameterType="int" resultType="int">
+		select count(*)
+		from board_reply
+		where comment_num = #{value}
+	</select>
+	
+	<select id="getReplyList" parameterType="int" resultType="com.naver.myhome.main.domain.BoardReply">
+		select *
+		from board_reply join member
+		on member_id = id
+		where comment_num = #{value}
+		order by reply_date
+	</select>
+	
+	<delete id="replyDelete" parameterType="int">
+		delete from board_reply
+		where num = #{value}
+	</delete>
+	
+	<select id="getBoardLike" parameterType="java.util.Map" resultType="com.naver.myhome.main.domain.BoardLike">
+		select *
+		from board_like
+		where member_id = #{id}
+		and num = #{num}
+		and table_name = #{tableName}
+	</select>
+	
+	<delete id="deleteBoardLike" parameterType="java.util.Map">
+		delete from board_like
+		where member_id = #{id}
+		and num = #{num}
+		and table_name = #{tableName}
+	</delete>
+	
+	<delete id="insertBoardLike" parameterType="com.naver.myhome.main.domain.BoardLike">
+		insert into board_like
+		values (#{member_id}, #{num}, #{table_name})
+	</delete>
+	
+	<update id="updateLike" parameterType="java.util.Map">
+		update ${tableName}
+		set ${field} = ${field} ${operator} 1
+		where num = #{num}
+	</update>
+	
+	<select id="getLike" parameterType="java.util.Map" resultType="int">
+		select ${field}
+		from ${tableName}
+		where num = #{num}
+	</select>
+	
+</mapper>

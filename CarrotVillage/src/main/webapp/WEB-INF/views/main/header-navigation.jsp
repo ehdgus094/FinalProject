@@ -250,7 +250,7 @@ $(function() {
 				<li><a href="${pageContext.request.contextPath}/market/list">FLEA MARKET</a></li>
 				<li><a href="${pageContext.request.contextPath}/meetup/list">MEETUP</a></li>
 				<li><a href="${pageContext.request.contextPath}/sub/submarket">CARROT MART</a></li>
-				<li><a href="${pageContext.request.contextPath}/board/board">COMMUNITY</a></li>
+				<li><a href="${pageContext.request.contextPath}/board/list">COMMUNITY</a></li>
 			</ul>
 		</div>
 		

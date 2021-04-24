@@ -577,6 +577,11 @@ public class MainController {
 		}
 	}
 	
+	@RequestMapping(value="memberManagement")
+	public String memberManagement() {
+		return "main/admin-member_management";
+	}
+	
 	private String fileDBName(String fileName, String saveFolder) {
 		Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
