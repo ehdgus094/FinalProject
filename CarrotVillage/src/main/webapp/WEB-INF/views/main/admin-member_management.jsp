@@ -48,7 +48,7 @@ html, body {
 	<jsp:include page = "/WEB-INF/views/main/header.jsp" />
 
 	<div id="content_wrap">
-		<div id="content_title"><span>Community</span></div>
+		<div id="content_title"><span>회원관리</span></div>
 		
 	</div>
 

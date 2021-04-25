@@ -11,6 +11,7 @@
       <typeAlias alias="groups"		    type="com.naver.myhome.meetup.domain.Groups"/>
       <typeAlias alias="martDetail"		type="com.naver.myhome.sub.domain.MartDetail"/>
       <typeAlias alias="candidate"		type="com.naver.myhome.market.domain.Candidate"/>
+      <typeAlias alias="board"			type="com.naver.myhome.main.domain.Board"/>
    </typeAliases>
    
    <mappers>
@@ -20,6 +21,7 @@
       <mapper resource="sql/groups.xml"/>
       <mapper resource="sql/subD.xml"/>
       <mapper resource="sql/candidate.xml"/>
+      <mapper resource="sql/board.xml"/>
    </mappers>
    
 </configuration>

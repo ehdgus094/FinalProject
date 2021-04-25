@@ -340,12 +340,16 @@
 						<a href="${pageContext.request.contextPath}/main/serviceCenter" id="sc_btn">고객센터</a>
 					</li>
 					
-						<c:if test="${empty user_info}">				
-							<li><a id="login_btn">로그인</a></li>
-						</c:if>
-						<c:if test="${!empty user_info}">			
-							<li><a id="user_btn">${user_info.name} 님</a></li>
-						</c:if>
+					<c:if test="${empty user_info}">				
+						<li><a id="login_btn">로그인</a></li>
+					</c:if>
+					<c:if test="${!empty user_info}">			
+						<li><a id="user_btn">${user_info.name} 님</a></li>
+					</c:if>
+					
+					<c:if test="${user_info.id == 'admin'}">
+						<li><a href="${pageContext.request.contextPath}/main/memberManagement">회원관리</a></li>
+					</c:if>
 				</ul>
 		
 				<jsp:include page = "/WEB-INF/views/main/header-user_info_tab.jsp" />

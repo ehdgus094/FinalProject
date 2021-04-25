@@ -19,7 +19,7 @@ create table member (
 	login_type		varchar2(20)	default 'normal'
 );
 insert into member(id, email, name) values('system', 'system', 'system');
-insert into member(id, email, name, auth_lev) values('admin', 'admin', 'admin', 'admin');
+update member set auth_lev = 'admin' where id = 'admin';
 /*---------------------------------------------------------------------------------*/
 
 drop sequence chat_room_seq;

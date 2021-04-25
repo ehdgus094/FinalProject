@@ -10,56 +10,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <style>
-	html,body {
-		margin:0;
-		height:100%;
-		width : 100%;
-		background: #f6fcf1; 
-	}
-	#content_wrap {
-		width:100%;
-		position:absolute;
-		top:0;
-		min-width:1200px;
-	}
-	.container {
-		width: 100%;
-		height:100%;
-		background: #f6fcf1; 
-		display: grid;
-	}
-
-	.card img-fluid {
-	   margin: auto;
-	   background: #f6fcf1;
-	   border: none;
-	}
-	.card-img-top{
-	    min-width: 70%;
-        min-height: 100%;
-		height : auto;
-		margin: auto;
-	    background: #f6fcf1;
-	    opacity: 0.2;
-	}
-
-	.card {
-		border : none;
-	}
-	
-    @media only screen and (max-width: 1000px) {
-		.card-img-overlay {
-			margin-left : -180px; 
-			vertical-align : center;
-	  }
-    @media only screen and (max-width: 840px) {
-    	.card-img-overlay {
-			margin-left : -200px; 
-			vertical-align : center;
-	  }
+html,body {
+	margin:0;
+	height:100%;
+	width:100%;
+	background: #f6fcf1; 
+}
+#content_wrap {
+	width:100%;
+	position:absolute;
+	top:0;
+	min-width:1200px;
+}
+div.cnt01 > div:nth-child(1) {
+	position: absolute;
+    top: 10%;
+    left: 27%;
+}
+div.cnt01 p {
+	margin:0;
+}
+div.cnt01 p:nth-child(1),
+div.cnt01 p:nth-child(2) {
+	font-size: 60px;
+    font-weight: 700;
+}
+div.cnt01 p:nth-child(3),
+div.cnt01 p:nth-child(4) {
+	color: orange;
+    margin-left: 10px;
+}
+div.cnt01 > div:nth-child(2) {
+	position: absolute;
+    top: 22%;
+    width: 100%;
+}
+div.cnt01 > div:nth-child(2) img {
+	width: 55px;
+    margin: 0 auto;
+    display: block;
+    cursor:pointer;
+}
 </style>
 <script>
-	
+
 	//스크롤 기본이벤트를막고 화면 한칸씩 움직이게하는 함수
 	var scroll = function(){
 	    
@@ -74,6 +68,12 @@
 	    $(document).ready(function(){
 	        init();
 	        initEvent();
+	        
+	        $("#arrow_down").click(function() {
+	        	moveIndex += 1;
+                moving(moveIndex);
+	    	});	
+	        
 	    });
 	    
 	    var init = function(){
@@ -143,11 +143,14 @@
 		<div class="content">
 		
 			<div class="cnt01">
-				<div class="container">
-  					<div class="card img-fluid" >
-    					<img class="card-img-top"
-       						 src="${pageContext.request.contextPath}/resources/image/nhr_landingcarrot.jpg"  alt="" >
-   					</div>
+				<div>
+					<p>당신 근처의</p>
+					<p>당근빌리지</p>
+					<p style="margin-top:10px;">중고 거래, 소모임, 내 근처 마트 장보기 등</p>
+					<p>이웃과 함께 가깝고 따뜻한 당신의 근처를 만드세요.</p>
+				</div>
+				<div>
+					<img src="${pageContext.request.contextPath}/resources/image/nhj_arrow_down.png" id="arrow_down">
 				</div>
 			</div>
 			
