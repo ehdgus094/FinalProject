@@ -213,6 +213,10 @@ $(document).ready(function() {
 			alert('판매완료된 게시글은 수정이 불가능합니다.');
 			return false;
 		}
+		if('${usedItem.winner}' != '') {
+			alert('당첨자가 선정된 게시글은 수정할 수 없습니다.');
+			return false;
+		}
 		location.href = "${pageContext.request.contextPath}/market/modify?num=${usedItem.num}";
 	});
 	
