@@ -1,7 +1,7 @@
-drop table useditem
+drop table useditem cascade constraints;
 create table useditem (
 	num number primary key,
-	id varchar2(20),
+	id varchar2(20) references member(id) on delete cascade,
 	subject varchar2(150),
 	content varchar2(3000),
 	register_date date,
@@ -16,9 +16,7 @@ create table useditem (
 	deadline varchar2(19),
 	winner varchar2(20)
 )
-/*
- * id 외래키로 바꾸기
- */
+
 drop sequence useditem_seq
 create sequence useditem_seq
 select * from useditem

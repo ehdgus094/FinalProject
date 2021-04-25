@@ -333,6 +333,8 @@ $(document).ready(function() {
  					'<div>'
  					+	'추첨 마감 <input type=date id=deadline_date name=date value='+deadline[0]+' required>'
  					+	'<input type=time id=deadline_time name=time value='+deadline[1]+' required> 까지'
+ 					+	'<input type=hidden name=original_date value='+deadline[0]+'>'
+ 					+	'<input type=hidden name=original_time value='+deadline[1]+'>'
  					+'</div>'
  					);
  		} else {

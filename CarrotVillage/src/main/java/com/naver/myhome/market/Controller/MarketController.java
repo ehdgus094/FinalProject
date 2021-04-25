@@ -161,7 +161,7 @@ public class MarketController {
 			//추첨 마감시간 되면 마감하는 쓰레드 생성
 			freeItemThread.setMilliSecond(getDeadline(date + " " + time + ":00"));
 			freeItemThread.setNum(item_num);
-			freeItemThread.start();		
+			freeItemThread.start();
 		}
 		return "redirect:list";
 	}
@@ -296,7 +296,7 @@ public class MarketController {
 	@PostMapping("/modifyProcess")
 	public String modifyProcess(
 			UsedItem usedItem, MultipartHttpServletRequest request, String delete_num, String delete_num_new,
-			String imagecount, String date, String time) throws Exception {
+			String imagecount, String date, String time, String original_date, String original_time) throws Exception {
 		String path = request.getSession().getServletContext().getRealPath("resources") + "/upload/market_image/";
 		List<MultipartFile> uploadfiles = request.getFiles("uploadfile");
 		//추가했다가 삭제한 이미지 정보 구하기
@@ -402,7 +402,16 @@ public class MarketController {
 		}
 		usedItem.setDeadline("");
 		if(date != null) {
-			usedItem.setDeadline(date + " " + time + ":00");
+			if(time.length() == 5) {
+				time += ":00";
+			}
+			if(!original_date.equals(date) || !original_time.equals(time)) {
+				//추첨 마감시간 되면 마감하는 쓰레드 생성
+				freeItemThread.setMilliSecond(getDeadline(date + " " + time + ":00"));
+				freeItemThread.setNum(usedItem.getNum());
+				freeItemThread.start();
+			}
+			usedItem.setDeadline(date + " " + time);
 		}
 		
 		usedItemService.update(usedItem);
