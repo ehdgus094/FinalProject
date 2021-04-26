@@ -30,7 +30,7 @@ create table board_comment (
 
 drop sequence board_reply_seq;
 create sequence board_reply_seq;
-drop table board_reply;
+drop table board_reply cascade constraints;
 create table board_reply (
 	num		  		  	number		  		primary key,
 	member_id		  	varchar2(50)	  	references member(id) on delete cascade,
