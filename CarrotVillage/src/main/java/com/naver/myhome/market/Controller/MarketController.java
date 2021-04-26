@@ -57,7 +57,6 @@ public class MarketController {
 		return mv;
 	}
 	
-	
 	@ResponseBody
 	@GetMapping(value = "/loadList")
 	public List<UsedItem> loadList(String page, String search, HttpSession session) {
