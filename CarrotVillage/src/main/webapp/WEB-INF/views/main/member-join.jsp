@@ -174,10 +174,10 @@ $(function() {
 			$("#email").focus();
 			return false;
 		}
-		/*if (!checkEmailAuth) {
+		if (!checkEmailAuth) {
 			alert("이메일 인증을 완료해 주세요.");
 			return false;
-		}*/
+		}
 		
 	});
 	
