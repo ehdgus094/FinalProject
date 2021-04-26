@@ -435,7 +435,7 @@ html, body {
 			
 			
 			<div>
-				<a href="${pageContext.request.contextPath}/board/write">글쓰기</a> 
+				<a href="${pageContext.request.contextPath}/board/write" id="write_btn">글쓰기</a> 
 			</div>
 
 			<div id="board_page">
