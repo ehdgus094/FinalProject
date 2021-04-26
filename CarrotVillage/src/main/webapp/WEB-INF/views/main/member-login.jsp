@@ -315,12 +315,12 @@ $(function() {
 				
 				<script type="text/javascript">
 					var naver_id_login = new naver_id_login("ac6ZedX0lErobHrFaU_k",
-															"http://localhost:8088/myhome/main/naverLogin");  // Client ID, CallBack URL 삽입
+															"http://13.125.127.130/CarrotVillage/main/naverLogin");  // Client ID, CallBack URL 삽입
 																											  // 단 'localhost'가 포함된 CallBack URL
 					var state = naver_id_login.getUniqState();
 
 					naver_id_login.setButton("green", 3, 40);
-					naver_id_login.setDomain("http://localhost:8088/myhome/main/login");	//  URL
+					naver_id_login.setDomain("http://13.125.127.130/CarrotVillage/main/login");	//  URL
 					naver_id_login.setState(state);
 					//naver_id_login.setPopup();
 					naver_id_login.init_naver_id_login();
