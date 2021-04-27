@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <head>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" />
-<script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" />
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 </head>
 
 <style>
@@ -1113,7 +1113,7 @@ function newMessage() {
 };
 
 
-var url = "ws://${url}/boot.do?id=${user_info.id}"
+var url = "wss://${url}/boot.do?id=${user_info.id}"
 		+	 				  "&name=${user_info.name}"
 		+ 					  "&profile_img=${user_info.profile_img}"
 		+ 					  "&login_type=${user_info.login_type}";	
