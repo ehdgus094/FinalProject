@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Groups_like">
+
+	<select id="id_check2" parameterType="groups_like" resultType="groups_like">
+		select *
+		from groups_like
+		where groups_like_num = #{groups_like_num} and id = #{id}
+	</select>
+	
+	<insert id="create">
+		insert into groups_like 
+		values (groups_like_seq.nextval, #{groups_like_num}, #{id})
+	</insert>
+	
+	<delete id="groups_like_delete">
+		delete from groups_like
+		where groups_like_num = #{groups_like_num} and id = #{id}
+	</delete>
+	
+	<select id="getLikeCount" resultType="groups_like" parameterType="int">
+		select * from groups_like
+		where groups_like_num = #{groups_like_num}
+	</select>
+	
+</mapper>

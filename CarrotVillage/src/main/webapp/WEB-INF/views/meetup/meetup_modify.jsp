@@ -20,12 +20,14 @@ html, body {
 	margin: 0;
 	height: 100%;
 }
+
 #wrap {
 	height: 100%;
 	width: 100%;
 	display: grid;
 	grid-template-rows: 175px auto 150px;
 }
+
 #content_wrap {
 	width: 1200px;
 	margin: 0 auto;
@@ -43,16 +45,10 @@ html, body {
 	display: flex;
 	justify-content: flex-end;
 }
+.fa-search {color : lightgray;}
 #searchicon {
 	color : gray;
 	font-size : 1.4em;
-}
-.fa-search {color : lightgray;}
-#searching {
-	margin-left : 10px;
-	border : none;
-	border-bottom: 2px solid lightgray;
-	width : 15%;
 }
 .sBtn {
     background : white;
@@ -66,11 +62,18 @@ html, body {
     border: none;
     box-shadow: none;
 }
+#searching {
+	margin-left : 10px;
+	border : none;
+	border-bottom: 2px solid lightgray;
+	width : 15%;
+}
 input:focus {outline:none;}
 
 .all-content-center_make{
 	margin: 5% ;
 }
+
 fieldset {
 	margin : 5% 10%;
 }
@@ -120,7 +123,6 @@ select  {
 .price-control{
 	margin-left: 25%;
 }
-
 .time-word{
 	margin: 5% 0 5% 30%;
 }
@@ -174,14 +176,6 @@ button, select , textarea, #upfile1, .clearfix  {
 
 <script>
 	$(document).ready(function(){
-		/*
-		//var a = ${member.name} 어떤값을 문자열 변수에 저장하려면 무조건 "" 필요 문법임(반환이 아니라 치환....)
-		var b = "${member.name}"
-		var c = "abc"
-		//console.log(a)
-		console.log(b)
-		console.log(c)
-		*/
 		
 		$('#searchicon>button').click(function(){
 			var search_word = $('#search input').val();
@@ -193,14 +187,21 @@ button, select , textarea, #upfile1, .clearfix  {
 				document.location.href="${pageContext.request.contextPath}/meetup/list?search_word=" + search_word;
 			}
 		});
+		/*
+		//var a = ${member.name} 어떤값을 문자열 변수에 저장하려면 무조건 "" 필요 문법임(반환이 아니라 치환....)
+		var b = "${member.name}"
+		var c = "abc"
+		//console.log(a)
+		console.log(b)
+		console.log(c)
+		*/
 		
-		if("${member.name}" == '' ) {
-			alert("로그인 후 게시글을 작성할 수 있습니다.");
-			history.back(-1);
-		}
+		var check = 0;
 		
 		//뜸
 		$('form').submit(function(){
+			
+			
 			
 			if($.trim($('#subject').val()) == ''){
 				alert('제목을 입력하세요.');
@@ -222,9 +223,42 @@ button, select , textarea, #upfile1, .clearfix  {
 		           $('#content').focus();
 		           return false;
 		      };
-		});
+		      
+		      if(check == 0 ) {
+					value = $('#filevalue').text();
+					console.log("value=" + value);
+					 html = "<input type='text' value='" + value + "' name = 'check'>";
+					$(this).append(html);  
+				}
+		   });
 		
-		    
+			function show(){
+		 		if($('#filevalue').text() == '') {
+		 			$(".fa-times").css('display', 'none');
+		 		} else {
+		 			$(".fa-times").css({'display': 'inline-block', 
+		 						'position': 'relative', 'top': '-5px'});
+		 		}
+		     }
+		     
+		     show();
+		
+		
+		   $("#upfile").change(function(){
+			   check++;
+				console.log($(this).val())  // c:\fakepath\upload.png  -> 이렇게 내부적으로 관리함.
+				var inputfile = $(this).val().split('\\');
+				$('#filevalue').text(inputfile[inputfile.length -1]);
+				show();
+				console.log(check);
+			});
+		   
+		   $(".fa-times").click(function(){
+				$('#filevalue').text('');
+				$(this).css('display', 'none');
+			});
+		        
+	     
 		    //datepicker - 오늘 날짜 이전으로 선택못하게 수정!!
 		    rome(start, {
 		    	  dateValidator: rome.val.beforeEq(end) 
@@ -250,14 +284,10 @@ button, select , textarea, #upfile1, .clearfix  {
 	        	} 
 	        });//ajax 
 	        
-	        $("#upfile").change(function(){
-				console.log($(this).val())  // c:\fakepath\upload.png  -> 이렇게 내부적으로 관리함.
-				var inputfile = $(this).val().split('\\');
-				$('#filevalue').text(inputfile[inputfile.length -1]);
-			})
 	 	
 	 }); //ready 
 	 
+	
 </script>
 
 </head>
@@ -265,7 +295,6 @@ button, select , textarea, #upfile1, .clearfix  {
 <div id="wrap">
 
 <jsp:include page = "/WEB-INF/views/main/header.jsp" />
-
 	
 	<div id="content_wrap"> 
 		
@@ -279,14 +308,17 @@ button, select , textarea, #upfile1, .clearfix  {
 		  </div>
 	  </div>
 	  
-	  <div class="all-content-center_make">
-	  	
-	  	<form  method="post" action="makeProcess" enctype="multipart/form-data" id="makeForm"><%--  action="makeProcess" --%>
+	  <div class="all-content-center_make"> <!-- hidden파일은 무조건 form태그에 넣어서 전송!!아님 500 -->
+	  	<form  method="post" action="modifyProcess" enctype="multipart/form-data" id="makeForm"><%--  action="makeProcess" --%>
+	  	    <input type=hidden name=num value="${groups.num}">
+	  	    <input type="hidden" name="img_file" value="${groups.img_file}">
+	  	    <input type=hidden id=g_latitude name=latitude value="${groups.latitude}">
+	  		<input type=hidden id=g_longitude name=longitude value="${groups.longitude}">
+	 		<input type=hidden id=lat name=lat value="${lat}">
+	 	    <input type=hidden id=lon name=lon value="${lon}">
+	 	    
   		  <fieldset>
   			<legend>그룹생성폼</legend>
-  			
-  			<input type=hidden id=latitude name=latitude value="${latitude}">
-			<input type=hidden id=longitude name=longitude value="${longitude}">
   			
   			<div class="control-form">
   			<label>그룹리더명</label>
@@ -306,6 +338,7 @@ button, select , textarea, #upfile1, .clearfix  {
   				      id="subject" 
   				      name="subject" 
   				      placeholder="제목을 입력해주세요."
+  				      value="${groups.subject}"
   				    ><br>
   			</div>
   			
@@ -340,7 +373,7 @@ button, select , textarea, #upfile1, .clearfix  {
 		  			id="start" 
 		  			name = "start_date"
 		  			placeholder="연도-월-일 시간:분"  
-		  			value= ""
+		  			value="${groups.start_date}"
 		  			required
 	  		      />
 	  		    <div id="date_gap">ㅡ</div>
@@ -349,7 +382,7 @@ button, select , textarea, #upfile1, .clearfix  {
 		  			id="end" 
 		  			name = "end_date"
 		  			placeholder="연도-월-일 시간:분"  
-		  			value= ""
+		  			value="${groups.end_date}"
 		  			required
 	  			  />
 	  		   </div>	
@@ -363,16 +396,17 @@ button, select , textarea, #upfile1, .clearfix  {
   				      name="location" 
   				      value="${address}"
   				    />
+  				    
   			  </div>
   			  
   			  <div class="control-form">
   			  <label>내용</label>
-  			  <textarea id="content" name="content" placeholder="최대 1500자까지 작성가능합니다."></textarea> 
+  			  <textarea id="content" name="content" placeholder="최대 1500자까지 작성가능합니다." >${groups.content}</textarea> 
   			  </div>
   			  
   			  <div class="control-form">
   			  <label>공지사항</label>
-  			  <textarea id="notice" name="notice" placeholder="최대 800자까지 작성가능합니다."></textarea>
+  			  <textarea id="notice" name="notice" placeholder="최대 800자까지 작성가능합니다.">${groups.notice}</textarea>
   			  </div>
   			  
   			  
@@ -381,7 +415,9 @@ button, select , textarea, #upfile1, .clearfix  {
   	   		  <label for="board_file">파일첨부</label>
 				<label for="upfile" id="upfile1">
 					이미지첨부
-				</label> <span id="filevalue" ></span>
+				</label> 
+				 <span id="filevalue">${groups.img_file_ori}</span>
+				 &nbsp;<i class="fas fa-times" aria-hidden="true" ></i>
 				  <div class="file-control">
 				    <input 
 				        type="file" 

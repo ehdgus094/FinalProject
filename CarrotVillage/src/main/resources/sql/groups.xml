@@ -6,34 +6,52 @@
 
 	<insert id="insert" parameterType="groups">
 		insert into groups values(
-		groups_seq.nextval, #{name}, #{subject}, #{content}, #{notice} , #{img_file} , #{start_date} ,
-	    #{end_date} , sysdate, #{location}, #{joined_member}, #{like_count}, #{view_count},  #{price} )
+		groups_seq.nextval, #{name}, #{subject}, #{content}, #{notice} , #{img_file} , #{img_file_ori} , #{start_date} ,
+	    #{end_date} , sysdate, #{location}, #{latitude}, #{longitude}, #{joined_member}, #{like_count}, #{view_count},  #{price} )
 	</insert>
 	
 	<select id="selectList" resultType="groups" parameterType="map"> <!-- resultType="list" -->
 		select * 
-   		from ( select rownum rnum, s.*
-   				from (
-   					select *
-   					from groups
-   					order by view_count desc
-   				) s
-   			)
+	   		from ( select rownum rnum, s.*
+	   				from (
+	   					select *
+	   					from groups
+	   					where subject like '%' || #{search_word} || '%' or
+	   					content like '%' || #{search_word} || '%'
+	   					order by view_count desc
+	   				) s
+	   			)
    		where rnum between #{start} and #{end}	
 	</select>
 	
 	<select id="selectListLike" resultType="groups" parameterType="map"> <!-- resultType="list" -->
 		select * 
    		from ( select rownum rnum, s.*
+   				from ( select *
+   					   from groups
+   					   where subject like '%' || #{search_word} || '%' or
+	   				   content like '%' || #{search_word} || '%'
+   					   order by like_count desc
+   					) s
+   					
+   				)
+   		where rnum between #{start} and #{end}	
+	</select>
+	<!-- 
+	<select id="getSearchList" resultType="groups" parameterType="map"> 검색 groups.list 
+		select * 
+   		from ( select rownum rnum, s.*
    				from (
    					select *
    					from groups
+   					where subject like '%' || search_word || '%' or
+	   					content like '%' || search_word || '%'
    					order by like_count desc
    				) s
    			)
    		where rnum between #{start} and #{end}	
 	</select>
-	
+	 -->
 	<select id="detail" parameterType="int" resultType="groups">
 		select * 
 		from groups
@@ -49,5 +67,20 @@
 		set view_count = view_count+1
 		where num = #{num}
 	</update>
+	
+	<update id="modify" parameterType="groups">
+		update groups
+		set  name = #{name}, subject = #{subject}, content =  #{content}, notice =  #{notice} ,
+		     img_file = #{img_file} , img_file_ori = #{img_file_ori} , 
+		     start_date =  #{start_date} , end_date =  #{end_date} , location = #{location}, 
+		     latitude =  #{latitude} , longitude =  #{longitude} , price = #{price}
+		where num = #{num}
+	</update>
+	
+	<delete id="delete">
+		delete groups
+		where num = #{num}
+	</delete>
+	
 	
 </mapper>

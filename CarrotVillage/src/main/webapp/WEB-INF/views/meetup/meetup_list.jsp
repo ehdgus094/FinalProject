@@ -149,18 +149,27 @@ img {
 <script>
 	$(function(){
 		
-		getList();
-		
+		//getList();
+		/*
 		var result = "${result}";
-		if(result == 'makeSuccess') {
-		  alert("그룹이 생성되었습니다.")
-		}
+		if(result == 'deleteSuccess') {
+			alert("게시글이 삭제되었습니다.");
+		}*/
 		
-		//가격 색상
-		
+		$('#searchicon>button').click(function(){
+			var search_word = $('#search input').val();
+			if(search_word == '') {
+				alert('검색어를 입력하세요');
+				$(this).focus();
+				return false;
+			} else {
+				document.location.href="${pageContext.request.contextPath}/meetup/list?search_word=" + search_word;
+			}
+		});
 		
 	});//ready end
 	
+	/*
 	//list목록 + 각 데이터 ajax로 받아오기
 	function getList() { 
 		$.ajax({
@@ -197,6 +206,7 @@ img {
 				 }
 		    }
 		})
+		*/
 </script>
 </head>
 <body>
@@ -216,7 +226,7 @@ img {
 			 <div><button class="btn btn-danger" onclick="document.location.href='make'">그룹만들기</button></div>
 			  <div id="search">
 				<div id="searchicon"><button><i class="fas fa-search" aria-hidden="true" ></i></button></div>
-				 <input type="text" id="searching" >
+				 <input type="text" id="searching" value="${search_word}">
 			  </div>
 		  </div>
 		  			
@@ -243,8 +253,16 @@ img {
 		  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
 		  	 		 <div class="watch">${f.view_count}</div>
 		  	 	</div>
+		  	 	
+		  	 	
 		  	 	 <a href="${pageContext.request.contextPath}/meetup/detail?num=${f.num}">
-			  	 	  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file}">
+		  	 	  	 <c:if test="${empty f.img_file }">
+	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt="" >
+	          	     </c:if>
+	          	     <c:if test="${!empty f.img_file }">
+	          	      <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file}">
+			  	 	 <%--  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file_ori}"> --%>
+	          	     </c:if>
 			  	 	  <div class="group_sub">${f.subject }</div>
 			  	 	  <div class="group_time">
 			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>
@@ -271,13 +289,26 @@ img {
 	  	         <c:forEach items="${like}" var="i"> <!-- key값 -->
   	  		
   	  		 <div class="con-m">
-		  	 	<div class="head-content-m">&nbsp;${i.price}
+		  	 	<div class="head-content-m">&nbsp;
+		  	 	<span
+		  	 	     <c:if test="${i.price == '무료'}"  >
+		  	 	        class='green'
+		  	 	     </c:if> 
+		  	 	     <c:if test="${i.price == '유료'}"  >
+		  	 	        class='orange'
+		  	 	     </c:if> 
+		  	 	 >
+		  	 	${i.price}</span>
 		  	 		 <i class="fas fa-eye " aria-hidden="true" ></i>
-		  	 		 <%--  <c:set var="viewCount_list" value="${viewCount_list}"/> --%>
 		  	 		 <div class="watch">${i.view_count}</div>
 		  	 	</div>
-		  	 	 <a href="/myhome/meetup/detail">
+		  	 	 <a href="${pageContext.request.contextPath}/meetup/detail?num=${i.num}">
+			  	 	  <c:if test="${empty i.img_file }">
+	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt="" >
+	          	     </c:if>
+	          	     <c:if test="${!empty i.img_file }">
 			  	 	  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${i.img_file}">
+	          	     </c:if>
 			  	 	  <div class="group_sub">${i.subject }</div>
 			  	 	  <div class="group_time">
 			  	 	  		<i class="fas fa-clock" aria-hidden="true" ></i>

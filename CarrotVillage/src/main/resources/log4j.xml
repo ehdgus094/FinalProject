@@ -42,6 +42,11 @@
 	<logger name="SubD">
 		<level value="trace" />
 	</logger>
+	
+	<logger name="Groups_like">
+		<level value="trace" />
+	</logger>
+	
 
 
 	<!-- Root Logger -->

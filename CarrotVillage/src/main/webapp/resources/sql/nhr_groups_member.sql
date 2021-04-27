@@ -1,6 +1,6 @@
 
 drop table groups_member CASCADE CONSTRAINTS;
-create table groups_member(
+create table groups_join(
 	num				number         PRIMARY KEY,
 	mem_name 		varchar2(15) ,
 	role_name 		varchar2(10)   NOT NULL,
