@@ -5,7 +5,6 @@
 <html>
 <head>
 <title>당 근 빌 리 지 - 중고마켓</title>
-<link href="${pageContext.request.contextPath}/resources/css/header.css" rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -128,7 +127,7 @@ $(document).ready(function() {
 	
 	function load_articles() {
 		$.ajax({
-			url		: "${pageContext.request.contextPath}/market/loadList?page="+page+"&search="+search,
+			url		: "${pageContext.request.contextPath}/market/loadList?page="+page+"&search="+search+"&region="+region,
 			type	: "get",
 			success	: function(data) {
 				if(page == 1 && data.length == 0) {
@@ -186,8 +185,19 @@ $(document).ready(function() {
 	var page = 1;
 	var moreData = true;
 	var search = '${search}';
+	var region = '${region}';
 	
 	load_articles();
+	
+	if('${search}' != '') {
+		$('#search>input').val('${search}');
+	}
+	
+	if(region != '') {
+		$('#select_region option[value=${region}]').prop('selected', true);
+	} else {
+		region = 'region';
+	}
 	
 	$('#sell>button').click(function() {
 		location.href="${pageContext.request.contextPath}/market/write";
@@ -218,7 +228,7 @@ $(document).ready(function() {
 			alert('검색어를 입력해 주세요.');
 			$(this).prev().focus();
 		} else {
-			location.href="${pageContext.request.contextPath}/market/list?search=" + search;
+			location.href="${pageContext.request.contextPath}/market/list?search=" + search + '&region=' + region;
 		}
 	});
 	
@@ -233,6 +243,12 @@ $(document).ready(function() {
 		var num = $(this).find('#item_num').html();
 		location.href="${pageContext.request.contextPath}/market/detail?num="+num;
 	});
+	
+	//보기 옵션 선택 시
+	$('#select_region').change(function() {
+		region = $(this).val();
+		location.href="${pageContext.request.contextPath}/market/list?search=" + search + '&region=' + region;
+	});
 });
 </script>
 </head>
@@ -246,7 +262,12 @@ $(document).ready(function() {
 			중고 마켓
 		</h2>
 		<div id=content_function>
-			<div></div>
+			<div>
+				<select name=region id=select_region>
+					<option value=region>지역별 보기</option>
+					<option value=all>전체 보기</option>
+				</select>
+			</div>
 			<div id=search>
 				<input type=text placeholder="검색어를 입력해주세요.">
 				<button><img src="${pageContext.request.contextPath}/resources/image/kdh_search.png"></button>	

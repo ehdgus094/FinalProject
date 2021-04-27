@@ -66,4 +66,10 @@
 		where num = #{num}
 		and winner = #{id}
 	</select>
+	
+	<insert id="test1" parameterType="java.util.Map">
+		insert into useditem values(
+		useditem_seq.nextval, 'ehdgus094', #{subject}, #{text}, 
+		sysdate, null, null, 'n', null, null, 0, #{num}, null, null, null)
+	</insert>
 </mapper>

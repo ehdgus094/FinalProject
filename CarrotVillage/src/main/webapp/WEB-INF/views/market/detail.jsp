@@ -5,7 +5,6 @@
 <html>
 <head>
 <title>당 근 빌 리 지</title>
-<link href="${pageContext.request.contextPath}/resources/css/header.css" rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -301,6 +300,11 @@ $(document).ready(function() {
 		})
 	});
 	
+	//판매자관점 당첨 확인 버튼 클릭 시
+	$('#check_winner2').click(function() {
+		alert('당첨자 : ${usedItem.winner}');
+	});
+	
 //지도 관련 =========================================================================
 	var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
 	var mapOption = { 
@@ -406,7 +410,12 @@ $(document).ready(function() {
 					<div><b>지역</b><p>${usedItem.location}</p></div>
 					<div>
 						<c:if test="${member.id == usedItem.id}">
-							<button id=modify_btn>수정</button>
+							<c:if test="${empty usedItem.winner}">
+								<button id=modify_btn>수정</button>							
+							</c:if>
+							<c:if test="${!empty usedItem.winner}">
+								<button id=check_winner2>당첨자 확인</button>							
+							</c:if>
 							<c:if test="${usedItem.sold == 'n'}">
 								<button id=sold_btn>판매완료</button>
 							</c:if>
@@ -417,7 +426,6 @@ $(document).ready(function() {
 						</c:if>
 						<c:if test="${member.id != usedItem.id}">
 							<button><i class="fas fa-comment-dots" aria-hidden="true"></i> 메시지</button>
-							<button><i class="fas fa-heart" aria-hidden="true"></i> 찜하기</button>
 						</c:if>
 					</div>
 				</div>

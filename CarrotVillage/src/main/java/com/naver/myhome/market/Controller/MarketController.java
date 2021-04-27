@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -51,15 +52,16 @@ public class MarketController {
 	private FreeItemThread freeItemThread;
 	
 	@GetMapping(value = "/list")
-	public ModelAndView list(String search, ModelAndView mv) {
+	public ModelAndView list(String search, ModelAndView mv, String region) {
 		mv.addObject("search", search);
+		mv.addObject("region", region);
 		mv.setViewName("market/list");
 		return mv;
 	}
 	
 	@ResponseBody
 	@GetMapping(value = "/loadList")
-	public List<UsedItem> loadList(String page, String search, HttpSession session) {
+	public List<UsedItem> loadList(String page, String search, HttpSession session, String region) {
 		String address = (String) session.getAttribute("address");
 		String[] arr = address.split(" ");
 		String neighborhood = arr[arr.length-2];
@@ -71,7 +73,11 @@ public class MarketController {
 		map.put("start", start);
 		map.put("end", end);
 		map.put("search", search);
-		map.put("neighborhood", neighborhood);
+		if(region.equals("all")) {
+			map.put("neighborhood", "");
+		} else {
+			map.put("neighborhood", neighborhood);
+		}
 		map.put("location", address);
 		return usedItemService.select(map);
 	}
@@ -163,15 +169,19 @@ public class MarketController {
 			freeItemThread.setNum(item_num);
 			freeItemThread.start();
 		}
+		
 		return "redirect:list";
 	}
 	
 	private long getDeadline(String date) {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //일반 변환용
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		long milliSeconds = 0;
 		try {
 			Date end_date = format.parse(date);
 			Date today = new Date();
+			today = format.parse(tz.format(today));
 			milliSeconds = end_date.getTime() - today.getTime();
 		} catch (ParseException e) {
 			e.printStackTrace();
