@@ -232,6 +232,7 @@ public class MainController {
 			member.setProfile_img_ori(fileName);
 			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "\\upload\\member_image\\";
 			String fileDBName = fileDBName(fileName, saveFolder);
+			logger.info("saveFolder = " + saveFolder);
 			logger.info("fileDBName = " + fileDBName);
 
 			uploadfile.transferTo(new File(saveFolder + fileDBName));

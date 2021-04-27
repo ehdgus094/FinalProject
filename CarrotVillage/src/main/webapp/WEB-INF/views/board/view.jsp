@@ -76,14 +76,12 @@ ul {
 	display:flex;
 	width: fit-content;
 }
-#board_view_title + div > div:nth-child(2) a {
+#board_view_title + div > a {
 	display: block;
-    height: 26px;
-    margin: 5px 0;
-    font-size: 15px;
-    color: #5f5f5f;
-    cursor:pointer;
-    margin-left: 12px;
+    color: #777777;
+    font-size: 14px;
+    height: 20px;
+    margin-top: 8px;
 }
 #board_view_title + div > div:nth-child(2) a:hover {
 	text-decoration:underline;
@@ -480,6 +478,7 @@ div.reply_btn_list span {
     display: block;
     margin-top: 5px;
 }
+
 </style>
 <script>
 
@@ -872,6 +871,11 @@ div.reply_btn_list span {
 						</div>
 						
 					</div>
+					
+					<c:set var="id">${user_info.id}</c:set>
+					<c:if test="${board.member_id == id}">
+						<a href="${pageContext.request.contextPath}/board/delete?num=${board.num}">삭제</a>
+					</c:if>
 					
 				</div>
 				
