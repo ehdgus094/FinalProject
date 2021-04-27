@@ -54,4 +54,8 @@ public class UsedItemDAO {
 	public UsedItem getWinner(Map<String, Object> map) {
 		return sqlSession.selectOne("UsedItem.getWinner", map);
 	}
+	
+	public void test1(Map<String, Object> map) {
+		sqlSession.insert("UsedItem.test1", map);
+	}
 }

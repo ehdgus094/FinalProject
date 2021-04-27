@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -71,11 +72,14 @@ public class FreeItemThread extends Thread {
 		if(date == null) {
 			return false;
 		}
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //일반 변환용
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		boolean resp = false;
 		try {
 			Date d = format.parse(date);
 			Date today = new Date();
+			today = format.parse(tz.format(today));
 			if(d.getTime() <= today.getTime()) {
 				resp = true;
 			}
@@ -84,4 +88,5 @@ public class FreeItemThread extends Thread {
 		}
 		return resp;
 	}
+	
 }

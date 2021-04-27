@@ -49,4 +49,8 @@ public class UsedItemService {
 	public UsedItem getWinner(Map<String, Object> map) {
 		return dao.getWinner(map);
 	}
+	
+	public void test1(Map<String, Object> map) {
+		dao.test1(map);
+	}
 }
