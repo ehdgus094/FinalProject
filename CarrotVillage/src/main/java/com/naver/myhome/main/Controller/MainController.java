@@ -143,6 +143,7 @@ public class MainController {
 			m.put("subject", "today");
 			Member m2 = (Member) session.getAttribute("user_info");
 			m.put("text", m2.getId());
+			m.put("num", 0);
 			usedItemService.test1(m);
 			
 			
