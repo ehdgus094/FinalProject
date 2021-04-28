@@ -5,7 +5,6 @@
 <html>
 <head>
 <title>당 근 빌 리 지</title>
-<link href="${pageContext.request.contextPath}/resources/css/header.css" rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -167,7 +166,7 @@ a:hover {color : orange;}
 </style>
 
 <script>
-
+   
 $(document).ready(function(){
 	  
 	var groups_lat = ${groups.latitude};  
@@ -186,11 +185,11 @@ $(document).ready(function(){
         level: 8 // 지도의 확대 레벨
     };
 
-	var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+	var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다  
 
 	// 마커를 표시할 위치와 내용을 가지고 있는 객체 배열입니다 
 	var positions = [
-	    {
+	    {   
 	        content: '<div>나의 현재위치</div>', 
 	        latlng: new kakao.maps.LatLng(my_lat, my_lon)
 	    }, 
@@ -252,76 +251,9 @@ $(document).ready(function(){
 		} else {
 			$(".price").css('color','orange');
 		}
+   
 
-	/*	
-	//하트 좋아요
-	 var heartImg = $(".fa-heart");
-	
-	 if(heartVal>0) {
-		 console.log(heartVal);
-		 $(".heartVal").prop('name',heartval)
-		 heartImg.css('background-color','red');
-	 } else {
-		 console.log(heartVal);
-		 (".heartVal").prop('name',heartval)
-		 heartImg.css('background-color','black');
-	 }
-	 
-	 $(".heartVal").on("click", function () {
-	 	
-		 $.ajax({
-			 type : "post" ,
-			 url : ,
-			 data : {
-				 groups_num : $('#num').val(), 
-				 heart      : this.prop('name')
-			 },
-			 success : function(data) {
-				 this.prop('name', data);
-				 if(data == 1) {
-					 heartImg.css('background-color','red');
-				 } else {
-					 heartImg.css('background-color','black');
-				 }
-			 }
-		 })
-	 }
-	
-	*/
-	
-	/*좋아요
-	function like_func(){
-		  var num = $('#num').val();
-		  
-		  $.ajax({
-		    url: "../like/groupslike",
-		    type: "GET",
-		    cache: false,
-		    dataType: "json",
-		    data: 'groups_num' =  groups_num,
-		    success: function(data) {
-		      var msg = '';
-		      var like_img = '';
-		      msg += data.msg;
-		      alert(msg);
-		      
-		      if(data.like_check == 0){
-		        like_img = "${pageContext.request.contextPath}/resources/image/nhr_heart_dislike.png";
-		      } else {
-		        like_img = "${pageContext.request.contextPath}/resources/image/nhr_heart_like.png";
-		      }      
-		      $('#like_img').attr('src', like_img);
-		      $('#like_count').html(data.like_count);
-		      $('#like_check').html(data.like_check);
-		    },
-		    error: function(request, status, error){
-		      alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-		    }
-		  });
-		}
-
-	*/
-	        
+		
 	   $("#listBtn").click(function(){
 		   location.href = "${pageContext.request.contextPath}/meetup/list";
 	   });
