@@ -370,7 +370,7 @@ $(document).ready(function(){
 	          	     </c:if>
 	          	   	</td>
 	          	   <td rowspan=6  style = "width: 20%"></td>
-	          	  <td>
+	          	  <td>  
 	          	   <a href='javascript:groups_like();'>
 						    <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_dislike.png" alt="" id="like_img"></a>
 		            <%-- <c:choose>

@@ -174,14 +174,7 @@ button, select , textarea, #upfile1, .clearfix  {
 
 <script>
 	$(document).ready(function(){
-		/*
-		//var a = ${member.name} 어떤값을 문자열 변수에 저장하려면 무조건 "" 필요 문법임(반환이 아니라 치환....)
-		var b = "${member.name}"
-		var c = "abc"
-		//console.log(a)
-		console.log(b)
-		console.log(c)
-		*/
+		
 		
 		$('#searchicon>button').click(function(){
 			var search_word = $('#search input').val();
