@@ -100,4 +100,7 @@ public class MemberDAO {
 		return sqlSession.insert("member.deleteChatInvisible", ci);
 	}
 
+	public int messageCount(int roomNum) {
+		return sqlSession.selectOne("member.messageCount", roomNum);
+	}
 }
