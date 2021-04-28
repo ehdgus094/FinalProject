@@ -3,11 +3,11 @@ create sequence board_seq;
 drop table board cascade constraints;
 create table board (
 	num		  		  	number		  		primary key,
-	member_id		  	varchar2(50)	  	references member(id),
+	member_id		  	varchar2(50)	  	references member(id) on delete cascade,
 	subject	  			varchar2(100)	 	not null,
 	content	  			varchar2(4000)  	not null,
 	readcount	  		number		  		default 0,
-	board_date		  	date				,
+	board_date		  	varchar2(50)				,
 	board_like		  	number		  		default 0,
 	board_report	  	number		  		default 0,
 	is_notice   		number(1)		  	default 0 check(is_notice in (0, 1))
@@ -22,7 +22,7 @@ create table board_comment (
 	member_id		  	varchar2(50)	  	references member(id) on delete cascade,
 	board_num		  	number	  			references board(num) on delete cascade,
 	content	  			varchar2(3000)  	not null,
-	comment_date		date			  	default sysdate,
+	comment_date		varchar2(50)			  	,
 	comment_like		number		  		default 0,
 	comment_report	  	number		  		default 0
 );
@@ -36,7 +36,7 @@ create table board_reply (
 	member_id		  	varchar2(50)	  	references member(id) on delete cascade,
 	comment_num		  	number	  			references board_comment(num) on delete cascade,
 	content	  			varchar2(3000)  	not null,
-	reply_date			date			  	default sysdate,
+	reply_date			varchar2(50)			  	,
 	reply_like			number		  		default 0,
 	reply_report	  	number		  		default 0
 );

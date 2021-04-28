@@ -5,8 +5,8 @@
 <mapper namespace="board">
 
 	<insert id="insert" parameterType="board">
-		insert into board(num, member_id, subject, content)
-		values (board_seq.nextval, #{member_id}, #{subject}, #{content})
+		insert into board(num, member_id, subject, content, board_date)
+		values (board_seq.nextval, #{member_id}, #{subject}, #{content}, #{board_date})
 	</insert>
 	
 	<select id="getListCount" parameterType="String" resultType="int">
@@ -56,8 +56,8 @@
 	</delete>
 	
 	<insert id="commentInsert" parameterType="com.naver.myhome.main.domain.BoardComment">
-		insert into board_comment(num, member_id, board_num, content)
-		values (board_comment_seq.nextval, #{member_id}, #{board_num}, #{content})
+		insert into board_comment(num, member_id, board_num, content, comment_date)
+		values (board_comment_seq.nextval, #{member_id}, #{board_num}, #{content}, #{comment_date})
 	</insert>
 	
 	<select id="getCommentListCount" parameterType="int" resultType="int">
@@ -87,8 +87,8 @@
 	</delete>
 	
 	<insert id="replyInsert" parameterType="com.naver.myhome.main.domain.BoardReply">
-		insert into board_reply(num, member_id, comment_num, content)
-		values (board_comment_seq.nextval, #{member_id}, #{comment_num}, #{content})
+		insert into board_reply(num, member_id, comment_num, content, reply_date)
+		values (board_comment_seq.nextval, #{member_id}, #{comment_num}, #{content}, #{reply_date})
 	</insert>
 	
 	<select id="getReplyListCount" parameterType="int" resultType="int">
