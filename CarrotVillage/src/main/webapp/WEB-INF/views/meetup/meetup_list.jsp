@@ -112,7 +112,7 @@ a:hover {
     color: #433f3f;
     text-decoration: none;
  }
-img {
+.info_img {
 	width: 270px;
     height: 270px;
     border-radius: 10px;
@@ -211,12 +211,12 @@ img {
 		  	 	</div>
 		  	 	
 		  	 	
-		  	 	 <a href="${pageContext.request.contextPath}/meetup/detail?num=${f.num}">
+		  	 	 <a href="${pageContext.request.contextPath}/meetup/detail?num=${f.num}" >
 		  	 	  	 <c:if test="${empty f.img_file }">
-	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt="" >
+	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt=""  class="info_img">
 	          	     </c:if>
 	          	     <c:if test="${!empty f.img_file }">
-	          	      <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file}">
+	          	      <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file}"  class="info_img">
 			  	 	 <%--  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${f.img_file_ori}"> --%>
 	          	     </c:if>
 			  	 	  <div class="group_sub">${f.subject }</div>
@@ -260,10 +260,10 @@ img {
 		  	 	</div>
 		  	 	 <a href="${pageContext.request.contextPath}/meetup/detail?num=${i.num}">
 			  	 	  <c:if test="${empty i.img_file }">
-	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt="" >
+	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt=""   class="info_img">
 	          	     </c:if>
 	          	     <c:if test="${!empty i.img_file }">
-			  	 	  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${i.img_file}">
+			  	 	  <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${i.img_file}"  class="info_img">
 	          	     </c:if>
 			  	 	  <div class="group_sub">${i.subject }</div>
 			  	 	  <div class="group_time">
