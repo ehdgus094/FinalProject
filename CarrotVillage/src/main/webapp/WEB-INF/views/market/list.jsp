@@ -217,7 +217,6 @@ $(document).ready(function() {
 	        if(height_win < height && scrolltop > eventHeight) {
 	        	load_articles();
 	        }
-	        console.log(scrolltop);
 		}
 	});
 	
