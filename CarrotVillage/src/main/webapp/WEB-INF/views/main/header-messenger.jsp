@@ -532,8 +532,11 @@ li.system_message p {
 var currentRoomNum = 0;
 var chat_members = ["${user_info.id}"];
 var beforeId = "";
+var pause = false;
 
 $(function() {
+	
+	sessionStorage.setItem("roomListCount", -1);
 	
 	//메신저 창 보이기/숨김 토글 상태값
 	var msg_state = sessionStorage.getItem('msg_state');
@@ -567,6 +570,7 @@ $(function() {
 	
 	if (sessionStorage.getItem("chat_menu_state")) {
 		if (sessionStorage.getItem("chat_menu_state") == "chat_room") {
+			pause = false;
 			getChatRoomList();
 			getRoomListTop();
 			
@@ -583,6 +587,8 @@ $(function() {
 		if (msg_state == 0 || msg_state == null) {
 			sessionStorage.setItem('msg_state', 1);
 			sessionStorage.setItem("chat_menu_state", "chat_room");
+			sessionStorage.setItem("messageListCount", 0);
+			pause = false;
 			getChatRoomList();
 			getRoomListTop();
 		} else if (msg_state == 1) {
@@ -613,12 +619,14 @@ $(function() {
 	//햄버거버튼을 클릭 했을때 나오는 메뉴들 클릭
 	$("#chat_room_btn").click(function() {
 		currentRoomNum = 0;
+		pause = false;
 		getChatRoomList();
 		getRoomListTop();
 		$("#chat_menu").removeClass("show");
 	});
 	$("#chat_search_btn").click(function() {
 		console.log(currentRoomNum);
+		//pause = true;
 		getChatSearchList();
 		getRoomListTop();
 		$("#chat_menu").removeClass("show");
@@ -647,7 +655,9 @@ $(function() {
 				data : { "room_num" : currentRoomNum, "chat_members" : chat_members },
 				success : function(rdata) {
 					currentRoomNum = rdata.ChatRoom.num;
-					send("");
+					pause = false;
+					getChatRoomList();
+					getRoomListTop();
 					$("#msg_text_input").focus();
 				}
 			});
@@ -666,7 +676,9 @@ $(function() {
 				data : { "room_num" : currentRoomNum, "id" : "${user_info.id}" },
 				success : function(rdata) {
 					currentRoomNum = 0;
-					send("");
+					pause = false;
+					getChatRoomList();
+					getRoomListTop();
 				}
 			});
 		}
@@ -722,20 +734,35 @@ $(function() {
 	//메시지 전송
 	$("#msg_text_input").on('keyup', function(e) {
 		if (e.which == 13) { //엔터
-			var message = newMessage(); //화면에 보이는 메시지 전송
-			if (message) { //메시지가 존재하는 경우
-				send(message); //소켓에 보내는 메시지 전송
-			}
-			return false;
+			$.ajax({
+				type : "post",
+				url : "${pageContext.request.contextPath}/main/insertMessage",
+				data : { "id" : "${user_info.id}", "message" : $("#msg_text_input").val() + " " + currentRoomNum },
+				success : function() {
+					pause = false;
+					getChatRoomList();
+					getRoomListTop();
+					$("#msg_text_input").val("");
+				}
+			});
 		}
 	});
 	$("#msg_send_btn").on('click', function(e) {
-		var message = newMessage(); //화면에 보이는 메시지 전송
-		if (message) { //메시지가 존재하는 경우
-			send(message); //소켓에 보내는 메시지 전송
-		}
-		return false;
+		
+		$.ajax({
+			type : "post",
+			url : "${pageContext.request.contextPath}/main/insertMessage",
+			data : { "id" : "${user_info.id}", "message" : $("#msg_text_input").val() + " " + currentRoomNum },
+			success : function() {
+				pause = false;
+				getChatRoomList();
+				getRoomListTop();
+				$("#msg_text_input").val("");
+			}
+		});
+		
 	});
+	
 	
 });
 
@@ -796,131 +823,160 @@ function getRoomListTop() {
 	});
 }
 
+
+var intervalRoomList = null;
+
 //채팅방 목록을 가져와서 출력하는 함수
 function getChatRoomList() {
-	sessionStorage.setItem("chat_menu_state", "chat_room");
-	$.ajax({
-		type : "get",
-		url : "${pageContext.request.contextPath}/main/roomList",
-		data : { "id" : "${user_info.id}" },
-		success : function(rdata) {
-			var output = "<div id='chat_room_list'><ul style='list-style:none;padding:0;'>";
-			if (rdata.length > 0) {
-				$(rdata).each(function(index, item) {
-					
-					var roomImgArr = this.room_img.split(",");
-					var roomMemberCount = roomImgArr.length;
-					var roomMemberAllArr = this.room_all_member.split(", ");
-					var roomMemberAllCount = roomMemberAllArr.length;
-					
-					output += "<li>"
-							+ "    <input type='hidden' value='" + this.room_num + "'>"
-							+ "    <div>"
-							+ "        <div>"
-							+ "		       <div class='chat_room_img'>";
+	console.log(pause);
+	if (!pause) {
+		intervalRoomList = setInterval(function () {
+			console.log("123");
+			$.ajax({
+				type : "get",
+				url : "${pageContext.request.contextPath}/main/roomList",
+				data : { "id" : "${user_info.id}" },
+				success : function(rdata) {
+					var output = "<div id='chat_room_list'><ul style='list-style:none;padding:0;'>";
+					if (rdata.length > 0) {
+						var countSum = 0;
+						
+						$(rdata).each(function(index, item) {
+							countSum += this.messageCount;
+						});
+						if (countSum != sessionStorage.getItem("roomListCount")) {
 							
-					if (roomMemberCount == 1) {
-						output += "<div class='img_count img_count_1'>";
-						if (roomImgArr[0].substring(0,5) == "https") {
-							output += "<img src='" + roomImgArr[0] + "'>";
-						} else if (roomImgArr[0] == "undefined") {
-							output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
-						} else {
-							output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + roomImgArr[0] + "'>";
+							$(rdata).each(function(index, item) {
+								
+								var roomImgArr = this.room_img.split(",");
+								var roomMemberCount = roomImgArr.length;
+								var roomMemberAllArr = this.room_all_member.split(", ");
+								var roomMemberAllCount = roomMemberAllArr.length;
+								
+								output += "<li>"
+										+ "    <input type='hidden' value='" + this.room_num + "'>"
+										+ "    <div>"
+										+ "        <div>"
+										+ "		       <div class='chat_room_img'>";
+										
+								if (roomMemberCount == 1) {
+									output += "<div class='img_count img_count_1'>";
+									if (roomImgArr[0].substring(0,5) == "https") {
+										output += "<img src='" + roomImgArr[0] + "'>";
+									} else if (roomImgArr[0] == "undefined") {
+										output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
+									} else {
+										output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + roomImgArr[0] + "'>";
+									}
+									output += "</div>";
+								} else if (roomMemberCount == 2) {
+									output += "<div class='img_count img_count_2'>";
+									
+									$(roomImgArr).each(function(index, item) {
+										if (this.substring(0,5) == "https") {
+											output += "<img src='" + this + "'>";
+										} else if (this == "undefined") {
+											output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
+										} else {
+											output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this + "'>";
+										}
+									});
+									
+									output += "</div>";
+								} else if (roomMemberCount == 3) {
+									output += "<div class='img_count img_count_3'>";
+									
+									$(roomImgArr).each(function(index, item) {
+										if (this.substring(0,5) == "https") {
+											output += "<img src='" + this + "'>";
+										} else if (this == "undefined") {
+											output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
+										} else {
+											output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this + "'>";
+										}
+									});
+									
+									output += "</div>";
+								} else if (roomMemberCount >= 4) {
+									output += "<div class='img_count img_count_4'>";
+									
+									$(roomImgArr).each(function(index, item) {
+										if (this.substring(0,5) == "https") {
+											output += "<img src='" + this + "'>";
+										} else if (this == "undefined") {
+											output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
+										} else {
+											output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this + "'>";
+										}
+									});
+									
+									output += "</div>";
+								}
+										
+								output += "		       </div>"
+										+ "        </div>"
+										+ "        <div>"
+										+ "            <div>";
+								
+								if (roomMemberAllCount > 2) {
+									output += "                <span>" + this.room_member.substring(0, 8) + "... " + roomMemberAllCount + "</span>";
+								} else {
+									output += "                <span>" + this.room_member.substring(0, 10) + "</span>";
+								}
+										
+								if (this.last_message_date != null) {
+									output += "                <span>" + timeStamp(true, parseInt(this.last_message_date)) + "</span>";
+								}
+								output	+= "            </div>";
+										
+								if (this.last_message != null) {
+									output += "            <div>"
+											+ "                <p>" + this.last_message + "</p>"	
+											+ "            </div>";
+								}		
+								output += "        </div>"
+										+ "    </div>"
+										+ "    <div>"
+										+ "        <div style='display:flex;flex-direction:row;justify-content:space-between;width:100%;'>"
+										+ "            <span>대화 상대</span>"
+										+ "            <a style='font-size:12px;color:silver;cursor:pointer;' class='room_out_btn'>나가기</a>"
+										+ "        </div>"
+										+ "        <p>" + this.room_all_member + "</p>"
+										+ "    </div>"
+										+ "</li>";
+									
+							});
+							output += "</ul>";
+							output += "</div>";
+							$("#msg_left_list").empty();
+							$("#msg_left_list").append(output);
+							$("#room_list_top").find("input[value='" + currentRoomNum + "']").parent("li").trigger("click");
+							sessionStorage.setItem("roomListCount", countSum);
 						}
-						output += "</div>";
-					} else if (roomMemberCount == 2) {
-						output += "<div class='img_count img_count_2'>";
 						
-						$(roomImgArr).each(function(index, item) {
-							if (this.substring(0,5) == "https") {
-								output += "<img src='" + this + "'>";
-							} else if (this == "undefined") {
-								output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
-							} else {
-								output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this + "'>";
-							}
-						});
-						
-						output += "</div>";
-					} else if (roomMemberCount == 3) {
-						output += "<div class='img_count img_count_3'>";
-						
-						$(roomImgArr).each(function(index, item) {
-							if (this.substring(0,5) == "https") {
-								output += "<img src='" + this + "'>";
-							} else if (this == "undefined") {
-								output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
-							} else {
-								output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this + "'>";
-							}
-						});
-						
-						output += "</div>";
-					} else if (roomMemberCount >= 4) {
-						output += "<div class='img_count img_count_4'>";
-						
-						$(roomImgArr).each(function(index, item) {
-							if (this.substring(0,5) == "https") {
-								output += "<img src='" + this + "'>";
-							} else if (this == "undefined") {
-								output += "<img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'>";
-							} else {
-								output += "<img src='${pageContext.request.contextPath}/resources/upload/member_image" + this + "'>";
-							}
-						});
-						
-						output += "</div>";
-					}
-							
-					output += "		       </div>"
-							+ "        </div>"
-							+ "        <div>"
-							+ "            <div>";
-					
-					if (roomMemberAllCount > 2) {
-						output += "                <span>" + this.room_member.substring(0, 8) + "... " + roomMemberAllCount + "</span>";
 					} else {
-						output += "                <span>" + this.room_member.substring(0, 10) + "</span>";
+						output += "<span style='margin:20px;display:block;text-align:center;color:dimgrey;'>채팅 목록이 없습니다.</span>";
+						output += "</div>";
+						$("#msg_left_list").empty();
+						$("#msg_left_list").append(output);
 					}
-							
-					if (this.last_message_date != null) {
-						output += "                <span>" + timeStamp(true, parseInt(this.last_message_date)) + "</span>";
-					}
-					output	+= "            </div>";
-							
-					if (this.last_message != null) {
-						output += "            <div>"
-								+ "                <p>" + this.last_message + "</p>"	
-								+ "            </div>";
-					}		
-					output += "        </div>"
-							+ "    </div>"
-							+ "    <div>"
-							+ "        <div style='display:flex;flex-direction:row;justify-content:space-between;width:100%;'>"
-							+ "            <span>대화 상대</span>"
-							+ "            <a style='font-size:12px;color:silver;cursor:pointer;' class='room_out_btn'>나가기</a>"
-							+ "        </div>"
-							+ "        <p>" + this.room_all_member + "</p>"
-							+ "    </div>"
-							+ "</li>";
-							
-				});
-				output += "</ul>";
-				
-			} else {
-				output += "<span style='margin:20px;display:block;text-align:center;color:dimgrey;'>채팅 목록이 없습니다.</span>";
-			}
-			output += "</div>";
+					
+				}
+			});
 			
-			$("#msg_left_list").html(output);
-		}
-	});
-	
+		}, 1000);
+		intervalRoomList;
+	}
+	sessionStorage.setItem("chat_menu_state", "chat_room");
 }
+
+
 
 //대화상대 검색 목록
 function getChatSearchList() {
+	clearInterval(intervalRoomList);
+	console.log(pause);
+	sessionStorage.setItem("chat_menu_state", "chat_search");
 	chat_members = ["${user_info.id}"];
 	var output =  "<div id='chat_search_list'>"
 				+ "    <div id='chat_search_input'>"
@@ -933,7 +989,6 @@ function getChatSearchList() {
 	chatSearch();
 }
 function chatSearch() {
-	sessionStorage.setItem("chat_menu_state", "chat_search");
 	$.ajax({
 		type : "get",
 		url : "${pageContext.request.contextPath}/main/memberSearch",
@@ -977,12 +1032,7 @@ function chatSearch() {
 	});
 }
 
-//데이터베이스에 저장되어있던 메시지 출력
-function getMessageList(roomNum) {
-	prevDate = 0;
-	$(".messages > ul").empty();
-	currentRoomNum = roomNum;
-	sessionStorage.setItem("currentRoomNum", currentRoomNum);
+function intervalMessage() {
 	
 	$.ajax({
 		type : "get",
@@ -991,259 +1041,104 @@ function getMessageList(roomNum) {
 		success : function(rdata) {
 			var output = "";
 			if (rdata.length > 0) {
-				$(rdata).each(function(index, item) {
-					var time = parseInt(this.message_info.chat_date);
+				
+				if (rdata.length != sessionStorage.getItem("messageListCount")) {
 					
-					if (this.message_info.member_id == "system") {
-						output = "<li class='system_message'>"
-							   + "    <div>"
-							   + "        <p>" + this.message_info.message + "</p>"
-							   + "    </div>"
-							   + "</li>";
-					} else if (this.message_info.member_id == "${user_info.id}") {
-						output = '<li class="sent">';
+					$(".messages > ul").empty();
+					
+					$(rdata).each(function(index, item) {
+						var time = parseInt(this.message_info.chat_date);
 						
-						output += isFirstMessage(time);
-						
-						output+= '  <div>'
-							   + '    <span>' + timeStamp(true, time) + '</span>'
-							   + '    <div>'
-							   + '      <div>'
-							   + '	      <p>' + this.message_info.message + '</p>'
-							   + '      </div>'
-							   + '    </div>'
-							   + '  </div>'
-							   + '</li>';
-					} else {
-						
-						
-							if (index > 0 && rdata[index - 1].message_info.member_id == this.message_info.member_id) {
-								output = "<li class='replies'>";
+						if (this.message_info.member_id == "system") {
+							output = "<li class='system_message'>"
+								   + "    <div>"
+								   + "        <p>" + this.message_info.message + "</p>"
+								   + "    </div>"
+								   + "</li>";
+						} else if (this.message_info.member_id == "${user_info.id}") {
+							output = '<li class="sent">';
+							
+							output += isFirstMessage(time);
+							
+							output+= '  <div>'
+								   + '    <span>' + timeStamp(true, time) + '</span>'
+								   + '    <div>'
+								   + '      <div>'
+								   + '	      <p>' + this.message_info.message + '</p>'
+								   + '      </div>'
+								   + '    </div>'
+								   + '  </div>'
+								   + '</li>';
+						} else {
+							
+							
+								if (index > 0 && rdata[index - 1].message_info.member_id == this.message_info.member_id) {
+									output = "<li class='replies'>";
+									
+									output += isFirstMessage(time);
+									
+									output+= "	<div>"
+										   + "	  <div id='reply_wrap' style='min-width:0;'>"
+										   + "		<p style='margin: 5px 10px 10px 10px;'>" + this.message_info.message + "</p>"
+										   + "	  </div>"
+										   + "    <span>" + timeStamp(false, time) + "</span>"
+										   + "	</div>"
+										   + "</li>";
+								} else {
+									output = "<li class='replies'>";
+									
+									output += isFirstMessage(time);
+									
+									output+= "	<div>"
+										   + "	  <div id='reply_wrap'>"
+										   + "		  <div id='reply_img_wrap'>";
+										   
+									if (this.member_info.login_type == 'normal') {
+										output += "<div><img src='${pageContext.request.contextPath}/resources/upload/member_image" + this.member_info.profile_img + "'></div>";
+									} else if (this.member_info.login_type != 'normal' && this.member_info.profile_img != 'undefined') {
+										output += "<div><img src='" + this.member_info.profile_img + "'></div>";
+									} else if (this.member_info.profile_img == 'undefined') {
+										output += "<div><img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'></div>";
+									}
 								
-								output += isFirstMessage(time);
-								
-								output+= "	<div>"
-									   + "	  <div id='reply_wrap' style='min-width:0;'>"
-									   + "		<p style='margin: 5px 10px 10px 10px;'>" + this.message_info.message + "</p>"
-									   + "	  </div>"
-									   + "    <span>" + timeStamp(false, time) + "</span>"
-									   + "	</div>"
-									   + "</li>";
-							} else {
-								output = "<li class='replies'>";
-								
-								output += isFirstMessage(time);
-								
-								output+= "	<div>"
-									   + "	  <div id='reply_wrap'>"
-									   + "		  <div id='reply_img_wrap'>";
-									   
-								if (this.member_info.login_type == 'normal') {
-									output += "<div><img src='${pageContext.request.contextPath}/resources/upload/member_image" + this.member_info.profile_img + "'></div>";
-								} else if (this.member_info.login_type != 'normal' && this.member_info.profile_img != 'undefined') {
-									output += "<div><img src='" + this.member_info.profile_img + "'></div>";
-								} else if (this.member_info.profile_img == 'undefined') {
-									output += "<div><img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'></div>";
+									output += "		  </div>"
+										+ "		  <div id='reply_content_wrap'>"
+										+ "		      <div id='reply_name'>"
+										+ "			  	  <span>" + this.member_info.name + "</span>"
+										+ "		      </div>"
+										+ "		      <div id='reply_content'>"
+										+ "				  <p>" + this.message_info.message + "</p>"
+										+ "		      </div>"
+										+ "		  </div>"
+										+ "	  </div>"
+										+ "    <span>" + timeStamp(false, time) + "</span>"
+										+ "	</div>"
+										+ "</li>";
 								}
-							
-								output += "		  </div>"
-									+ "		  <div id='reply_content_wrap'>"
-									+ "		      <div id='reply_name'>"
-									+ "			  	  <span>" + this.member_info.name + "</span>"
-									+ "		      </div>"
-									+ "		      <div id='reply_content'>"
-									+ "				  <p>" + this.message_info.message + "</p>"
-									+ "		      </div>"
-									+ "		  </div>"
-									+ "	  </div>"
-									+ "    <span>" + timeStamp(false, time) + "</span>"
-									+ "	</div>"
-									+ "</li>";
-							}
-					
-							
-					}
-						$(".messages > ul").append(output);
 						
-				});
+								
+						}
+							$(".messages > ul").append(output);
+							
+					});
+					
+					moveScroll();
+					sessionStorage.setItem("messageListCount", rdata.length);
+				}
+				
 			}
-			moveScroll();
 		}
 	});
 	
 }
 
-//메시지 생성
-function newMessage() {
-	time = new Date().getTime();
-	if (currentRoomNum == 0) {
-		$('#msg_text_input').val('');
-	} else {
-		var message = $("#msg_text_input").val();
-
-		if ($.trim(message) == '') {
-			return false;
-		}
-		
-		output = '<li class="sent">';
-		
-		output += isFirstMessage(time);
-		
-		output+= '  <div>'
-			   + '    <span>' + timeStamp(true, time) + '</span>'
-			   + '    <div>'
-			   + '      <div>'
-			   + '	      <p></p>'
-			   + '      </div>'
-			   + '    </div>'
-			   + '  </div>'
-			   + '</li>';
-			   
-		$(output).appendTo($('.messages ul'));
-
-		//입력한 내용들을 문자열로 변환하기 위해 text()를 이용합니다.
-		$('.messages>ul>li').last().find('p').text(message);
-		$('#msg_text_input').val('');
-		
-		message += " " + currentRoomNum;
-		moveScroll()
-
-		return message;
-	}
-};
-
-
-var url = "ws:${url}/boot.do?id=${user_info.id}"
-		+	 				  "&name=${user_info.name}"
-		+ 					  "&profile_img=${user_info.profile_img}"
-		+ 					  "&login_type=${user_info.login_type}";	
-console.log("url = " + url);
-ws = new WebSocket(url);
-	
-//서버에서 전송하는 데이터를 받으려면 message이벤트를 구현하면 됩니다.
-//웹 소켓에서 메시지가 날라왔을 때 호출되는 이벤트입니다.
-ws.onmessage = function(event) {
-	console.log("받은 데이터" + event.data);
-	console.log(currentRoomNum);
-	response(event.data);
-	getChatRoomList();
-	getRoomListTop();
-};
-	
-/*
-$('.exit').click(function() {
-	if (confirm("정말로 나가시겠습니까?")) {
-		send("${name}님이 퇴장하셨습니다.out");
-		ws.close;
-	}
-});
-*/
-
-//웹 소켓이 닫혔을 때 호출되는 이벤트입니다.
-//ws.onclose = function(event) {
-//	location.href = "logout";
-//}
-
-//웹 소켓이 연결되었을 때 호출되는 이벤트
-/*
-ws.onopen = function(event) {
-
-};
-*/
-
-function send(message) {
-	
-	if (message != "") {
-		$.ajax({
-			type : "post",
-			url : "${pageContext.request.contextPath}/main/insertMessage",
-			data : { "id" : "${user_info.id}", "message" : message },
-			success : function() {
-				ws.send(message);//웹 소켓으로 message를 보냅니다.
-				getChatRoomList();
-				getRoomListTop();
-			}
-		});
-	} else if (message == "") {
-		ws.send(message);
-		getChatRoomList();
-		getRoomListTop();
-	}
-	
-}
-
-function response(text) {
-	//text의 전달 형식 - //java&/2019-7-4/bbs20197499521032.png&님이 퇴장하셨습니다.out
-	arr = text.split('&');
-	message = arr[5];
-	//var out = "님이 퇴장하셨습니다.out";
-	//var inin = "님이 입장하셨습니다.in";
-
-	//입장과 퇴장의 경우 css가 가운데로 위치해야 해서 클래스 inout을 이용합니다.
-	//if (message.indexOf(out) > -1 || message.indexOf(inin) > -1) {
-	//	index = message.lastIndexOf('.');
-	//	output = "<li class='inout'><p></p></li>";
-	//	message = message.substring(0, index);
-	//} else {
-		id = arr[0];
-		name = arr[1];
-		filename = arr[2];
-		login_type = arr[3];
-		room_num = arr[4];
-		time = new Date().getTime();
-		
-		if (room_num == currentRoomNum) {
-			
-			if (id == beforeId) {
-				output = "<li class='replies'>";
-				
-				output += isFirstMessage(time);
-				
-				output+= "	<div>"
-					   + "	  <div id='reply_wrap' style='min-width:0;'>"
-					   + "		<p style='margin: 5px 10px 10px 10px;'></p>"
-					   + "	  </div>"
-					   + "    <span>" + timeStamp(false, time) + "</span>"
-					   + "	</div>"
-					   + "</li>";
-			} else {
-				output = "<li class='replies'>";
-				
-				output += isFirstMessage(time);
-				
-				output+= "	<div>"
-					   + "	  <div id='reply_wrap'>"
-					   + "		  <div id='reply_img_wrap'>";
-					   
-				if (login_type == 'normal') {
-					output += "<div><img src='${pageContext.request.contextPath}/resources/upload/member_image" + filename + "'></div>";
-				} else if (login_type != 'normal' && filename != 'undefined') {
-					output += "<div><img src='" + filename + "'></div>";
-				} else if (filename == 'undefined') {
-					output += "<div><img src='${pageContext.request.contextPath}/resources/image/nhj_profile.png'></div>";
-				}
-			
-				output += "		  </div>"
-					+ "		  <div id='reply_content_wrap'>"
-					+ "		      <div id='reply_name'>"
-					+ "			  	  <span>" + name + "</span>"
-					+ "		      </div>"
-					+ "		      <div id='reply_content'>"
-					+ "				  <p></p>"
-					+ "		      </div>"
-					+ "		  </div>"
-					+ "	  </div>"
-					+ "    <span>" + timeStamp(false, time) + "</span>"
-					+ "	</div>"
-					+ "</li>";
-					
-				$(".messages > ul").append(output);
-				$('.messages>ul>li').last().find('p').text(message);
-			}
-		}
-		
-		moveScroll();
-		berforeId = id;
+//데이터베이스에 저장되어있던 메시지 출력
+function getMessageList(roomNum) {
+	clearInterval(intervalMessage);
+	prevDate = 0;
+	currentRoomNum = roomNum;
+	sessionStorage.setItem("currentRoomNum", currentRoomNum);
+	setInterval(intervalMessage, 500);
 }
 
 function moveScroll() {

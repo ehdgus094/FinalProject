@@ -128,33 +128,16 @@ public class MainController {
 		
 		if (result == 1) {
 			lmember = memberService.memberInfo(member.getId());
-			
-			for (Cart cart : EchoHandler.sessionList) {
-				if (cart.getMember().getId().equals(lmember.getId())) {
-					rattr.addFlashAttribute("result", "already");
-					return "redirect:login";
-				}
-			}
-			
 			session.setAttribute("user_info", lmember);
 			
-			
+			/*
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("subject", "today");
 			Member m2 = (Member) session.getAttribute("user_info");
 			m.put("text", m2.getId());
 			m.put("num", 0);
 			usedItemService.test1(m);
-			
-			
-			String requestURL = request.getRequestURL().toString();
-			logger.info(requestURL);
-			int start = requestURL.indexOf("//");
-			//int end = requestURL.lastIndexOf("/");
-			String url = requestURL.substring(start, 28);
-			
-			logger.info("url = " + url);
-			session.setAttribute("url", url);
+			*/
 		}
 	
 		if (member.getLogin_type().equals("normal") && "1".equals(login_chk)) {
@@ -380,6 +363,7 @@ public class MainController {
 	@RequestMapping(value = "chat")
 	public Map<String, Object> chat(@RequestParam(value="room_num") int room_num,
 									@RequestParam(value="chat_members[]") List<String> chatMembers) {
+		logger.info("room_num = " + room_num);
 		Map<String, Object> map = new HashMap<String, Object>();
 		int listCount = chatMembers.size();
 		ChatRoom chatRoom = new ChatRoom();
@@ -497,7 +481,7 @@ public class MainController {
 		for (int i = 0; i < list.size(); i++) {
 			Map<String, Object> map = new HashMap<String, Object>();
 			String chatDate = list.get(i).getChat_date();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date date = simpleDateFormat.parse(chatDate);
 			String dateStr = date.getTime() + "";
 			list.get(i).setChat_date(dateStr);

@@ -125,8 +125,8 @@
 	</select>
 	
 	<insert id="insertMessage" parameterType="com.naver.myhome.main.domain.ChatMessage">
-		insert into chat_message(num, message, member_id, chat_room_num)
-		values (chat_message_seq.nextval, #{message}, #{member_id}, #{chat_room_num})
+		insert into chat_message(num, message, member_id, chat_room_num, chat_date)
+		values (chat_message_seq.nextval, #{message}, #{member_id}, #{chat_room_num}, #{chat_date})
 	</insert>
 	
 	<select id="messageList" parameterType="int" resultType="com.naver.myhome.main.domain.ChatMessage">
@@ -156,5 +156,11 @@
 		delete from chat_invisible
 		where member_id = #{member_id} and chat_room_num = #{chat_room_num}
 	</insert>
+	
+	<select id="messageCount" parameterType="int" resultType="int">
+		select count(message)
+		from chat_message
+		where chat_room_num = #{roomNum}
+	</select>
 	
 </mapper>

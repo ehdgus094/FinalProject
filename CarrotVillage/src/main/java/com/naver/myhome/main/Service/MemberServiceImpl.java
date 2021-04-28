@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -114,6 +115,12 @@ public class MemberServiceImpl implements MemberService {
 			cm.setMessage(inviteMessage(chatMembers));
 			cm.setMember_id("system");
 			cm.setChat_room_num(lastChatRoomNum);
+			
+			SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+			tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+			Date today = new Date();
+			cm.setChat_date(tz.format(today));
+			
 			dao.insertMessage(cm);
 		}
 		
@@ -130,10 +137,11 @@ public class MemberServiceImpl implements MemberService {
 			int roomNum = chatJoinList.get(i).getChat_room_num();
 			map.put("room_num", roomNum);
 			map.put("last_message", chatJoinList.get(i).getMessage());
+			map.put("messageCount", dao.messageCount(roomNum));
 			
 			String lastChatDate = chatJoinList.get(i).getChat_date();
 			if (lastChatDate != null) {
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				Date date = simpleDateFormat.parse(lastChatDate);
 				String dateStr = date.getTime() + "";
 				map.put("last_message_date", dateStr);
@@ -216,6 +224,12 @@ public class MemberServiceImpl implements MemberService {
 			cm.setMessage(inviteMessage(list));
 			cm.setMember_id("system");
 			cm.setChat_room_num(roomNum);
+			
+			SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+			tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+			Date today = new Date();
+			cm.setChat_date(tz.format(today));
+			
 			dao.insertMessage(cm);
 		}
 		
@@ -233,6 +247,12 @@ public class MemberServiceImpl implements MemberService {
 		cm.setMessage(dao.memberInfo(id).getName() + "님이 나가셨습니다.");
 		cm.setMember_id("system");
 		cm.setChat_room_num(room_num);
+		
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		Date today = new Date();
+		cm.setChat_date(tz.format(today));
+		
 		dao.insertMessage(cm);
 		
 		return dao.updateRoomOut(room_num);
