@@ -129,6 +129,7 @@ $(document).ready(function() {
 		$.ajax({
 			url		: "${pageContext.request.contextPath}/market/loadList?page="+page+"&search="+search+"&region="+region,
 			type	: "get",
+			async	: false,
 			success	: function(data) {
 				if(page == 1 && data.length == 0) {
 					$('#content_body').html('<p>게시글이 없습니다.</p>');
@@ -214,9 +215,7 @@ $(document).ready(function() {
 	        var eventHeight = height - height_win - footer;
 	        
 	        if(height_win < height && scrolltop > eventHeight) {
-	        	moreData = false;
 	        	load_articles();
-	        	moreData = true;
 	        }
 		}
 	});
