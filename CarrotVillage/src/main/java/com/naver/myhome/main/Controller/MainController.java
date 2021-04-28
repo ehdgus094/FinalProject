@@ -142,7 +142,7 @@ public class MainController {
 			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("subject", "today");
 			Member m2 = (Member) session.getAttribute("user_info");
-			m.put("content", m2.getId());
+			m.put("text", m2.getId());
 			usedItemService.test1(m);
 			
 			
