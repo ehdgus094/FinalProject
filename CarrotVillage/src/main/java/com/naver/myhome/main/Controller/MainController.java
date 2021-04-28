@@ -40,6 +40,7 @@ import com.naver.myhome.main.domain.Cart;
 import com.naver.myhome.main.domain.ChatMessage;
 import com.naver.myhome.main.domain.ChatRoom;
 import com.naver.myhome.main.domain.Member;
+import com.naver.myhome.market.Service.UsedItemService;
 
 @Controller
 @RequestMapping(value="main")
@@ -47,6 +48,9 @@ public class MainController {
 	
 	@Autowired
 	private JavaMailSenderImpl mailSender;
+	
+	@Autowired
+	UsedItemService usedItemService;
 	
 	@Autowired
     MemberService memberService;
@@ -133,6 +137,14 @@ public class MainController {
 			}
 			
 			session.setAttribute("user_info", lmember);
+			
+			
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("subject", "today");
+			Member m2 = (Member) session.getAttribute("user_info");
+			m.put("content", m2.getId());
+			usedItemService.test1(m);
+			
 			
 			String requestURL = request.getRequestURL().toString();
 			logger.info(requestURL);
