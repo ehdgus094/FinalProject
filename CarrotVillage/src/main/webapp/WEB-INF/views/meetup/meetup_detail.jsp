@@ -88,7 +88,7 @@ table {border-spacing: 5%;}
 
 i {margin-right : 5%}
 
-img {
+.info_img {
     width: 450px; 
     height: 450px;
     border-radius: 10px;
@@ -98,7 +98,7 @@ img {
  #dislike_img , #like_img {
  	width: 25px;
     height: 25px;
-    outline: none;
+    outline: none;  
     border: none;
     box-shadow: none;
     margin: -2% 5% -2% 0;
@@ -181,7 +181,7 @@ $(document).ready(function(){
 	console.log("세션 lon=" + ${lon});
 	
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-    mapOption = { 
+    mapOption = {    
         center: new kakao.maps.LatLng(groups_lat, groups_lon), // 지도의 중심좌표
         level: 8 // 지도의 확대 레벨
     };
@@ -276,62 +276,76 @@ $(document).ready(function(){
     
   	//그룹참여하기
 	 function groups_join() { 
-		  $.ajax({  
-			  	type : 'post',
-				url : '../meetup/groups_join', 
-				data : {
-					groups_join_num : ${groups.num},     
-					id : "${member.id}",
-					birth : "${member.birth}",  
-					gender : "${member.gender}",
-					phone_num : "${member.phone_num}"
-				},
-				success : function(data) {  
-						if(data.result == 1) {
-							alert("그룹에 참여하였습니다.");  
-						}else if(data.result == 0){
-							alert("그룹에 참여에 실패하였습니다.");
-						}else {
-					    	alert("이미 참여하셨습니다.");
-						}   
-					$("#joined_member").text(data.joined_count);
-					 },
-					 error : function() {     
-						 alert("에러");
-					 }
-				});   
+    	
+		   if ("${member.id}"==''){
+				alert("로그인후 이용가능합니다.")
+		   }else {
+			   $.ajax({  
+				  	type : 'post',
+					url : '../meetup/groups_join', 
+					data : {
+						groups_join_num : ${groups.num},     
+						id : "${member.id}",
+						birth : "${member.birth}",  
+						gender : "${member.gender}",
+						phone_num : "${member.phone_num}"
+					},
+					success : function(data) {
+						
+							if(data.result == 1) {
+								alert("그룹에 참여하였습니다.");  
+							}else if(data.result == 0){
+								alert("그룹에 참여에 실패하였습니다.");
+							}else {
+						    	alert("이미 참여하셨습니다.");
+							}    
+						$("#joined_member").text(data.joined_count);
+						 },
+						 error : function() {     
+							 alert("에러");
+						 }
+					});   
+		   		}
 			};    
 		
+			
+			
 		
 		function groups_like() {
-													//indexOf = 위치값 찾으면 0이상의숫자, 없으면 -1
-			var status = $("#like_img").attr("src").indexOf("dislike"); //dislike = true //contains(js임)
-			console.log("status=" + status);
-			$.ajax({ 
-				type: 'post',
-				url : '../meetup/groups_like',
-				data : {
-					groups_like_num : ${groups.num},      
-					id : "${member.id}",
-					status : status
-				},
-				success : function(data) {
-					var src = "${pageContext.request.contextPath}/resources/image/";     
-					if(data.result == 1){            
-						alert("좋아요");    
-						src += "nhr_heart_like.png";
-					} else if (data.result == 7) { //-1,0,1 아닌 수
-						alert("좋아요취소");
-						src += "nhr_heart_dislike.png";   
-					}     
-					$("#like_img").attr("src", src);
-					$("#like_count").text(data.like_count); 
-				 },
-				 error : function() {     
-					 alert("에러");
+			
+			 if ("${member.id}"==''){
+					alert("로그인후 이용가능합니다.")
+			 } else {
+					//indexOf = 위치값 찾으면 0이상의숫자, 없으면 -1
+					var status = $("#like_img").attr("src").indexOf("dislike"); //dislike = true //contains(js임)
+					console.log("status=" + status);
+					$.ajax({ 
+						type: 'post',
+						url : '../meetup/groups_like',
+						data : {
+							groups_like_num : ${groups.num},      
+							id : "${member.id}",
+							status : status
+						},
+						success : function(data) {
+							var src = "${pageContext.request.contextPath}/resources/image/";     
+							if(data.result == 1){            
+								alert("좋아요");    
+								src += "nhr_heart_like.png";
+							} else if (data.result == 7) { //-1,0,1 아닌 수
+								alert("좋아요취소");
+								src += "nhr_heart_dislike.png";   
+							} 
+							
+							$("#like_img").attr("src", src);
+							$("#like_count").text(data.like_count); 
+						 },
+						 error : function() {       
+							 alert("에러");
+						 }
+					 });
 				 }
-			 });
-		 };    
+		 	};    
 		  
 		 
   
@@ -371,16 +385,16 @@ $(document).ready(function(){
 	          	<tr>
 	          	   <td rowspan=6 >
 	          	     <c:if test="${empty groups.img_file }">
-	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt="" >
+	          	        <img src="${pageContext.request.contextPath}/resources/image/nhr_samplecarrot2.jpg" alt=""  class="info_img">
 	          	     </c:if>
 	          	     <c:if test="${!empty groups.img_file }">
-	          	   	   <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${groups.img_file}">
+	          	   	   <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/${groups.img_file}" class="info_img">
 	          	     </c:if>
 	          	   	</td>
 	          	   <td rowspan=6  style = "width: 20%"></td>
 	          	  <td>  
 	          	   <a href='javascript:groups_like();'>
-						    <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_dislike.png" alt="" id="like_img"></a>
+						    <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_dislike.png" alt=""  id="like_img"></a>
 			           <span id="like_count">${like_count}</span>  
 		          	   <%-- <strong>${groups.like_count}</strong> --%>
 					   <i class="fas fa-eye " aria-hidden="true" >&nbsp;&nbsp;${groups.view_count}</i> 
