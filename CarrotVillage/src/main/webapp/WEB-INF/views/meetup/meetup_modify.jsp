@@ -6,6 +6,7 @@
 <head>
 <title>당 근 빌 리 지</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -14,7 +15,7 @@
 <link href='http://bevacqua.github.io/rome/dist/rome.css' rel='stylesheet' type='text/css' />
 <script src='http://bevacqua.github.io/rome/dist/rome.js'></script>
 <style>
-
+  
 html, body {
 	margin: 0;
 	height: 100%;

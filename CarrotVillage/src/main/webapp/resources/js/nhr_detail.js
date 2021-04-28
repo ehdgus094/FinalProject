@@ -25,7 +25,7 @@ function getList() {
 					var lev = this.review_re_lev;
 					var comment_reply = '';
 					
-					if(lev<1){
+					if(lev==1){
 						comment_reply = ' CommentItem--reply lev1'; //답댓글 들여쓰기때문에 margin-left주려고 나눠놓음
 					}
 					output += '<li id="' + this.num + '" class="CommentItem' + comment_reply + '">'
