@@ -230,7 +230,7 @@ public class MainController {
 		if (!uploadfile.isEmpty()) {
 			String fileName = uploadfile.getOriginalFilename();
 			member.setProfile_img_ori(fileName);
-			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "\\upload\\member_image\\";
+			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "/upload/member_image/";
 			String fileDBName = fileDBName(fileName, saveFolder);
 			logger.info("saveFolder = " + saveFolder);
 			logger.info("fileDBName = " + fileDBName);

@@ -42,7 +42,7 @@ html, body {
 
 #write_form {
 	width: 1000px;
-    margin: 0 auto;
+    margin: 40px auto;
 }
 #write_form > div:nth-child(1) {
 	margin-top:25px;
