@@ -23,6 +23,7 @@ import com.naver.myhome.main.Service.BoardService;
 import com.naver.myhome.main.domain.Board;
 import com.naver.myhome.main.domain.BoardComment;
 import com.naver.myhome.main.domain.BoardReply;
+import com.naver.myhome.market.Service.UsedItemService;
 
 @Controller
 @RequestMapping(value="board")
@@ -30,6 +31,9 @@ public class BoardController {
 	
 	@Autowired
     BoardService boardService;
+	
+	@Autowired
+	UsedItemService usedItemService;
 	
 	//private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
 	
@@ -81,6 +85,16 @@ public class BoardController {
 		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
 		Date today = new Date();
 		board.setBoard_date(tz.format(today));
+		/*
+		Map<String, Object> m = new HashMap<String, Object>();
+		Map<String, Object> m2 = new HashMap<String, Object>();
+		m2.put("subject", "제목");
+		m2.put("content", board.getSubject());
+		usedItemService.test1(m2);
+		m.put("subject", "today");
+		m.put("content", tz.format(today));
+		usedItemService.test1(m);
+		*/
 		int result = boardService.insert(board);
 		if (result == 1) {
 			rattr.addFlashAttribute("write_result", "게시물 작성 완료.");
@@ -124,10 +138,15 @@ public class BoardController {
 							  @RequestParam(value = "board_num") int board_num,
 							  @RequestParam(value = "content") String content) {
 		
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		Date today = new Date();
+		
 		BoardComment boardComment = new BoardComment();
 		boardComment.setMember_id(id);
 		boardComment.setBoard_num(board_num);
 		boardComment.setContent(content);
+		boardComment.setComment_date(tz.format(today));
 		
 		boardService.commentInsert(boardComment);
 	}
@@ -186,10 +205,15 @@ public class BoardController {
 							@RequestParam(value = "comment_num") int comment_num,
 							@RequestParam(value = "content") String content) {
 		
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		Date today = new Date();
+		
 		BoardReply boardReply = new BoardReply();
 		boardReply.setMember_id(id);
 		boardReply.setComment_num(comment_num);
 		boardReply.setContent(content);
+		boardReply.setReply_date(tz.format(today));
 		
 		boardService.replyInsert(boardReply);
 	}
