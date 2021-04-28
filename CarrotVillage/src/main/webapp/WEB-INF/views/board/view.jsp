@@ -517,20 +517,26 @@ div.reply_btn_list span {
 		
 		$("#comment_write_btn").click(function() {
 			
-			$.ajax({
-				type : "post",
-				url : "${pageContext.request.contextPath}/board/commentInsert",
-				data : { "id" : "${user_info.id}",
-						 "board_num" : $("#board_num").val(),
-						 "content" : $("#comment_write textarea").val() },
-				success : function() {
-					alert("댓글이 등록되었습니다.");
-					window.location.reload();
-				}
-			});
+			if (!"${user_info}") {
+				alert("로그인후 이용해주세요.");
+			} else {
+				$.ajax({
+					type : "post",
+					url : "${pageContext.request.contextPath}/board/commentInsert",
+					data : { "id" : "${user_info.id}",
+							 "board_num" : $("#board_num").val(),
+							 "content" : $("#comment_write textarea").val() },
+					success : function() {
+						alert("댓글이 등록되었습니다.");
+						window.location.reload();
+					}
+				});
+				
+				$("#comment_write textarea").val("");
+				$("#comment_count").text("0/1000");
+				
+			}
 			
-			$("#comment_write textarea").val("");
-			$("#comment_count").text("0/1000");
 		});
 		
 		$(document).on("click", "#comment_list_more", function() {
