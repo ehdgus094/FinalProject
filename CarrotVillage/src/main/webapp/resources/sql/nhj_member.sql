@@ -13,7 +13,7 @@ create table member (
 	profile_img_ori	varchar2(200),
 	subscribe		number			default 0,
 	subscribe_name	varchar2(50),
-	regi_date		date			default sysdate,
+	regi_date		varchar2(50),
 	auth_lev		varchar2(10)	default 'none' check (auth_lev in ('admin', 'flea_admin', 'meetup_admin', 'mart_admin', 'none')),
 	is_seller		varchar2(1)		default '0' check (is_seller in ('0', '1')),
 	login_type		varchar2(20)	default 'normal'
@@ -35,8 +35,8 @@ create sequence chat_join_seq;
 drop table chat_join;
 create table chat_join (
 	num				number			primary key,
-	member_id		varchar2(20)	references member(id),
-	chat_room_num	number			references chat_room(num)
+	member_id		varchar2(20)	references member(id) on delete cascade,
+	chat_room_num	number			references chat_room(num) on delete cascade
 );
 
 drop sequence chat_message_seq;
@@ -45,17 +45,17 @@ drop table chat_message;
 create table chat_message (
 	num				number				primary key,
 	message 		varchar2(1000),
-	chat_date		timestamp			default systimestamp,
-	member_id		varchar2(20)		references member(id),
-	chat_room_num	number				references chat_room(num)
+	chat_date		varchar2(50)			,
+	member_id		varchar2(20)		references member(id) on delete cascade,
+	chat_room_num	number				references chat_room(num) on delete cascade
 );
 
 drop sequence chat_invisible_seq;
 create sequence chat_invisible_seq;
 drop table chat_invisible;
 create table chat_invisible (
-	member_id		varchar2(20)	references member(id),
-	chat_room_num	number			references chat_room(num)
+	member_id		varchar2(20)	references member(id) on delete cascade,
+	chat_room_num	number			references chat_room(num) on delete cascade
 );
 
 select * from chat_room;
