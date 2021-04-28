@@ -1113,7 +1113,7 @@ function newMessage() {
 };
 
 
-var url = "wss:${url}/boot.do?id=${user_info.id}"
+var url = "ws:${url}/boot.do?id=${user_info.id}"
 		+	 				  "&name=${user_info.name}"
 		+ 					  "&profile_img=${user_info.profile_img}"
 		+ 					  "&login_type=${user_info.login_type}";	
