@@ -89,7 +89,7 @@ public class MainController {
 			String id = readCookie.getValue();
 			member = memberService.memberInfo(id);
 			session.setAttribute("user_info", member);
-			readCookie.setPath("/myhome");
+			readCookie.setPath("/CarrotVillage");
 			readCookie.setMaxAge(60*60*24*7);
 			response.addCookie(readCookie);
 		}
@@ -146,7 +146,7 @@ public class MainController {
 	
 		if (member.getLogin_type().equals("normal") && "1".equals(login_chk)) {
 			Cookie cookie = new Cookie("saveLogin", lmember.getId());
-			cookie.setPath("/myhome");
+			cookie.setPath("/CarrotVillage");
 			cookie.setMaxAge(60*60*24*7);
 			response.addCookie(cookie);
 		}
@@ -267,7 +267,7 @@ public class MainController {
 		
 		if (member.getLogin_type().equals("normal")) {
 			if (readCookie != null) {
-				readCookie.setPath("/myhome");
+				readCookie.setPath("/CarrotVillage");
 				readCookie.setMaxAge(0);
 				response.addCookie(readCookie);
 			}
@@ -582,7 +582,7 @@ public class MainController {
 		if (result == 1) {
 			session.invalidate();
 			if (readCookie != null) {
-				readCookie.setPath("/myhome");
+				readCookie.setPath("/CarrotVillage");
 				readCookie.setMaxAge(0);
 				response.addCookie(readCookie);
 			}
