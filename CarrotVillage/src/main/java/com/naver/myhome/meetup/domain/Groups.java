@@ -5,23 +5,24 @@ import org.springframework.web.multipart.MultipartFile;
 public class Groups {
 	
 	private int num;
-	private int joined_member; //참여멤버수
-	private int like_count; //좋아요
-	private int view_count; //조회수
-	//private int groups_member_num;
-	
 	private String name;
 	private String subject;
 	private String content;
-	private String notice;
-	private String img_file; 
+	private String notice ;
+	private String img_file;
+	private String img_file_ori;
 	private String start_date;
 	private String end_date;
 	private String regi_date;
 	private String location;
+	private double latitude;
+	private double longitude;
+	private int joined_member; //참여멤버수
+	private int like_count; //좋아요
+	private int view_count; //조회수
 	private String price;
 	
-	private MultipartFile uploadfile; // ??
+	private MultipartFile uploadfile; // 새로업로드되는파일
 	
 	
 	public int getNum() {
@@ -72,7 +73,18 @@ public class Groups {
 	public void setImg_file(String img_file) {
 		this.img_file = img_file;
 	}
-	
+	public String getImg_file_ori() {
+		return img_file_ori;
+	}
+	public void setImg_file_ori(String img_file_ori) {
+		this.img_file_ori = img_file_ori;
+	}
+	public MultipartFile getUploadfile() {
+		return uploadfile;
+	}
+	public void setUploadfile(MultipartFile uploadfile) {
+		this.uploadfile = uploadfile;
+	}
 	public String getRegi_date() {
 		return regi_date;
 	}
@@ -85,17 +97,23 @@ public class Groups {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	public double getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	public double getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
 	public String getPrice() {
 		return price;
 	}
 	public void setPrice(String price) {
 		this.price = price;
-	}
-	public MultipartFile getUploadfile() {
-		return uploadfile;
-	}
-	public void setUploadfile(MultipartFile uploadfile) {
-		this.uploadfile = uploadfile;
 	}
 	public String getNotice() {
 		return notice;

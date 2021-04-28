@@ -7,21 +7,27 @@
    <typeAliases>
       <typeAlias alias="usedItem"	    type="com.naver.myhome.market.domain.UsedItem" />
       <typeAlias alias="member"		    type="com.naver.myhome.main.domain.Member"/>
+      <typeAlias alias="board"          type="com.naver.myhome.main.domain.Board"/>
       <typeAlias alias="martList"		type="com.naver.myhome.sub.domain.MartList"/>
       <typeAlias alias="groups"		    type="com.naver.myhome.meetup.domain.Groups"/>
       <typeAlias alias="martDetail"		type="com.naver.myhome.sub.domain.MartDetail"/>
       <typeAlias alias="candidate"		type="com.naver.myhome.market.domain.Candidate"/>
-      <typeAlias alias="board"			type="com.naver.myhome.main.domain.Board"/>
+      <typeAlias alias="review"		    type="com.naver.myhome.meetup.domain.Review"/>
+      <typeAlias alias="groups_like"    type="com.naver.myhome.meetup.domain.Groups_like"/>
+      <typeAlias alias="groups_join"    type="com.naver.myhome.meetup.domain.Groups_join"/>
    </typeAliases>
    
    <mappers>
       <mapper resource="sql/usedItem.xml"/>
       <mapper resource="sql/member.xml"/>
+      <mapper resource="sql/board.xml"/>
       <mapper resource="sql/sub.xml"/>
       <mapper resource="sql/groups.xml"/>
       <mapper resource="sql/subD.xml"/>
       <mapper resource="sql/candidate.xml"/>
-      <mapper resource="sql/board.xml"/>
+   	  <mapper resource="sql/review.xml"/>
+   	  <mapper resource="sql/groups_like.xml"/>
+   	  <mapper resource="sql/groups_join.xml"/>
    </mappers>
    
 </configuration>

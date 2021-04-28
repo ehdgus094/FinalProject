@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Reviews">
+	
+	<select id="getReviewList" parameterType="map" resultType="review">
+		select * from review 
+		where review_groups_num = #{review_groups_num}
+		order by review_re_ref desc , review_re_lev asc
+	</select>
+	
+	
+	<select id="getReviewListCount" parameterType="int" resultType="int">
+		select count(*) from review 
+		where review_groups_num = #{review_groups_num}
+	</select>
+	
+	
+	<insert id="reviewAdd" parameterType="review">
+			insert into review (num, name, content, regi_date, review_groups_num,
+			                    review_re_lev, review_re_seq , review_re_ref
+			                   )
+	        values
+	        (rev_seq.nextval, #{name}, #{content}, sysdate, #{review_groups_num},
+	         #{review_re_lev}, #{review_re_seq}, rev_seq.nextval
+	        )
+	</insert>
+	
+	
+	<update id="reviewUpdate" parameterType="review">
+   		update review
+   		set content = #{content}
+   		where num = #{num}
+    </update>
+   
+   
+    <delete id="reviewDelete" >
+   		delete review
+   		where num = #{num} 
+    </delete>
+   
+    <insert id="reviewReplyAdd" parameterType="review">
+		<selectKey resultType="int" order="BEFORE" 
+			  keyProperty="num"> 
+		 select nvl(max(num),0)+1 from review
+		</selectKey>
+			insert into review (num, name, content, regi_date, review_groups_num,
+			                    review_re_lev, review_re_seq , review_re_ref
+			                   )
+	        values
+	        (#{num}, #{name}, #{content}, sysdate, #{review_groups_num},
+	         #{review_re_lev} +1 , #{review_re_seq} + 1, #{review_re_ref}
+	        )
+	 </insert>
+	
+	 <update id="reviewReplyupdate" parameterType="review">
+   		update review
+   		set review_re_seq = review_re_seq +1
+   		where review_re_ref = #{review_re_ref} and
+   			  review_re_seq > #{review_re_seq}
+    </update>
+    
+</mapper>
