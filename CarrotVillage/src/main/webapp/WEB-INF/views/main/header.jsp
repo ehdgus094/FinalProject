@@ -200,9 +200,12 @@
 	
 	//세션에 저장된 멤버객체 변수에 담기
 	var userInfo = "${user_info}";
+	console.log("세션 로그인 아이디 : " + userInfo);
 		
 	
 	$(document).ready(function() {
+		
+		console.log("document.ready 세션 로그인 아이디 : " + userInfo);
 		
 		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition(function(position) {
