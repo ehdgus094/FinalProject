@@ -7,7 +7,7 @@ create table groups (
 	content				varchar2(1500) NOT NULL,
 	notice				varchar2(800),
 	img_file			varchar2(100),
-	img_file_ori		varchar2(100), 				--원래 파일명
+	img_file_ori		varchar2(100), 			
 	start_date			varchar2(16),
 	end_date			varchar2(16),
 	regi_date			date 		   default sysdate,
