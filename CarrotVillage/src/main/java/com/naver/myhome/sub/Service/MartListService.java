@@ -25,4 +25,12 @@ public interface MartListService {
 
 	public List<MartDetail> detailview(int num);
 
+	public int listDetaco(int num);
+
+	public List<MartDetail> prinfo(int num);
+
+	public int del(int num);
+
+	
+
 }

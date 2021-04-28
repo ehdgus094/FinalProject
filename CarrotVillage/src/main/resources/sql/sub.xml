@@ -5,7 +5,7 @@
 <mapper namespace="Sub">
 	<insert id="insert" parameterType="MartList">
 		insert into martlist
-		values(martlist_seq.nextval,#{martname},#{martloc},#{mart_delloc},#{mart_deltime},#{mart_delprice})
+		values(martlist_seq.nextval,#{martname},#{martloc},#{mart_delloc},#{mart_deltime},#{mart_delpri})
 	</insert>
 
 	<select id="listup" parameterType="Map" resultType="MartList">

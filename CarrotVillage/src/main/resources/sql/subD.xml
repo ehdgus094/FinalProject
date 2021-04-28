@@ -8,14 +8,15 @@
 	<insert id="insert" parameterType="MartDetail">
 		insert into sub
 		(item_num,main_category,sub_category,mart_subject,
-		board_thumbnail, board_thumbnail_ori,
+		board_thumbnail,
+		board_thumbnail_ori,
 		mart_name, mart_addr,
 		mart_ori,mart_del,
 		mart_deliverycost,
 		item_name1,item_price1,
 		item_name2,item_price2,
 		item_name3,item_price3,
-	 	item_name4,item_price4,
+		item_name4,item_price4,
 		item_name5,item_price5,
 		item_name6,item_price6,
 		mart_prod,item_name,
@@ -46,17 +47,35 @@
 		#{upfile3,jdbcType=VARCHAR},#{upfile3_ori,jdbcType=VARCHAR},
 		#{upfile4,jdbcType=VARCHAR},#{upfile4_ori,jdbcType=VARCHAR},sysdate )
 	</insert>
-	
-	<select id="martdetail" parameterType="String" resultType="MartDetail">
-	select * from sub
-	where sub_category = #{m_na}
-	
-	</select>
-	
-	<select id="detailview" parameterType="int" resultType="MartDetail">
-	select * from sub
-	where item_num =#{num}
-	
+
+	<select id="martdetail" parameterType="String"
+		resultType="MartDetail">
+		select * from sub
+		where sub_category = #{m_na}
+
 	</select>
 
+	<select id="detailview" parameterType="int"
+		resultType="MartDetail">
+		select * from sub
+		where item_num =#{num}
+
+	</select>
+
+	<select id="detailcount" parameterType="String" resultType="int">
+		select
+		count(*) from sub
+		where sub_category = #{m_na}
+
+	</select>
+	<delete id="del" parameterType="int">
+	delete from sub where item_num = #{num}
+	
+	</delete>
+	
+	<update id="mod" parameterType="MartDetail" >
+	
+	</update>
+
+	
 </mapper>

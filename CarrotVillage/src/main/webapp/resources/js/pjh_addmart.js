@@ -1,6 +1,15 @@
 $(document).ready(function(){
-	
+	$("#mart_delpri").change(function(){
+		
+		if(!$.isNumeric($("#mart_delpri").val())){
+			 alert("배달 비용은 숫자로 입력해주세요")
+             $("#mart_delpri").val('')
+             $("#mart_delpri").focus();
+			 return false;
+		}
 
+	})
+	
 
 function Postcode() {
 		new daum.Postcode({
@@ -44,4 +53,6 @@ function Postcode() {
 	});
 	
 })
+
+
 	

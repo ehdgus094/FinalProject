@@ -1,4 +1,6 @@
 $(document).ready(function(){
+	
+
 
 var loc = $("#m_addr").val();
 var locs = loc.split(" ");

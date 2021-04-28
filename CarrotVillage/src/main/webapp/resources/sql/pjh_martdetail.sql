@@ -6,7 +6,7 @@ main_category varchar2(50) not null,
 sub_category varchar2(50) references martlist(martname) on delete cascade,
 mart_subject varchar2(50) not null,
 mart_name varchar2(50) not null,
-mart_addr varchar2(50) not null,
+mart_addr varchar2(100) not null,
 mart_ori varchar2(50) not null,
 mart_del varchar2(50) not null,
 mart_deliverycost number not null,
@@ -45,5 +45,6 @@ board_date	DATE default sysdate
 create sequence sub_seq;
 
 select * from sub;
+
 
 select * from sub where sub_category='가락시장'

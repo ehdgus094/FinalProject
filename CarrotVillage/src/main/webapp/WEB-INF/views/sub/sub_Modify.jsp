@@ -22,11 +22,16 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/pjh_subwrite.js"></script>
+
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 </head>
+<style>
+.form-button{
+text-align:center;
+margin:40px 0px 40px 0px
+}
 
+</style>
 <body>
 	<div id="wrap">
 
@@ -43,20 +48,15 @@
 					<hr>
 					<div class="form-one">
 						<p>
-							<label for="mart_main"> Main-Category :&nbsp; </label> <select
-								name="main_category" id="main_category" onchange="catechange()">
-								<option>----</option>
-								<option>우리동네장보기</option>
-								<option>구독서비스</option>
-							</select> <label for="mart_sub"> Sub-Category :&nbsp; </label> <select
+							<label for="mart_main"> Main-Category :&nbsp; </label> 
+							<input name ="main_category"type="text" readOnly value="${result[0].main_category}">
+							 <label for="mart_sub"> Sub-Category :&nbsp; </label> <input type="text" value="${result[0].sub_category}"
 								name="sub_category" id="sub_category">
-								<option>----</option>
-								<option>메인카테고리설정을해주세요</option>
-							</select>
+							
 						</p>
 						<label for="mart_subject">&nbsp; 제 &nbsp;&nbsp;목&nbsp;
 							:&emsp; </label><input type="text" name="mart_subject"
-							placeholder="제목을 입력하세요" id="mart_subject" maxlength="30"
+							value="${result[0].mart_subject}" id="mart_subject" maxlength="30"
 							class="form-input" required>
 
 					</div>
@@ -79,7 +79,7 @@
 
 
 						<div class="form-info">
-							<label for="board_name"><input name="board_name"
+							<label for="board_name"><input name="board_name" 
 								id="board_name" type="hidden" value="${id}"></label>
 
 
@@ -90,7 +90,7 @@
 
 								<label for="mart_name">상&emsp;호&emsp;명&ensp; :&emsp; </label> <input
 									name="mart_name" id="mart_name" type="text" maxlength="200"
-									class="form-input" placeholder="Enter MartName" required>&nbsp;
+									class="form-input" placeholder="Enter MartName" value="${result[0].mart_subject}" required>&nbsp;
 
 							</div>
 
@@ -98,7 +98,7 @@
 
 							<div class="form-group">
 								<label for="mart_addr">주&emsp; &nbsp;&emsp;소
-									&emsp;:&emsp; <input name="mart_addr" id="mart_addr"
+									&emsp;:&emsp; <input name="mart_addr" id="mart_addr" value="${result[0].mart_addr}"
 									type="text" maxlength="200" class="form-input"
 									placeholder="Enter Address" required>&nbsp; <input
 									type="button" value="주소검색" id="postcode">
@@ -113,7 +113,7 @@
 
 								<label for="mart_ori">원&emsp;산&emsp;지&ensp; :&emsp; </label> <input
 									name="mart_ori" id="mart_ori" type="text" maxlength="100"
-									class="form-input" placeholder="Enter origin" required>
+									class="form-input" placeholder="Enter origin" value="${result[0].mart_ori}" required>
 
 							</div>
 							<hr>
@@ -133,7 +133,7 @@
 
 										<label for="board_storage">배 송 비 용 &emsp;:&emsp; <input
 											type="text" name="mart_deliverycost" id="mart_deliverycost"
-											placeholder="Enter 배송비용" required>원
+											placeholder="Enter 배송비용" required value="${result[0].mart_deliverycost}">원
 
 										</label>
 									</div>
@@ -154,34 +154,41 @@
 									</tr>
 									<tr>
 										<td><input type="text" name="item_name1" id="item_name1"
-											style="width: 200px" required></td>
-										<td><input type="text" name="item_price1"
-											id="item_price1" style="width: 200px" required>원</td>
+											style="width: 200px" required value="${result[0].item_name1}"></td>
+										<td><input type="text" name="item_price1" 
+											id="item_price1" style="width: 200px" required value="${result[0].item_price1}">원</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name2" id="item_name2"
+										<td><input type="text" name="item_name2" id="item_name2"value="${result[0].item_name2}"
 											style="width: 200px"></td>
 										<td><input type="text" name="item_price2"
-											id="item_price2" style="width: 200px">원</td>
+											id="item_price2" style="width: 200px" value="${result[0].item_price2}">원</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name3" id="item_name3"
+										<td><input type="text" name="item_name3" id="item_name3"value="${result[0].item_name3}"
 											style="width: 200px"></td>
 										<td><input type="text" name="item_price3"
-											id="item_price3" style="width: 200px">원</td>
+											id="item_price3" style="width: 200px" value="${result[0].item_price3}">원</td>
 									</tr>
 									<tr>
-										<td><input type="text" name="item_name4" id="item_name4"
+										<td><input type="text" name="item_name4" id="item_name4"value="${result[0].item_name4}"
 											style="width: 200px"></td>
 										<td><input type="text" name="item_price4"
-											id="item_price4" style="width: 200px">원</td>
+											id="item_price4" style="width: 200px" value="${result[0].item_price4}">원</td>
 									</tr>
 									<tr>
-										<td><img
-											src="${pageContext.request.contextPath}/resources/image/pjh_add.JPG"
-											width="20px" id="item_add" style="margin: 0px"></td>
-										<td>최대 6개까지 등록가능</td>
+										<td><input type="text" name="item_name4" id="item_name4"value="${result[0].item_name5}"
+											style="width: 200px"></td>
+										<td><input type="text" name="item_price4"
+											id="item_price4" style="width: 200px" value="${result[0].item_price5}">원</td>
 									</tr>
+									<tr>
+										<td><input type="text" name="item_name4" id="item_name4"value="${result[0].item_name6}"
+											style="width: 200px"></td>
+										<td><input type="text" name="item_price4"
+											id="item_price4" style="width: 200px" value="${result[0].item_price6}">원</td>
+									</tr>
+								
 
 
 								</table>
@@ -204,26 +211,26 @@
 								<tr>
 									<th>상 호 명</th>
 									<td><input type="text" name="mart_name2" id="mart_name2"
-										placeholder="Enter mart_name" readOnly></td>
+										placeholder="Enter mart_name" value="${result[0].mart_name}"readOnly></td>
 								</tr>
 								<tr>
 									<th>생 산 자</th>
 									<td><input type="text" name="mart_prod" id="mart_prod"
-										placeholder="Enter producer" required></td>
+										placeholder="Enter producer" required value="${result[0].mart_prod}"></td>
 								</tr>
 								<tr>
 									<th>상 품 명</th>
 									<td><input type="text" name="item_name" id="item_name"
-										placeholder="Enter Item_Name" required></td>
+										placeholder="Enter Item_Name" required value="${result[0].item_name}"></td>
 								</tr>
 								<tr>
 									<th>원 산 지</th>
-									<td><input type="text" name="item_origin" id="item_origin"
+									<td><input type="text" name="item_origin" id="item_origin" value="${result[0].item_origin}"
 										placeholder="상세한 원산지를 작성해주세요" required></td>
 								</tr>
 								<tr>
 									<th>유 통 기 간</th>
-									<td><input type="text" name="item_exp" id="item_exp"
+									<td><input type="text" name="item_exp" id="item_exp" value="${result[0].item_exp}"
 										placeholder="Enter exp" required></td>
 								</tr>
 								<tr>
@@ -243,7 +250,7 @@
 						<h2 id="content_suj">Content</h2>
 						<div class="form-group">
 							<textarea class="form-control" id="board_content"
-								name="board_content"></textarea>
+								name="board_content">${result[0].board_content}</textarea>
 
 
 						</div>
@@ -270,15 +277,15 @@
 								width="20px" id="file_add" style="">
 						</div>
 
-
+<hr>
 						<div class="form-button">
 
-							<button type=submit class="btn btn-primary">등록</button>
+							<button type=submit class="btn btn-primary">수정</button>
 
 							<button type=reset class="btn btn-danger">리셋</button>
 
 							<input type="button" class="btn btn-warning" value="목록"
-								onclick="location.href='BoardList.bo'">
+								onclick="location.href='submarket'">
 						</div>
 
 					</div>

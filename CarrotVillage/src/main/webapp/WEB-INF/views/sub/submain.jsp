@@ -56,13 +56,16 @@
 		<div id="content_wrap">
 			<input type="hidden" id="m_addr" name="m_addr" value="${address}">
 			<div id="int_wrap">Carrot Mart</div>
-			<div>
-				<button class="btn btn-info"
-					onclick="document.location.href='/myhome/sub/subwrite'">Write</button>
-				<button class="btn btn-warning" id="addmartb"
-					onclick="document.location.href='/myhome/sub/addmart'">Mart+</button>
-			</div>
 
+
+			<c:if test="${user_info.id=='admin'}">
+				<div>
+					<button class="btn btn-info"
+						onclick="document.location.href='/myhome/sub/subwrite'">Write</button>
+					<button class="btn btn-warning" id="addmartb"
+						onclick="document.location.href='/myhome/sub/addmart'">Mart+</button>
+				</div>
+			</c:if>
 			<hr>
 			<div id="mart_list">
 				<div id=arrow_area>
@@ -77,7 +80,7 @@
 			</div>
 			<hr>
 			<div class="local_mart">
-				<div id="pmart"> 
+				<div id="pmart">
 					<c:if test="${not empty result}">
 					${result[0].martname}
 				</c:if>
@@ -112,31 +115,61 @@
 				</c:if>
 			</div>
 			<hr>
+
 			<c:if test="${not empty de}">
-			<div class="mar_content">
-				<div class="range">
-					<label for="row"> <a href="#">최신순</a> <a href="#">평점순</a> <a
-						href="#">인기순</a>
-					</label>
+				<div class="mar_content"><!--  ${user_info.id}-->
+
+
+
+					<c:set var="i" value="0" />
+					<c:set var="j" value="4" />
+
+
+
+					<c:forEach var="de" items="${de}">
+						<c:if test="${i%j == 0 }">
+							<ul>
+						</c:if>
+
+
+
+						<li><a href="/myhome/sub/detail?num=${de.item_num}"
+							id="thumbnail"><img
+								src="<%=request.getContextPath()%>/resources/upload/sub_image/${de.board_thumbnail}">
+								${de.mart_subject}</a></li>
+						<c:if test="${i%j == j-1 }">
+
+							</ul>
+						</c:if>
+						<c:set var="i" value="${i+1 }" />
+
+
+
+
+
+					</c:forEach>
+
+
+
+
+
+
+
+
+
+					</ul>
+					<ul>
+
+					</ul>
+					<ul>
+
+					</ul>
+
+
+
 				</div>
-				<ul>
-					<li><a href="/myhome/sub/detail?num=${de[0].item_num}" id="thumbnail"><img
-							src="<%=request.getContextPath()%>/resources/upload/sub_image/${de[0].board_thumbnail}">
-							${de[0].mart_subject}</a></li>
-					
-				</ul>
-				<ul>
-					
-				</ul>
-				<ul>
-					
-				</ul>
 
-
-
-			</div>
-
-</c:if>
+			</c:if>
 
 
 

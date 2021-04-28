@@ -35,7 +35,7 @@ public class MartList {
 	public int getMart_delpri() {
 		return mart_delpri;
 	}
-	public void setMart_delprice(int mart_delpri) {
+	public void setMart_delpri(int mart_delpri) {
 		this.mart_delpri = mart_delpri;
 	}
 	public int getNum() {

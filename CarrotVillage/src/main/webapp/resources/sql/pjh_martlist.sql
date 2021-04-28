@@ -30,3 +30,4 @@ select * from MARTLIST;
 delete from martlist where martname='가락시장'
 
 select martname from MARTLIST where mart_delloc like '%양천구%' and martloc like'%서울%';
+

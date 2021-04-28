@@ -77,5 +77,26 @@ public class MartListServiceImpl implements MartListService{
 	
 		return dao.detailview(num);
 	}
-
+	@Override
+	public int listDetaco(int num) {
+		// TODO Auto-generated method stub
+	
+		String m_na = dao.listname(num);
+		logger.info("m_na = "+m_na);
+		
+			return dao.detailviewco(m_na);
+		
+		
+	}
+	@Override
+	public List<MartDetail> prinfo(int num) {
+	
+		return dao.priceinfo(num);
+	}
+	@Override
+	public int del(int num) {
+	 return	dao.del(num);
+		
+	}
+	
 }

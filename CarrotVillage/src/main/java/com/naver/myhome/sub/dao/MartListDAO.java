@@ -72,4 +72,20 @@ public class MartListDAO {
 		return sqlSession.selectList("SubD.detailview",num);
 	}
 
+	public int detailviewco(String m_na) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("SubD.detailcount", m_na);
+	}
+
+	public List<MartDetail> priceinfo(int num) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("SubD.detailview",num);
+	}
+
+	public int del(int num) {
+		return sqlSession.delete("SubD.del",num);
+		
+	}
+
+
 }

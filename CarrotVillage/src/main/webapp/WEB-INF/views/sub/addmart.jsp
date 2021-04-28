@@ -62,7 +62,7 @@ width: 700px;
 				<div class="martlistifo">
 					<p>
 						<label for="martname">시장 이름&emsp; :&emsp; <input
-							type="text" name="martname" placeholder="--시장의 형식으로 작성해주세요" required>
+							type="text" name="martname" placeholder="OO시장의 형식으로 작성해주세요" required >
 						</label>
 					</p>
 					<p>
@@ -76,7 +76,7 @@ width: 700px;
 					<p>
 
 						<label for="mart_delloc">배달 지역&emsp; :&emsp; <input
-							type="text" name="mart_delloc" required>
+							type="text" name="mart_delloc"placeholder="구단위로 작성해주세요" required>
 						</label>
 					</p>
 					<p>
@@ -87,8 +87,8 @@ width: 700px;
 					</p>
 
 					<p>
-						<label for="mart_delprice">배달 비용&emsp; :&emsp; <input
-							type="text" name="mart_delprice" required>
+						<label for="mart_delpri">배달 비용&emsp; :&emsp; <input
+							type="text" id="mart_delpri" name="mart_delpri" required>
 						</label>
 					</p>
 
