@@ -223,7 +223,6 @@ button, select , textarea, #upfile1, .clearfix  {
 		           return false;
 		      };
 		});
-		
 		    
 		    //datepicker - 오늘 날짜 이전으로 선택못하게 수정!!
 		    rome(start, {
