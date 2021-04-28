@@ -6,6 +6,7 @@
 <head>
 <title>당 근 빌 리 지</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -175,7 +176,7 @@ $(document).ready(function(){
 	var my_lon     = ${lon};
 	   
 	console.log("groups lat=" + ${groups.latitude}); 
-	console.log("groups lon=" + ${groups.longitude}); 
+	console.log("groups lon=" + ${groups.longitude});  
 	console.log("세션 lat=" + ${lat});  
 	console.log("세션 lon=" + ${lon});
 	
@@ -266,7 +267,11 @@ $(document).ready(function(){
 		   confirm("정말 삭제하시겠습니까?")
 		   location.href = "${pageContext.request.contextPath}/meetup/delete?num=${groups.num}";
 	   });      
-	     
+	   
+	   
+	   //groups_join();
+	   //groups_like();
+	   
     }); //ready          
   
     
@@ -291,7 +296,10 @@ $(document).ready(function(){
 					    	alert("이미 참여하셨습니다.");
 						}   
 					$("#joined_member").text(data.joined_count);
-					 }            
+					 },
+					 error : function() {     
+						 alert("에러");
+					 }
 				});   
 			};    
 		
@@ -304,29 +312,30 @@ $(document).ready(function(){
 				type: 'post',
 				url : '../meetup/groups_like',
 				data : {
-					groups_like_num : ${groups.num},     
+					groups_like_num : ${groups.num},      
 					id : "${member.id}",
 					status : status
 				},
 				success : function(data) {
-					var src = "${pageContext.request.contextPath}/resources/image/";
-					if(data.result == 1){         
-						alert("좋아요");
+					var src = "${pageContext.request.contextPath}/resources/image/";     
+					if(data.result == 1){            
+						alert("좋아요");    
 						src += "nhr_heart_like.png";
 					} else if (data.result == 7) { //-1,0,1 아닌 수
 						alert("좋아요취소");
-						src += "nhr_heart_dislike.png";
+						src += "nhr_heart_dislike.png";   
 					}     
 					$("#like_img").attr("src", src);
-					$("#like_count").text(data.like_count);
+					$("#like_count").text(data.like_count); 
 				 },
 				 error : function() {     
-					 alert("에러!!");
+					 alert("에러");
 				 }
 			 });
-		 };
-		
-
+		 };    
+		  
+		 
+  
 </script>
 </head>
 <body>
@@ -383,7 +392,7 @@ $(document).ready(function(){
 				  			 <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_like.png" alt="" id="dislike_img"></a>
 			  			  </c:otherwise>
 			         </c:choose> --%>
-			           <span id="like_count"></span>
+			           <span id="like_count">${like_count}</span>  
 		          	   <%-- <strong>${groups.like_count}</strong> --%>
 					   <i class="fas fa-eye " aria-hidden="true" >&nbsp;&nbsp;${groups.view_count}</i> 
 				  	   <span class="price">&nbsp;&nbsp;${groups.price}</span>
@@ -407,14 +416,16 @@ $(document).ready(function(){
 	          	<tr>
 	          		<td colspan=3 >
 	          			 <i class="fas fa-user-friends" aria-hidden="true"></i>
-	          			 <span id="joined_member"></span>
+	          			 <span id="joined_member">${joined_count}</span>
 	          	   </td>
 	          	</tr>
 	          	<tr>
 	          		<td><i class="fas fa-smile" aria-hidden="true"></i> &nbsp;${groups.name}</td>
 	          		<td colspan=2 >
+	          		  <c:if test ="${member.name != groups.name}">
 	          			<i class="fas fa-hand-holding-heart " aria-hidden="true"></i>
 	          		 	<a href='javascript:groups_join();' id="groupsJoin">그룹 참여하기</a>
+	          		 </c:if>	
 	          	    </td>
 	          	</tr>
 	          	

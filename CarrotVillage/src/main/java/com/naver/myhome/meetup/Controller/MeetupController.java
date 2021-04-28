@@ -64,7 +64,8 @@ public class MeetupController {
 	
 	
 	@GetMapping(value = "/detail")
-	public ModelAndView getDetail(HttpServletRequest request, ModelAndView mv, int num) {
+	public ModelAndView getDetail(HttpServletRequest request, ModelAndView mv, int num
+			,Groups_join groups_join, Groups_like groups_like) {
 		 Member member = (Member) request.getSession().getAttribute("user_info");//세션부르기
 		 String address = (String) request.getSession().getAttribute("address");
 		 String lat = (String) request.getSession().getAttribute("lat"); //내 현재위치
@@ -76,6 +77,10 @@ public class MeetupController {
 		 */
 		 int viewCount = groupsService.getViewCount(num);
 		 Groups groups = groupsService.getDetail(num);
+		 List<Object> like_count = groupsService.getLikeCount(num);
+		 List<Object> joined_count = groupsService.getJoinedMember(num);
+		 
+		 
 		 //Like like = likeService.getDetail(hashMap);
 		 
 	 	mv.addObject("groups", groups);
@@ -83,6 +88,8 @@ public class MeetupController {
 	 	mv.addObject("address", address);
 	 	mv.addObject("lat", lat);
 		mv.addObject("lon", lon);
+		mv.addObject("like_count", like_count.size());
+		mv.addObject("joined_count", joined_count.size());
 		logger.info("detail address = " + address);
 		logger.info("detail lat = " + lat);
 		logger.info("detail lon = " + lon);

@@ -148,13 +148,6 @@ img {
 <script>
 	$(function(){
 		
-		//getList();
-		/*
-		var result = "${result}";
-		if(result == 'deleteSuccess') {
-			alert("게시글이 삭제되었습니다.");
-		}*/
-		
 		$('#searchicon>button').click(function(){
 			var search_word = $('#search input').val();
 			if(search_word == '') {
@@ -166,46 +159,10 @@ img {
 			}
 		});
 		
+		
 	});//ready end
 	
-	/*
-	//list목록 + 각 데이터 ajax로 받아오기
-	function getList() { 
-		$.ajax({
-			type : "get" ,
-			data : data, 
-			url  : "${pageContext.request.contextPath}/meetup/list",
-			dataType : "json",
-			success : function(data) {
-				if(data.listcount > 0) {
-					$("#famous").show();
-					$("#interested").show();
-						output = '';
-					$(data.list).each(function(index, item){
-						output += '<div class="con-m">'
-						output += '     <div class="head-content-m">' + item.price 
-						output += '       <i class="fas fa-eye " aria-hidden="true"></i>'
-						output += '       <div class="watch">350</div>'
-					    output += '     </div><a href = "${pageContext.request.contextPath}/meetup/detail">'
-					    output += ' <img src="${pageContext.request.contextPath}/resources/upload/meetup_groupsImg/' + item.img_file ">';
-						output += ' <div class="group_sub">' + item.subject + '</div>'
-						output += ' <div class="group_time">'
-						output += ' <i class="fas fa-clock" aria-hidden="true" ></i>' + item.start_date + ' - ' + item.end_date + '</div>'
-						output += ' <div class="group_loc">' + item.location + '</div></a> '
-						output += '</div>';
-					}) //each
-					
-					$('#famous').append(output);
-					$('#interested').append(output);
-					
-				} else {
-					 $('#message').text('등록된 글이 없습니다.');
-					 $('#famous').hide();
-					 $('#interested').hide();
-				 }
-		    }
-		})
-		*/
+	
 </script>
 </head>
 <body>
