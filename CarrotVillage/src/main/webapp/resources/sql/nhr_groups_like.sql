@@ -4,8 +4,8 @@ create table groups_like(
     num                  	   NUMBER(5)    	NOT NULL PRIMARY KEY, 
     groups_like_num            NUMBER(5)    	NOT NULL,    
     id                     varchar2(15)         NOT NULL,
-    FOREIGN KEY (groups_like_num) REFERENCES groups(num),
-    FOREIGN KEY (id) REFERENCES member(id)
+    FOREIGN KEY (groups_like_num) REFERENCES groups(num) on delete cascade,
+    FOREIGN KEY (id) REFERENCES member(id) on delete cascade
 );
 
 create sequence groups_like_seq;

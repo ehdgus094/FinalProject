@@ -2,7 +2,7 @@
 drop table groups_join CASCADE CONSTRAINTS;
 create table groups_join(
 	num				  number(5)         PRIMARY KEY,
-	groups_join_num	  number(5),
+	groups_join_num	  number(5) references groups(num) on delete cascade,
 	id 			  	  varchar2(15)   NOT NULL,
 	birth		      varchar2(20),
 	gender			  varchar2(5)		check (gender in ('m', 'f', 'x')),

@@ -252,8 +252,7 @@ $(document).ready(function(){
 		} else {
 			$(".price").css('color','orange');
 		}
-   
-
+		
 		
 	   $("#listBtn").click(function(){
 		   location.href = "${pageContext.request.contextPath}/meetup/list";
@@ -266,12 +265,12 @@ $(document).ready(function(){
 	   $("#deleteBtn").click(function(){
 		   confirm("정말 삭제하시겠습니까?")
 		   location.href = "${pageContext.request.contextPath}/meetup/delete?num=${groups.num}";
-	   });      
+	   });   
 	   
 	   
-	   //groups_join();
-	   //groups_like();
 	   
+	   
+	  
     }); //ready          
   
     
@@ -382,16 +381,6 @@ $(document).ready(function(){
 	          	  <td>  
 	          	   <a href='javascript:groups_like();'>
 						    <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_dislike.png" alt="" id="like_img"></a>
-		            <%-- <c:choose>
-						  <c:when test="${member.name != null && member.name != groups.name}"> <!-- "${mno ne null}" -->
-						    <a href='javascript:groups_like();'>
-						    <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_dislike.png" alt="" id="like_img"></a>
-						  </c:when>
-			  			  <c:otherwise>
-				  			 <a href='javascript:login_need();'>
-				  			 <img src="${pageContext.request.contextPath}/resources/image/nhr_heart_like.png" alt="" id="dislike_img"></a>
-			  			  </c:otherwise>
-			         </c:choose> --%>
 			           <span id="like_count">${like_count}</span>  
 		          	   <%-- <strong>${groups.like_count}</strong> --%>
 					   <i class="fas fa-eye " aria-hidden="true" >&nbsp;&nbsp;${groups.view_count}</i> 
