@@ -1,10 +1,13 @@
 package com.naver.myhome.main.Controller;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -74,6 +77,10 @@ public class BoardController {
 	
 	@RequestMapping(value="/writeProcess")
 	public String writeProcess(Board board, RedirectAttributes rattr) {
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		Date today = new Date();
+		board.setBoard_date(tz.format(today));
 		int result = boardService.insert(board);
 		if (result == 1) {
 			rattr.addFlashAttribute("write_result", "게시물 작성 완료.");

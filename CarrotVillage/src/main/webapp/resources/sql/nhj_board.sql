@@ -7,7 +7,7 @@ create table board (
 	subject	  			varchar2(100)	 	not null,
 	content	  			varchar2(4000)  	not null,
 	readcount	  		number		  		default 0,
-	board_date		  	date			  	default sysdate,
+	board_date		  	date				,
 	board_like		  	number		  		default 0,
 	board_report	  	number		  		default 0,
 	is_notice   		number(1)		  	default 0 check(is_notice in (0, 1))

@@ -1117,7 +1117,7 @@ var url = "wss://${url}/boot.do?id=${user_info.id}"
 		+	 				  "&name=${user_info.name}"
 		+ 					  "&profile_img=${user_info.profile_img}"
 		+ 					  "&login_type=${user_info.login_type}";	
-
+console.log("url = " + url);
 ws = new WebSocket(url);
 	
 //서버에서 전송하는 데이터를 받으려면 message이벤트를 구현하면 됩니다.
