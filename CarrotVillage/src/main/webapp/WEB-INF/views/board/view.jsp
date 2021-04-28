@@ -697,15 +697,21 @@ div.reply_btn_list span {
 		});
 		
 		$("#board_like").click(function() {
-			$.ajax({
-				type : "post",
-				url : "${pageContext.request.contextPath}/board/like",
-				data : { "id" : "${user_info.id}", "num" : $("#board_num").val(), "table_name" : "board" },
-				success : function(rdata) {
-					$("#board_like").find("img").prop("src", "${pageContext.request.contextPath}/resources/image/nhj_heart_" + rdata.onOff + ".png");
-					$("#board_like").find("span").text(rdata.like);
-				}
-			});
+			
+			if (!"${user_info}") {
+				alert("로그인후 이용해주세요.");
+			} else {
+				$.ajax({
+					type : "post",
+					url : "${pageContext.request.contextPath}/board/like",
+					data : { "id" : "${user_info.id}", "num" : $("#board_num").val(), "table_name" : "board" },
+					success : function(rdata) {
+						$("#board_like").find("img").prop("src", "${pageContext.request.contextPath}/resources/image/nhj_heart_" + rdata.onOff + ".png");
+						$("#board_like").find("span").text(rdata.like);
+					}
+				});
+			}
+			
 		});
 		
 		$(document).on("click", ".comment_like", function() {
@@ -713,15 +719,20 @@ div.reply_btn_list span {
 			img = $(this).find("img");
 			span = $(this).find("span");
 			
-			$.ajax({
-				type : "post",
-				url : "${pageContext.request.contextPath}/board/like",
-				data : { "id" : "${user_info.id}", "num" : $(this).parent().parent().next().val(), "table_name" : "board_comment" },
-				success : function(rdata) {
-					img.prop("src", "${pageContext.request.contextPath}/resources/image/nhj_heart_" + rdata.onOff + ".png");
-					span.text(rdata.like);
-				}
-			});
+			if (!"${user_info}") {
+				alert("로그인후 이용해주세요.");
+			} else {
+				$.ajax({
+					type : "post",
+					url : "${pageContext.request.contextPath}/board/like",
+					data : { "id" : "${user_info.id}", "num" : $(this).parent().parent().next().val(), "table_name" : "board_comment" },
+					success : function(rdata) {
+						img.prop("src", "${pageContext.request.contextPath}/resources/image/nhj_heart_" + rdata.onOff + ".png");
+						span.text(rdata.like);
+					}
+				});
+			}
+			
 		});
 		
 		$(document).on("click", ".reply_like", function() {
@@ -729,15 +740,20 @@ div.reply_btn_list span {
 			img = $(this).find("img");
 			span = $(this).find("span");
 			
-			$.ajax({
-				type : "post",
-				url : "${pageContext.request.contextPath}/board/like",
-				data : { "id" : "${user_info.id}", "num" : $(this).parent().parent().next().val(), "table_name" : "board_reply" },
-				success : function(rdata) {
-					img.prop("src", "${pageContext.request.contextPath}/resources/image/nhj_heart_" + rdata.onOff + ".png");
-					span.text(rdata.like);
-				}
-			});
+			if (!"${user_info}") {
+				alert("로그인후 이용해주세요.");
+			} else {
+				$.ajax({
+					type : "post",
+					url : "${pageContext.request.contextPath}/board/like",
+					data : { "id" : "${user_info.id}", "num" : $(this).parent().parent().next().val(), "table_name" : "board_reply" },
+					success : function(rdata) {
+						img.prop("src", "${pageContext.request.contextPath}/resources/image/nhj_heart_" + rdata.onOff + ".png");
+						span.text(rdata.like);
+					}
+				});
+			}
+			
 		});
 		
 	});

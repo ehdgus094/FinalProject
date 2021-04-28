@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
@@ -243,6 +244,11 @@ public class MainController {
 		logger.info(encPassword);
 		member.setPassword(encPassword);
 		
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		Date today = new Date();
+		member.setRegi_date(tz.format(today));
+		
 		memberService.insert(member);
 		return "redirect:login";
 
@@ -456,10 +462,15 @@ public class MainController {
 			memberService.deleteChatInvisible(roomMember.get(i), chat_room_num);
 		}
 		
+		SimpleDateFormat tz = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //타임존 세팅용
+		tz.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+		Date today = new Date();
+		
 		ChatMessage chatMessage = new ChatMessage();
 		chatMessage.setMessage(m);
 		chatMessage.setMember_id(id);
 		chatMessage.setChat_room_num(chat_room_num);
+		chatMessage.setChat_date(tz.format(today));
 		memberService.insertMessage(chatMessage);
 	}
 	
@@ -544,7 +555,7 @@ public class MainController {
 		if (!uploadfile.isEmpty()) {
 			String fileName = uploadfile.getOriginalFilename();
 			m.setProfile_img_ori(fileName);
-			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "\\upload\\member_image\\";
+			String saveFolder = request.getSession().getServletContext().getRealPath("resources") + "/upload/member_image/";
 			String fileDBName = fileDBName(fileName, saveFolder);
 			logger.info("fileDBName = " + fileDBName);
 
