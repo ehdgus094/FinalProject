@@ -532,7 +532,6 @@ li.system_message p {
 var currentRoomNum = 0;
 var chat_members = ["${user_info.id}"];
 var beforeId = "";
-var pause = false;
 
 $(function() {
 	
@@ -570,7 +569,6 @@ $(function() {
 	
 	if (sessionStorage.getItem("chat_menu_state")) {
 		if (sessionStorage.getItem("chat_menu_state") == "chat_room") {
-			pause = false;
 			getChatRoomList();
 			getRoomListTop();
 			
@@ -588,7 +586,6 @@ $(function() {
 			sessionStorage.setItem('msg_state', 1);
 			sessionStorage.setItem("chat_menu_state", "chat_room");
 			sessionStorage.setItem("messageListCount", 0);
-			pause = false;
 			getChatRoomList();
 			getRoomListTop();
 		} else if (msg_state == 1) {
@@ -619,17 +616,17 @@ $(function() {
 	//햄버거버튼을 클릭 했을때 나오는 메뉴들 클릭
 	$("#chat_room_btn").click(function() {
 		currentRoomNum = 0;
-		pause = false;
 		getChatRoomList();
 		getRoomListTop();
 		$("#chat_menu").removeClass("show");
+		window.location.reload();
 	});
 	$("#chat_search_btn").click(function() {
 		console.log(currentRoomNum);
-		//pause = true;
 		getChatSearchList();
 		getRoomListTop();
 		$("#chat_menu").removeClass("show");
+		window.location.reload();
 	});
 	
 	//대화상대 검색에서 체크박스 선택/해제시 배열에 추가/삭제
@@ -655,7 +652,6 @@ $(function() {
 				data : { "room_num" : currentRoomNum, "chat_members" : chat_members },
 				success : function(rdata) {
 					currentRoomNum = rdata.ChatRoom.num;
-					pause = false;
 					getChatRoomList();
 					getRoomListTop();
 					$("#msg_text_input").focus();
@@ -676,7 +672,6 @@ $(function() {
 				data : { "room_num" : currentRoomNum, "id" : "${user_info.id}" },
 				success : function(rdata) {
 					currentRoomNum = 0;
-					pause = false;
 					getChatRoomList();
 					getRoomListTop();
 				}
@@ -733,34 +728,41 @@ $(function() {
 	
 	//메시지 전송
 	$("#msg_text_input").on('keyup', function(e) {
-		if (e.which == 13) { //엔터
+		
+		if (currentRoomNum != 0) {
+			if (e.which == 13) { //엔터
+				$.ajax({
+					type : "post",
+					url : "${pageContext.request.contextPath}/main/insertMessage",
+					data : { "id" : "${user_info.id}", "message" : $("#msg_text_input").val() + " " + currentRoomNum },
+					success : function() {
+						getChatRoomList();
+						getRoomListTop();
+						$("#msg_text_input").val("");
+					}
+				});
+			}
+		} else {
+			$("#msg_text_input").val("");
+		}
+		
+	});
+	$("#msg_send_btn").on('click', function(e) {
+		
+		if (currentRoomNum != 0) {
 			$.ajax({
 				type : "post",
 				url : "${pageContext.request.contextPath}/main/insertMessage",
 				data : { "id" : "${user_info.id}", "message" : $("#msg_text_input").val() + " " + currentRoomNum },
 				success : function() {
-					pause = false;
 					getChatRoomList();
 					getRoomListTop();
 					$("#msg_text_input").val("");
 				}
 			});
+		} else {
+			$("#msg_text_input").val("");
 		}
-	});
-	$("#msg_send_btn").on('click', function(e) {
-		
-		$.ajax({
-			type : "post",
-			url : "${pageContext.request.contextPath}/main/insertMessage",
-			data : { "id" : "${user_info.id}", "message" : $("#msg_text_input").val() + " " + currentRoomNum },
-			success : function() {
-				pause = false;
-				getChatRoomList();
-				getRoomListTop();
-				$("#msg_text_input").val("");
-			}
-		});
-		
 	});
 	
 	
@@ -828,10 +830,8 @@ var intervalRoomList = null;
 
 //채팅방 목록을 가져와서 출력하는 함수
 function getChatRoomList() {
-	console.log(pause);
-	if (!pause) {
-		intervalRoomList = setInterval(function () {
-			console.log("123");
+		clearInterval(intervalRoomList);
+		intervalRoomList = setInterval(function() {
 			$.ajax({
 				type : "get",
 				url : "${pageContext.request.contextPath}/main/roomList",
@@ -965,8 +965,6 @@ function getChatRoomList() {
 			});
 			
 		}, 1000);
-		intervalRoomList;
-	}
 	sessionStorage.setItem("chat_menu_state", "chat_room");
 }
 
@@ -975,7 +973,6 @@ function getChatRoomList() {
 //대화상대 검색 목록
 function getChatSearchList() {
 	clearInterval(intervalRoomList);
-	console.log(pause);
 	sessionStorage.setItem("chat_menu_state", "chat_search");
 	chat_members = ["${user_info.id}"];
 	var output =  "<div id='chat_search_list'>"
